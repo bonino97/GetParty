@@ -9,17 +9,13 @@ import {
   MenuItem,
   Typography,
 } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
-import * as authActions from 'app/auth/store/actions';
 import { Link } from 'react-router-dom';
 import Context from 'app/AppContext';
+import { GoogleLogout } from 'react-google-login';
 
-function UserMenu(props) {
-  const { state } = useContext(Context);
+function UserMenu() {
+  const { state, dispatch } = useContext(Context);
   const { currentUser } = state;
-
-  const dispatch = useDispatch();
-  const user = useSelector(({ auth }) => auth.user);
 
   const [userMenu, setUserMenu] = useState(null);
 
@@ -31,32 +27,38 @@ function UserMenu(props) {
     setUserMenu(null);
   };
 
+  const onSignout = () => {
+    console.log('kasdjkdsajkdkj');
+    dispatch({ type: 'SIGNOUT_USER' });
+  };
+
   return (
     <React.Fragment>
       <Button className='h-64' onClick={userMenuClick}>
-        {/* {user.data.photoURL ? (
-          <Avatar className='' alt='user photo' src={user.data.photoURL} />
-        ) : (
-          <Avatar className=''>{user.data.displayName[0]}</Avatar>
-        )} */}
-        <Avatar
-          className=''
-          alt='user photo'
-          src={
-            currentUser
-              ? currentUser.picture
-              : 'assets/images/avatars/profile.jpg'
-          }
-        />
-
-        <div className='hidden md:flex flex-col ml-12 items-start'>
-          <Typography component='span' className='normal-case font-600 flex'>
-            Juan Cruz
-          </Typography>
-          <Typography className='text-11 capitalize' color='textSecondary'>
-            Admin
-          </Typography>
-        </div>
+        {currentUser ? (
+          <React.Fragment>
+            <Avatar
+              className=''
+              alt='user photo'
+              src={
+                currentUser.picture
+                  ? currentUser.picture
+                  : 'assets/images/avatars/profile.jpg'
+              }
+            />{' '}
+            <div className='hidden md:flex flex-col ml-12 items-start'>
+              <Typography
+                component='span'
+                className='normal-case font-600 flex'
+              >
+                Juan Cruz
+              </Typography>
+              <Typography className='text-11 capitalize' color='textSecondary'>
+                Admin
+              </Typography>
+            </div>
+          </React.Fragment>
+        ) : null}
 
         <Icon className='text-16 ml-12 hidden sm:flex' variant='action'>
           keyboard_arrow_down
@@ -79,7 +81,7 @@ function UserMenu(props) {
           paper: 'py-8',
         }}
       >
-        {!user.role || user.role.length === 0 ? (
+        {!currentUser ? (
           <React.Fragment>
             <MenuItem component={Link} to='/login'>
               <ListItemIcon className='min-w-40'>
@@ -112,17 +114,24 @@ function UserMenu(props) {
               </ListItemIcon>
               <ListItemText className='pl-0' primary='Inbox' />
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                dispatch(authActions.logoutUser());
-                userMenuClose();
-              }}
-            >
-              <ListItemIcon className='min-w-40'>
-                <Icon>exit_to_app</Icon>
-              </ListItemIcon>
-              <ListItemText className='pl-0' primary='Logout' />
-            </MenuItem>
+
+            <GoogleLogout
+              onLogoutSuccess={onSignout}
+              buttonText='Signout'
+              render={(onClick) => (
+                <MenuItem
+                  onClick={() => {
+                    userMenuClose();
+                    return onClick;
+                  }}
+                >
+                  <ListItemIcon className='min-w-40'>
+                    <Icon>exit_to_app</Icon>
+                  </ListItemIcon>
+                  <ListItemText className='pl-0' primary='Logout' />
+                </MenuItem>
+              )}
+            />
           </React.Fragment>
         )}
       </Popover>

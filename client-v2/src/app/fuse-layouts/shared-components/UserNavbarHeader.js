@@ -3,7 +3,6 @@ import React, { useContext } from 'react';
 import { AppBar, Avatar, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import clsx from 'clsx';
-import { useSelector } from 'react-redux';
 import Context from 'app/AppContext';
 
 const useStyles = makeStyles((theme) => ({
@@ -38,15 +37,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function UserNavbarHeader(props) {
-  const user = useSelector(({ auth }) => auth.user);
   const classes = useStyles();
-
   const { state } = useContext(Context);
   const { currentUser } = state;
-
-  console.log(currentUser);
-
-  return (
+  return currentUser ? (
     <AppBar
       position='static'
       color='primary'
@@ -58,25 +52,25 @@ function UserNavbarHeader(props) {
         className='username text-16 whitespace-no-wrap'
         color='inherit'
       >
-        Juan Cruz 2
+        {currentUser.name ? currentUser.name : ''}
       </Typography>
       <Typography
         className='email text-13 mt-8 opacity-50 whitespace-no-wrap'
         color='inherit'
       >
-        juanbonino@gmail.com
+        {currentUser.email ? currentUser.email : ''}
       </Typography>
       <Avatar
         className={clsx(classes.avatar, 'avatar')}
         alt='user photo'
         src={
-          currentUser
+          currentUser.picture
             ? currentUser.picture
             : 'assets/images/avatars/profile.jpg'
         }
       />
     </AppBar>
-  );
+  ) : null;
 }
 
 export default UserNavbarHeader;

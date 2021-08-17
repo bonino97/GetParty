@@ -7,7 +7,7 @@ import history from '@history';
 import { Auth } from './auth';
 import store from './store';
 import Context from './AppContext';
-import routes from './fuse-configs/routesConfig';
+import routes from './configs/routesConfig';
 import { create } from 'jss';
 import {
   StylesProvider,
