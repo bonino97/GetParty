@@ -6,18 +6,18 @@ const navigationConfig = [
     icon: 'apps',
     children: [
       {
-        id: 'example-component',
-        title: 'Example',
-        type: 'item',
-        icon: 'whatshot',
-        url: '/example',
-      },
-      {
         id: 'map-component',
         title: 'Map',
         type: 'item',
         icon: 'map',
         url: '/map',
+      },
+      {
+        id: 'parties-component',
+        title: 'Parties',
+        type: 'item',
+        icon: 'whatshot',
+        url: '/parties',
       },
     ],
   },

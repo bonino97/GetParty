@@ -1,14 +1,19 @@
 import React, { useContext, useState } from 'react';
+import axios from 'axios';
+import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import AddAPhotoIcon from '@material-ui/icons/AddAPhotoTwoTone';
-
+import {
+  TextField,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Icon,
+  Typography,
+  Toolbar,
+  AppBar,
+} from '@material-ui/core';
+import { orange } from '@material-ui/core/colors';
 import Context from 'app/AppContext';
 
 function CreateParty({ classes }) {
@@ -19,9 +24,10 @@ function CreateParty({ classes }) {
   const [image, setImage] = useState('');
   const [content, setContent] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({ title, image, content });
+    const url = await handleImageUpload();
+    console.log({ title, image, content, url });
   };
 
   const handleDeleteDraft = () => {
@@ -31,18 +37,63 @@ function CreateParty({ classes }) {
     dispatch({ type: 'DELETE_DRAFT' });
   };
 
+  const handleImageUpload = async () => {
+    try {
+      const uploadPreset = 'getpartyapp';
+      const cloudName = 'dpu5kohkp';
+
+      const data = new FormData();
+      data.append('file', image);
+      data.append('upload_preset', uploadPreset);
+      data.append('cloud_name', cloudName);
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        data
+      );
+
+      return res.data.url;
+    } catch (error) {
+      console.error(error);
+      return;
+    }
+  };
+
   return draft ? (
     <Dialog open={true} aria-labelledby='form-dialog-title'>
+      <AppBar position='static'>
+        <Toolbar className='flex w-full'>
+          <Typography variant='subtitle1' color='inherit'>
+            Party Location
+          </Typography>
+          <Icon>audiotrack</Icon>
+        </Toolbar>
+      </AppBar>
+
       <form className={classes.form}>
-        <DialogTitle id='form-dialog-title'>Party Location</DialogTitle>
-        <DialogContent>
+        <DialogContent classes={{ root: 'p-16 pb-0 sm:p-24 sm:pb-0' }}>
+          <TextField
+            className='mt-8 mb-16'
+            name='title'
+            label='Title'
+            placeholder='Whats the name of the party?'
+            type='text'
+            onChange={(e) => setTitle(e.target.value)}
+            variant='outlined'
+            fullWidth
+          />
+          <TextField
+            className='mt-8 mb-16'
+            name='content'
+            label='Description'
+            placeholder='Description of party.'
+            type='text'
+            multiline
+            rows={5}
+            variant='outlined'
+            fullWidth
+            onChange={(e) => setContent(e.target.value)}
+          />
           <div>
-            <TextField
-              name='title'
-              label='Title'
-              placeholder='Insert party title'
-              onChange={(e) => setTitle(e.target.value)}
-            />
             <input
               accept='image/*'
               id='image'
@@ -50,35 +101,26 @@ function CreateParty({ classes }) {
               className={classes.input}
               onChange={(e) => setImage(e.target.files[0])}
             />
-            <label htmlFor='image'>
-              <Button
-                component='span'
-                size='small'
-                className={classes.button}
+            <label
+              htmlFor='image'
+              className={clsx(
+                classes.productImageUpload,
+                'flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5'
+              )}
+            >
+              <Icon
+                fontSize='large'
+                color='action'
                 style={{ color: image && '#9f01ff' }}
               >
-                <AddAPhotoIcon />
-              </Button>
+                cloud_upload
+              </Icon>
             </label>
-          </div>
-          <div className={classes.contentField}>
-            <TextField
-              name='content'
-              label='Content'
-              multiline
-              rows='6'
-              margin='normal'
-              fullWidth
-              variant='outlined'
-              onChange={(e) => setContent(e.target.value)}
-            />
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteDraft} color='primary'>
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} color='primary'>
+          <Button onClick={handleDeleteDraft}>Cancel</Button>
+          <Button onClick={handleSubmit} color='secondary'>
             Submit
           </Button>
         </DialogActions>
@@ -134,6 +176,38 @@ const styles = (theme) => ({
     marginRight: theme.spacing(1),
     marginLeft: 0,
     backgroundColor: '#9f01ff',
+  },
+  productImageFeaturedStar: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    color: orange[400],
+    opacity: 0,
+  },
+  productImageUpload: {
+    transitionProperty: 'box-shadow',
+    transitionDuration: theme.transitions.duration.short,
+    transitionTimingFunction: theme.transitions.easing.easeInOut,
+  },
+  productImageItem: {
+    transitionProperty: 'box-shadow',
+    transitionDuration: theme.transitions.duration.short,
+    transitionTimingFunction: theme.transitions.easing.easeInOut,
+    '&:hover': {
+      '& $productImageFeaturedStar': {
+        opacity: 0.8,
+      },
+    },
+    '&.featured': {
+      pointerEvents: 'none',
+      boxShadow: theme.shadows[3],
+      '& $productImageFeaturedStar': {
+        opacity: 1,
+      },
+      '&:hover $productImageFeaturedStar': {
+        opacity: 1,
+      },
+    },
   },
 });
 
