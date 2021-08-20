@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { GraphQLClient } from 'graphql-request';
 import axios from 'axios';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
@@ -16,6 +17,8 @@ import {
 import { orange } from '@material-ui/core/colors';
 import Context from 'app/AppContext';
 
+import { CREATE_PIN_MUTATION } from 'graphql/mutations';
+
 function CreateParty({ classes }) {
   const { state, dispatch } = useContext(Context);
   const { draft } = state;
@@ -27,7 +30,20 @@ function CreateParty({ classes }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const url = await handleImageUpload();
+    const idToken = window.gapi.auth2
+      .getAuthInstance()
+      .currentUser.get()
+      .getAuthResponse().id_token;
+    const client = new GraphQLClient('http://localhost:4000/graphql', {
+      headers: {
+        authorization: idToken,
+      },
+    });
     console.log({ title, image, content, url });
+    const { latitude, longitude } = state;
+    const input = { title, image: url, content, latitude, longitude };
+    const { createPin } = await client.request(CREATE_PIN_MUTATION, input);
+    console.log('Successfully: ', createPin);
   };
 
   const handleDeleteDraft = () => {

@@ -11,7 +11,7 @@ const routes = [
   ...FuseUtils.generateRoutesFromConfigs(routeConfigs),
   {
     path: '/',
-    component: () => <Redirect to='/map' />,
+    component: () => <Redirect to='/login' />,
   },
 ];
 

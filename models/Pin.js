@@ -2,9 +2,6 @@ const mongoose = require('mongoose');
 
 const PinSchema = mongoose.Schema(
   {
-    name: { type: String },
-    email: { type: String },
-    picture: { type: String },
     title: { type: String },
     content: { type: String },
     image: { type: String },
