@@ -1,26 +1,30 @@
+import 'typeface-muli';
+import './react-table-defaults';
+import './react-chartjs-2-defaults';
+import './styles/index.css';
 import React, { useContext, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import 'mapbox-gl/dist/mapbox-gl.css';
-
-import App from './pages/App';
-import Splash from './pages/Splash';
-import Context from './context';
-import reducer from './reducer';
-
-import ProtectedRoute from './ProtectedRoute';
 import * as serviceWorker from './serviceWorker';
+import App from 'app/App';
+import Splash from './pages/Splash';
+import Context from 'app/AppContext';
+import Reducer from 'app/Reducer';
+import routes from 'app/configs/routesConfig';
+import ProtectedRoute from './ProtectedRoute';
+import history from '@history';
 
 const Root = () => {
   const initialState = useContext(Context);
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(Reducer, initialState);
 
   return (
-    <Router>
-      <Context.Provider value={{ state, dispatch }}>
+    <Router history={history}>
+      <Context.Provider value={{ state, dispatch, routes }}>
         <Switch>
-          <ProtectedRoute exact path='/' component={App} />
           <Route path='/login' component={Splash} />
+          <ProtectedRoute path='/' component={App} />
         </Switch>
       </Context.Provider>
     </Router>

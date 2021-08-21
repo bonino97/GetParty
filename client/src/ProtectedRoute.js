@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import Context from './context';
+import Context from './app/AppContext';
 import { Redirect, Route } from 'react-router-dom';
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
@@ -7,7 +7,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
   return (
     <Route
       render={(props) =>
-        !state.isAuth ? <Redirect to='login' /> : <Component {...props} />
+        state.isAuth ? <Component {...props} /> : <Redirect to='login' />
       }
       {...rest}
     />
