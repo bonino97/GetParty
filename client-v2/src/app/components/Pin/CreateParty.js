@@ -26,30 +26,40 @@ function CreateParty({ classes }) {
   const [title, setTitle] = useState('');
   const [image, setImage] = useState('');
   const [content, setContent] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    const url = await handleImageUpload();
-    const idToken = window.gapi.auth2
-      .getAuthInstance()
-      .currentUser.get()
-      .getAuthResponse().id_token;
-    const client = new GraphQLClient('http://localhost:4000/graphql', {
-      headers: {
-        authorization: idToken,
-      },
-    });
-    console.log({ title, image, content, url });
-    const { latitude, longitude } = state;
-    const input = { title, image: url, content, latitude, longitude };
-    const { createPin } = await client.request(CREATE_PIN_MUTATION, input);
-    console.log('Successfully: ', createPin);
+    try {
+      event.preventDefault();
+      setSubmitting(true);
+      const url = await handleImageUpload();
+      const idToken = window.gapi.auth2
+        .getAuthInstance()
+        .currentUser.get()
+        .getAuthResponse().id_token;
+
+      const client = new GraphQLClient('http://localhost:4000/graphql', {
+        headers: {
+          authorization: idToken,
+        },
+      });
+      console.log({ title, image, content, url });
+      const { latitude, longitude } = state.draft;
+      const input = { title, image: url, content, latitude, longitude };
+      const { createPin } = await client.request(CREATE_PIN_MUTATION, input);
+      console.log('Successfully: ', createPin);
+      handleDeleteDraft();
+    } catch (error) {
+      setSubmitting(false);
+      console.error('Error creating party: ', error);
+    }
   };
 
   const handleDeleteDraft = () => {
     setTitle('');
     setImage('');
     setContent('');
+    setSubmitting(false);
     dispatch({ type: 'DELETE_DRAFT' });
   };
 
@@ -69,7 +79,7 @@ function CreateParty({ classes }) {
 
       return res.data.url;
     } catch (error) {
-      console.error(error);
+      console.error('Error uploading image: ', error);
       return;
     }
   };
@@ -136,7 +146,12 @@ function CreateParty({ classes }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeleteDraft}>Cancel</Button>
-          <Button onClick={handleSubmit} color='secondary'>
+          <Button
+            onClick={handleSubmit}
+            color='secondary'
+            disabled={!title.trim() || !content.trim() || submitting}
+            type='submit'
+          >
             Submit
           </Button>
         </DialogActions>

@@ -13,17 +13,18 @@ import Context from 'app/AppContext';
 import Reducer from 'app/Reducer';
 import routes from 'app/configs/routesConfig';
 import ProtectedRoute from './ProtectedRoute';
+import history from '@history';
 
 const Root = () => {
   const initialState = useContext(Context);
   const [state, dispatch] = useReducer(Reducer, initialState);
 
   return (
-    <Router>
+    <Router history={history}>
       <Context.Provider value={{ state, dispatch, routes }}>
         <Switch>
-          <ProtectedRoute exact path='/' component={App} />
           <Route path='/login' component={Splash} />
+          <ProtectedRoute path='/' component={App} />
         </Switch>
       </Context.Provider>
     </Router>

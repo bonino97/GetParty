@@ -1,9 +1,7 @@
 import React from 'react';
 import { FuseLayout, FuseTheme } from '@fuse';
 import Provider from 'react-redux/es/components/Provider';
-import { Router } from 'react-router-dom';
 import jssExtend from 'jss-extend';
-import history from '@history';
 import store from './store';
 import { create } from 'jss';
 import {
@@ -24,11 +22,9 @@ const App = () => {
   return (
     <StylesProvider jss={jss} generateClassName={generateClassName}>
       <Provider store={store}>
-        <Router history={history}>
-          <FuseTheme>
-            <FuseLayout />
-          </FuseTheme>
-        </Router>
+        <FuseTheme>
+          <FuseLayout />
+        </FuseTheme>
       </Provider>
     </StylesProvider>
   );

@@ -14,8 +14,9 @@ module.exports = {
   Mutation: {
     createPin: authenticated(async (root, args, ctx) => {
       try {
+        console.log(args.input);
         const newPin = await new Pin({
-          ...args,
+          ...args.input,
           author: ctx.currentUser._id,
         }).save();
 

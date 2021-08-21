@@ -11,13 +11,24 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import Context from 'app/AppContext';
-import { GoogleLogout } from 'react-google-login';
+import { useGoogleLogout } from 'react-google-login';
+import { setInitialSettings } from 'app/store/actions/fuse';
 
-function UserMenu() {
-  const { state, dispatch } = useContext(Context);
+function UserMenu(props) {
+  const { state } = useContext(Context);
   const { currentUser } = state;
 
+  const { signOut } = useGoogleLogout({});
+
   const [userMenu, setUserMenu] = useState(null);
+
+  const { dispatch } = useContext(Context);
+
+  const onSignout = () => {
+    signOut();
+    dispatch({ type: 'SIGNOUT_USER' });
+    dispatch(setInitialSettings());
+  };
 
   const userMenuClick = (event) => {
     setUserMenu(event.currentTarget);
@@ -25,11 +36,6 @@ function UserMenu() {
 
   const userMenuClose = () => {
     setUserMenu(null);
-  };
-
-  const onSignout = () => {
-    console.log('kasdjkdsajkdkj');
-    dispatch({ type: 'SIGNOUT_USER' });
   };
 
   return (
@@ -114,24 +120,17 @@ function UserMenu() {
               </ListItemIcon>
               <ListItemText className='pl-0' primary='Inbox' />
             </MenuItem>
-
-            <GoogleLogout
-              onLogoutSuccess={onSignout}
-              buttonText='Signout'
-              render={(onClick) => (
-                <MenuItem
-                  onClick={() => {
-                    userMenuClose();
-                    return onClick;
-                  }}
-                >
-                  <ListItemIcon className='min-w-40'>
-                    <Icon>exit_to_app</Icon>
-                  </ListItemIcon>
-                  <ListItemText className='pl-0' primary='Logout' />
-                </MenuItem>
-              )}
-            />
+            <MenuItem
+              onClick={() => {
+                userMenuClose();
+                onSignout();
+              }}
+            >
+              <ListItemIcon className='min-w-40'>
+                <Icon>exit_to_app</Icon>
+              </ListItemIcon>
+              <ListItemText className='pl-0' primary='Logout' />
+            </MenuItem>
           </React.Fragment>
         )}
       </Popover>
