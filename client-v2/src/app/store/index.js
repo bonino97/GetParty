@@ -12,7 +12,9 @@ const middlewares = [];
 
 if (process.env.NODE_ENV === 'development') {
   const { createLogger } = require(`redux-logger`);
-  const logger = createLogger({ collapsed: (getState, action, logEntry) => !logEntry.error });
+  const logger = createLogger({
+    collapsed: (getState, action, logEntry) => !logEntry.error,
+  });
 
   middlewares.push(logger);
 }

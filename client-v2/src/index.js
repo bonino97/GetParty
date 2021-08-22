@@ -41,4 +41,5 @@ const Root = () => {
 
 ReactDOM.render(<Root />, document.getElementById('root'));
 reportWebVitals();
+
 serviceWorker.unregister();
