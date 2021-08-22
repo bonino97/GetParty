@@ -2,8 +2,6 @@ import FuseLayout from '@fuse/core/FuseLayout';
 import FuseTheme from '@fuse/core/FuseTheme';
 import { SnackbarProvider } from 'notistack';
 import withAppProviders from './withAppProviders';
-import Provider from 'react-redux/es/components/Provider';
-import store from './store';
 // import axios from 'axios';
 
 /**
@@ -15,22 +13,20 @@ import store from './store';
 
 const App = () => {
   return (
-    <Provider store={store}>
-      <FuseTheme>
-        <SnackbarProvider
-          maxSnack={5}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-          classes={{
-            containerRoot: 'bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99',
-          }}
-        >
-          <FuseLayout />
-        </SnackbarProvider>
-      </FuseTheme>
-    </Provider>
+    <FuseTheme>
+      <SnackbarProvider
+        maxSnack={5}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        classes={{
+          containerRoot: 'bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99',
+        }}
+      >
+        <FuseLayout />
+      </SnackbarProvider>
+    </FuseTheme>
   );
 };
 

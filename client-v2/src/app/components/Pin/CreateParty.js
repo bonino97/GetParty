@@ -11,7 +11,7 @@ import {
   Icon,
   Typography,
   Toolbar,
-  AppBar
+  AppBar,
 } from '@material-ui/core';
 import { orange } from '@material-ui/core/colors';
 import Context from 'app/AppContext';
@@ -147,10 +147,18 @@ function CreateParty({ classes }) {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteDraft}>Cancel</Button>
+          <Button
+            variant='contained'
+            color='secondary'
+            className={classes.button}
+            onClick={handleDeleteDraft}
+          >
+            Cancel
+          </Button>
           <Button
             onClick={handleSubmit}
-            color='secondary'
+            variant='outlined'
+            size='medium'
             disabled={!title.trim() || !content.trim() || submitting}
             type='submit'
           >

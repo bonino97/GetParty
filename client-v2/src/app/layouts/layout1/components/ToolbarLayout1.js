@@ -60,17 +60,17 @@ function ToolbarLayout1(props) {
               </>
             )}
 
-            <Hidden mdDown>
+            {/* <Hidden mdDown>
               <FuseShortcuts />
-            </Hidden>
+            </Hidden> */}
           </div>
 
           <div className='flex items-center px-8 h-full overflow-x-auto'>
             <LanguageSwitcher />
 
-            <AdjustFontSize />
+            {/* <AdjustFontSize /> */}
 
-            <FullScreenToggle />
+            {/* <FullScreenToggle /> */}
 
             <FuseSearch />
 

@@ -125,10 +125,10 @@ const defaultValues = {
   remember: true,
 };
 
-function Login() {
+const Login = () => {
   const classes = useStyles();
   const { state, dispatch } = useContext(Context);
-  console.log(state);
+
   const { control, formState, handleSubmit, reset } = useForm({
     mode: 'onChange',
     defaultValues,
@@ -137,9 +137,9 @@ function Login() {
 
   const { isValid, dirtyFields, errors } = formState;
 
-  function onSubmit() {
+  const onSubmit = () => {
     reset(defaultValues);
-  }
+  };
 
   const onSuccess = async (googleUser) => {
     try {
@@ -369,6 +369,6 @@ function Login() {
       </motion.div>
     </div>
   );
-}
+};
 
 export default Login;

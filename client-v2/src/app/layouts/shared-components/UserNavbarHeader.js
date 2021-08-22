@@ -1,9 +1,13 @@
+import { useContext } from 'react';
+
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+
 import clsx from 'clsx';
-import { useSelector } from 'react-redux';
+
+import Context from 'app/AppContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,33 +34,36 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function UserNavbarHeader(props) {
-  const user = useSelector(({ auth }) => auth.user);
-
   const classes = useStyles();
+  const { state } = useContext(Context);
+  const { currentUser } = state;
 
   return (
     <AppBar
-      position="static"
-      color="primary"
+      position='static'
+      color='primary'
       classes={{ root: classes.root }}
-      className="user relative flex flex-col items-center justify-center pt-24 pb-64 mb-32 z-0 shadow-0"
+      className='user relative flex flex-col items-center justify-center pt-24 pb-64 mb-32 z-0 shadow-0'
     >
-      <Typography className="username text-18 whitespace-nowrap font-semibold mb-4" color="inherit">
-        {user.data.displayName}
+      <Typography
+        className='username text-18 whitespace-nowrap font-semibold mb-4'
+        color='inherit'
+      >
+        {currentUser.name ? currentUser.name : ''}
       </Typography>
       <Typography
-        className="email text-13 opacity-50 whitespace-nowrap font-medium"
-        color="inherit"
+        className='email text-13 opacity-50 whitespace-nowrap font-medium'
+        color='inherit'
       >
-        {user.data.email}
+        {currentUser.email ? currentUser.email : ''}
       </Typography>
-      <div className="flex items-center justify-center absolute bottom-0 -mb-44">
+      <div className='flex items-center justify-center absolute bottom-0 -mb-44'>
         <Avatar
           className={clsx(classes.avatar, 'avatar w-72 h-72 p-8 box-content')}
-          alt="user photo"
+          alt='user photo'
           src={
-            user.data.photoURL && user.data.photoURL !== ''
-              ? user.data.photoURL
+            currentUser.picture
+              ? currentUser.picture
               : 'assets/images/avatars/profile.jpg'
           }
         />

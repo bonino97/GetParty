@@ -1,4 +1,8 @@
-import { createGenerateClassName, jssPreset, StylesProvider } from '@material-ui/core/styles';
+import {
+  createGenerateClassName,
+  jssPreset,
+  StylesProvider,
+} from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { create } from 'jss';
 import jssExtend from 'jss-plugin-extend';
@@ -19,19 +23,13 @@ const generateClassName = createGenerateClassName({ disableGlobal: true });
 
 const withAppProviders = (Component) => (props) => {
   const WrapperComponent = () => (
-    <AppContext.Provider
-      value={{
-        routes,
-      }}
-    >
-      <StylesProvider jss={jss} generateClassName={generateClassName}>
-        <Provider store={store}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Component {...props} />
-          </MuiPickersUtilsProvider>
-        </Provider>
-      </StylesProvider>
-    </AppContext.Provider>
+    <StylesProvider jss={jss} generateClassName={generateClassName}>
+      <Provider store={store}>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <Component {...props} />
+        </MuiPickersUtilsProvider>
+      </Provider>
+    </StylesProvider>
   );
 
   return WrapperComponent;

@@ -15,14 +15,12 @@ import { useGoogleLogout } from 'react-google-login';
 import { setInitialSettings } from 'app/store/actions/fuse';
 
 function UserMenu(props) {
-  const { state } = useContext(Context);
+  const { state, dispatch } = useContext(Context);
   const { currentUser } = state;
 
   const { signOut } = useGoogleLogout({});
 
   const [userMenu, setUserMenu] = useState(null);
-
-  const { dispatch } = useContext(Context);
 
   const onSignout = () => {
     signOut();
