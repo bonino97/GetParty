@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { withStyles } from '@material-ui/core/styles';
+
 import ReactMapGL, { NavigationControl, Marker, Popup } from 'react-map-gl';
 
-// import AudioIcon from './Icons/AudioIcon';
+import FuseLoading from '@fuse/core/FuseLoading';
 
 import { useClient } from 'graphql/client';
 import { GET_PINS_QUERY } from 'graphql/queries';
 
+import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
 
 import PinIcon from 'app/components/Icons/PinIcon';
+import PlaceIcon from 'app/components/Icons/PlaceIcon';
 import PersonIcon from 'app/components/Icons/PersonIcon';
 import CreateParty from 'app/components/Pin/CreateParty';
 import Context from 'app/AppContext';
@@ -31,6 +33,7 @@ const Map = ({ classes }) => {
   }, []);
 
   const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
+  const [loading, setLoading] = useState(false);
   const [userPosition, setUserPosition] = useState();
 
   useEffect(() => {
@@ -41,16 +44,17 @@ const Map = ({ classes }) => {
 
   const getPins = async () => {
     const { getPins } = await client.request(GET_PINS_QUERY);
-    console.log(getPins);
     dispatch({ type: 'GET_PINS', payload: getPins });
   };
 
   const getUserPosition = () => {
+    setLoading(true);
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
         setViewport({ latitude, longitude, zoom: 13 });
         setUserPosition({ latitude, longitude });
+        setLoading(false);
       });
     }
   };
@@ -66,7 +70,7 @@ const Map = ({ classes }) => {
   };
 
   const getPinStatus = (pin) => {
-    return 'red';
+    return '#580254';
   };
 
   const handleSelectedPin = (pin) => {
@@ -79,94 +83,100 @@ const Map = ({ classes }) => {
 
   return (
     <div className={classes.root}>
-      <ReactMapGL
-        mapboxApiAccessToken='pk.eyJ1IjoiYm9uaWtpYTk3IiwiYSI6ImNrczlsdzd1dDB4aW4ybnJtcjJkeW9teHIifQ.fsXRvcqpttjN1XzKopniAg'
-        width='100vw'
-        height='calc(100vh - 64px)'
-        mapStyle='mapbox://styles/mapbox/streets-v9'
-        onViewportChange={(newViewport) => setViewport(newViewport)}
-        onClick={handleMapClick}
-        {...viewport}
-      >
-        {/* Navigation Control */}
-        <div className={classes.navigationControl}>
-          <NavigationControl
+      {loading ? (
+        <FuseLoading />
+      ) : (
+        <>
+          <ReactMapGL
+            mapboxApiAccessToken='pk.eyJ1IjoiYm9uaWtpYTk3IiwiYSI6ImNrczlsdzd1dDB4aW4ybnJtcjJkeW9teHIifQ.fsXRvcqpttjN1XzKopniAg'
+            width='100vw'
+            height='calc(100vh - 64px)'
+            mapStyle='mapbox://styles/mapbox/streets-v9'
             onViewportChange={(newViewport) => setViewport(newViewport)}
-          />
-        </div>
-
-        {/* Pin for user current position */}
-        {userPosition && (
-          <Marker
-            latitude={userPosition.latitude}
-            longitude={userPosition.longitude}
-            offsetLeft={-19}
-            offsetTop={-38}
+            onClick={handleMapClick}
+            {...viewport}
           >
-            {' '}
-            <PersonIcon size={25} color='#0953ff'></PersonIcon>
-          </Marker>
-        )}
-        {/* Draft Pin */}
-        {state.draft && (
-          <Marker
-            latitude={state.draft.latitude}
-            longitude={state.draft.longitude}
-            offsetLeft={-19}
-            offsetTop={-38}
-          >
-            {' '}
-            <PinIcon size={35} color='black'></PinIcon>
-          </Marker>
-        )}
-
-        {state.pins.map((pin) => (
-          <Marker
-            key={pin._id}
-            latitude={pin.latitude}
-            longitude={pin.longitude}
-            offsetLeft={-19}
-            offsetTop={-38}
-          >
-            {' '}
-            <PinIcon
-              size={35}
-              color={getPinStatus(pin)}
-              onClick={() => handleSelectedPin(pin)}
-            ></PinIcon>
-          </Marker>
-        ))}
-
-        {/* Popup dialog for created pins */}
-        {popup && (
-          <Popup
-            anchor='top'
-            latitude={popup.latitude}
-            longitude={popup.longitude}
-            closeOnClick={false}
-            onClose={() => setPopup(null)}
-          >
-            {popup.image ? (
-              <img
-                className={classes.popupImage}
-                src={popup.image}
-                alt='GetParty'
+            {/* Navigation Control */}
+            <div className={classes.navigationControl}>
+              <NavigationControl
+                onViewportChange={(newViewport) => setViewport(newViewport)}
               />
-            ) : null}
-            <div className={classes.popupTab}>
-              <Typography className={classes.blackText}>
-                {popup.title}
-              </Typography>
-              {isAuthUser() && (
-                <Button>
-                  <DeleteIcon className={classes.deleteIcon} />
-                </Button>
-              )}
             </div>
-          </Popup>
-        )}
-      </ReactMapGL>
-      <CreateParty />
+
+            {/* Pin for user current position */}
+            {userPosition && (
+              <Marker
+                latitude={userPosition.latitude}
+                longitude={userPosition.longitude}
+                offsetLeft={-19}
+                offsetTop={-38}
+              >
+                {' '}
+                <PersonIcon size={25} color='#0953ff'></PersonIcon>
+              </Marker>
+            )}
+            {/* Draft Pin */}
+            {state.draft && (
+              <Marker
+                latitude={state.draft.latitude}
+                longitude={state.draft.longitude}
+                offsetLeft={-19}
+                offsetTop={-38}
+              >
+                {' '}
+                <PinIcon size={35} color='black'></PinIcon>
+              </Marker>
+            )}
+
+            {state.pins.map((pin) => (
+              <Marker
+                key={pin._id}
+                latitude={pin.latitude}
+                longitude={pin.longitude}
+                offsetLeft={-19}
+                offsetTop={-38}
+              >
+                {' '}
+                <PlaceIcon
+                  size={35}
+                  color={getPinStatus(pin)}
+                  onClick={() => handleSelectedPin(pin)}
+                ></PlaceIcon>
+              </Marker>
+            ))}
+
+            {/* Popup dialog for created pins */}
+            {popup && (
+              <Popup
+                anchor='top'
+                latitude={popup.latitude}
+                longitude={popup.longitude}
+                closeOnClick={false}
+                onClose={() => setPopup(null)}
+              >
+                {popup.image ? (
+                  <img
+                    className={classes.popupImage}
+                    src={popup.image}
+                    alt='GetParty'
+                  />
+                ) : null}
+                <div className={classes.popupTab}>
+                  <Typography className={classes.blackText}>
+                    {popup.title}
+                  </Typography>
+                  {isAuthUser() && (
+                    <Button>
+                      <DeleteIcon className={classes.deleteIcon} />
+                    </Button>
+                  )}
+                </div>
+              </Popup>
+            )}
+          </ReactMapGL>
+          <CreateParty />
+        </>
+      )}
     </div>
   );
 };
