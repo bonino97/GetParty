@@ -5,7 +5,9 @@ import ReactMapGL, { NavigationControl, Marker, Popup } from 'react-map-gl';
 import FuseLoading from '@fuse/core/FuseLoading';
 
 import { useClient } from 'graphql/client';
+
 import { GET_PINS_QUERY } from 'graphql/queries';
+import { DELETE_PIN_MUTATION } from 'graphql/mutations';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -44,6 +46,7 @@ const Map = ({ classes }) => {
 
   const getPins = async () => {
     const { getPins } = await client.request(GET_PINS_QUERY);
+    console.log(getPins);
     dispatch({ type: 'GET_PINS', payload: getPins });
   };
 
@@ -74,9 +77,18 @@ const Map = ({ classes }) => {
   };
 
   const handleSelectedPin = (pin) => {
-    setPopup(pin);
     console.log(pin);
+    setPopup(pin);
     dispatch({ type: 'SET_PIN', payload: pin });
+  };
+
+  const handleDeletePin = async (pin) => {
+    console.log(pin);
+    const { deletePin } = await client.request(DELETE_PIN_MUTATION, {
+      pinId: pin._id,
+    });
+    dispatch({ type: 'DELETE_PIN', payload: deletePin });
+    setPopup(null);
   };
 
   const isAuthUser = () => state.currentUser._id === popup.author._id;
@@ -166,7 +178,7 @@ const Map = ({ classes }) => {
                     {popup.title}
                   </Typography>
                   {isAuthUser() && (
-                    <Button>
+                    <Button onClick={() => handleDeletePin(popup)}>
                       <DeleteIcon className={classes.deleteIcon} />
                     </Button>
                   )}

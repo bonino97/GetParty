@@ -33,5 +33,16 @@ module.exports = {
         throw new Error(error);
       }
     }),
+    deletePin: authenticated(async (root, args, ctx) => {
+      try {
+        console.log(args);
+        const pinDeleted = await Pin.findOneAndDelete({
+          _id: args.pinId,
+        }).exec();
+        return pinDeleted;
+      } catch (error) {
+        throw new Error(error);
+      }
+    }),
   },
 };
