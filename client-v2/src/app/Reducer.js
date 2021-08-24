@@ -58,7 +58,7 @@ export default function Reducer(state, { type, payload }) {
       const filteredPins = state.pins.filter(
         (pin) => pin._id !== deletedPin._id
       );
-      
+
       return {
         ...state,
         pins: filteredPins,

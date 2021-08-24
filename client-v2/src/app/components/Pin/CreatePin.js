@@ -16,7 +16,6 @@ const CreatePin = ({ classes }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log({ title, image, content });
   };
 
   const handleDeleteDraft = () => {

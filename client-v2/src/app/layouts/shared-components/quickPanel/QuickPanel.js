@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function QuickPanel(props) {
-  const dispatch = useDispatch();
+  const reduxDispatch = useDispatch();
   const state = useSelector(({ quickPanel }) => quickPanel.state);
 
   const classes = useStyles();
@@ -24,9 +24,9 @@ function QuickPanel(props) {
     <SwipeableDrawer
       classes={{ paper: classes.root }}
       open={state}
-      anchor="right"
+      anchor='right'
       onOpen={(ev) => {}}
-      onClose={(ev) => dispatch(toggleQuickPanel())}
+      onClose={(ev) => reduxDispatch(toggleQuickPanel())}
       disableSwipeToOpen
     >
       <FuseScrollbars>

@@ -7,18 +7,16 @@ import FuseLoading from '@fuse/core/FuseLoading';
 import { useClient } from 'graphql/client';
 
 import { GET_PINS_QUERY } from 'graphql/queries';
-import { DELETE_PIN_MUTATION } from 'graphql/mutations';
 
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
 
 import PinIcon from 'app/components/Icons/PinIcon';
 import PlaceIcon from 'app/components/Icons/PlaceIcon';
 import PersonIcon from 'app/components/Icons/PersonIcon';
 import CreateParty from 'app/components/Pin/CreateParty';
 import Context from 'app/AppContext';
+
+import PinInfo from 'app/components/Pin/PinInfo';
 
 const INITIAL_VIEWPORT = {
   latitude: 37.7577,
@@ -42,11 +40,8 @@ const Map = ({ classes }) => {
     getUserPosition();
   }, []);
 
-  const [popup, setPopup] = useState(null);
-
   const getPins = async () => {
     const { getPins } = await client.request(GET_PINS_QUERY);
-    console.log(getPins);
     dispatch({ type: 'GET_PINS', payload: getPins });
   };
 
@@ -77,21 +72,8 @@ const Map = ({ classes }) => {
   };
 
   const handleSelectedPin = (pin) => {
-    console.log(pin);
-    setPopup(pin);
     dispatch({ type: 'SET_PIN', payload: pin });
   };
-
-  const handleDeletePin = async (pin) => {
-    console.log(pin);
-    const { deletePin } = await client.request(DELETE_PIN_MUTATION, {
-      pinId: pin._id,
-    });
-    dispatch({ type: 'DELETE_PIN', payload: deletePin });
-    setPopup(null);
-  };
-
-  const isAuthUser = () => state.currentUser._id === popup.author._id;
 
   return (
     <div className={classes.root}>
@@ -157,34 +139,7 @@ const Map = ({ classes }) => {
               </Marker>
             ))}
 
-            {/* Popup dialog for created pins */}
-            {popup && (
-              <Popup
-                anchor='top'
-                latitude={popup.latitude}
-                longitude={popup.longitude}
-                closeOnClick={false}
-                onClose={() => setPopup(null)}
-              >
-                {popup.image ? (
-                  <img
-                    className={classes.popupImage}
-                    src={popup.image}
-                    alt='GetParty'
-                  />
-                ) : null}
-                <div className={classes.popupTab}>
-                  <Typography className={classes.blackText}>
-                    {popup.title}
-                  </Typography>
-                  {isAuthUser() && (
-                    <Button onClick={() => handleDeletePin(popup)}>
-                      <DeleteIcon className={classes.deleteIcon} />
-                    </Button>
-                  )}
-                </div>
-              </Popup>
-            )}
+            {state.currentPin ? <PinInfo pin={state.currentPin} /> : null}
           </ReactMapGL>
           <CreateParty />
         </>

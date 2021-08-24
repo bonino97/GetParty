@@ -1,6 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
+import AudiotrackOutlinedIcon from '@material-ui/icons/AudiotrackOutlined';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,6 +34,14 @@ function Logo() {
         src='assets/images/logos/fuse.svg'
         alt='logo'
       /> */}
+      <div
+        className={clsx(
+          classes.reactBadge,
+          'react-badge flex items-center ml-12 mr-8 py-4 px-8 rounded'
+        )}
+      >
+        <AudiotrackOutlinedIcon style={{ color: 'white' }} />
+      </div>
       <Typography
         className='text-16 leading-none mx-12 font-medium logo-text'
         color='inherit'
