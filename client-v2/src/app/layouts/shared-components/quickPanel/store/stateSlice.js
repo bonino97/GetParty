@@ -10,6 +10,7 @@ const stateSlice = createSlice({
   },
 });
 
-export const { toggleQuickPanel, openQuickPanel, closeQuickPanel } = stateSlice.actions;
+export const { toggleQuickPanel, openQuickPanel, closeQuickPanel } =
+  stateSlice.actions;
 
 export default stateSlice.reducer;

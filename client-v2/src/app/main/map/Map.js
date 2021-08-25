@@ -16,7 +16,7 @@ import PersonIcon from 'app/components/Icons/PersonIcon';
 import CreateParty from 'app/components/Pin/CreateParty';
 import Context from 'app/AppContext';
 
-import PinInfo from 'app/components/Pin/PinInfo';
+import PinContent from 'app/components/Pin/PinContent';
 
 const INITIAL_VIEWPORT = {
   latitude: 37.7577,
@@ -139,7 +139,7 @@ const Map = ({ classes }) => {
               </Marker>
             ))}
 
-            {state.currentPin ? <PinInfo pin={state.currentPin} /> : null}
+            {state.currentPin ? <PinContent pin={state.currentPin} /> : null}
           </ReactMapGL>
           <CreateParty />
         </>
