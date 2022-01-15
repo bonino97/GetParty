@@ -4,6 +4,7 @@ import FuseScrollbars from '@fuse/core/FuseScrollbars';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import { IconButton, Icon } from '@material-ui/core';
 import withReducer from 'app/store/withReducer';
 import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store/stateSlice';
 import reducer from './store';
@@ -22,6 +23,8 @@ function QuickPanel(props) {
   const classes = useStyles();
 
   const handleToggleQuickPanel = () => reduxDispatch(toggleQuickPanel());
+  const handleClose = () => console.log(123);
+  const handleDismissAll = () => console.log(123);
 
   return (
     <SwipeableDrawer

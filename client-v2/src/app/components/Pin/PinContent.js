@@ -80,7 +80,7 @@ export default function PinContent({ pin }) {
             <Avatar
               aria-label='recipe'
               className={classes.avatar}
-              src={pin.author.picture}
+              src={pin?.author?.picture}
             ></Avatar>
           }
           action={
@@ -91,13 +91,13 @@ export default function PinContent({ pin }) {
               <CloseIcon />
             </IconButton>
           }
-          title={pin.title}
+          title={pin?.title}
           subheader={pinDate}
         />
         {pin.image && (
           <CardMedia
-            className={classes.media}
-            image={pin.image}
+            className={classes?.media}
+            image={pin?.image}
             title='Get Party Information'
           />
         )}
