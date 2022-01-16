@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -14,6 +15,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { Dialog } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { DELETE_PIN_MUTATION } from 'graphql/mutations';
 
@@ -28,6 +30,7 @@ import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
+    overflow: 'scroll',
   },
   media: {
     height: 0,
@@ -53,6 +56,7 @@ export default function PinContent({ pin }) {
   const reduxDispatch = useDispatch();
   const { state, dispatch } = useContext(Context);
   const [open, setOpen] = useState(true);
+  const [expanded, setExpanded] = useState(false);
 
   const classes = useStyles();
   const pinDate = new Date(Number(pin.createdAt)).toDateString();
@@ -70,6 +74,10 @@ export default function PinContent({ pin }) {
   const handlePinDialog = () => {
     dispatch({ type: 'SET_PIN', payload: null });
     setOpen(false);
+  };
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
   };
 
   return (
@@ -124,6 +132,16 @@ export default function PinContent({ pin }) {
             onClick={() => reduxDispatch(toggleQuickPanel())}
           >
             <VisibilityIcon />
+          </IconButton>
+          <IconButton
+            className={clsx(classes.expand, {
+              [classes.expandOpen]: expanded,
+            })}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label='show more'
+          >
+            <ExpandMoreIcon />
           </IconButton>
         </CardActions>
       </Card>

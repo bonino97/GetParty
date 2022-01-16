@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 
 import ReactMapGL, { NavigationControl, Marker, Popup } from 'react-map-gl';
+import Geocoder from 'react-mapbox-gl-geocoder';
 
 import FuseLoading from '@fuse/core/FuseLoading';
 
@@ -23,6 +24,11 @@ const INITIAL_VIEWPORT = {
   longitude: -122.4376,
   zoom: 10,
 };
+
+const MAPBOX_TOKEN =
+  'pk.eyJ1IjoiYm9uaWtpYTk3IiwiYSI6ImNrczlsdzd1dDB4aW4ybnJtcjJkeW9teHIifQ.fsXRvcqpttjN1XzKopniAg';
+
+const MAP_STYLE = 'mapbox://styles/mapbox/dark-v10';
 
 const Map = ({ classes }) => {
   const client = useClient();
@@ -68,7 +74,7 @@ const Map = ({ classes }) => {
   };
 
   const getPinStatus = (pin) => {
-    return '#580254';
+    return '#FEBE3E';
   };
 
   const handleSelectedPin = (pin) => {
@@ -76,16 +82,16 @@ const Map = ({ classes }) => {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={classes?.root}>
       {loading ? (
         <FuseLoading />
       ) : (
         <>
           <ReactMapGL
-            mapboxApiAccessToken='pk.eyJ1IjoiYm9uaWtpYTk3IiwiYSI6ImNrczlsdzd1dDB4aW4ybnJtcjJkeW9teHIifQ.fsXRvcqpttjN1XzKopniAg'
+            mapboxApiAccessToken={MAPBOX_TOKEN}
             width='100vw'
             height='calc(100vh - 64px)'
-            mapStyle='mapbox://styles/mapbox/streets-v9'
+            mapStyle={MAP_STYLE}
             onViewportChange={(newViewport) => setViewport(newViewport)}
             onClick={handleMapClick}
             {...viewport}
@@ -110,7 +116,7 @@ const Map = ({ classes }) => {
               </Marker>
             )}
             {/* Draft Pin */}
-            {state.draft && (
+            {state?.draft && (
               <Marker
                 latitude={state.draft.latitude}
                 longitude={state.draft.longitude}
@@ -122,7 +128,7 @@ const Map = ({ classes }) => {
               </Marker>
             )}
 
-            {state.pins.map((pin) => (
+            {state?.pins?.map((pin) => (
               <Marker
                 key={pin._id}
                 latitude={pin.latitude}
@@ -139,9 +145,16 @@ const Map = ({ classes }) => {
               </Marker>
             ))}
 
-            {state.currentPin ? <PinContent pin={state.currentPin} /> : null}
+            {state?.currentPin ? <PinContent pin={state?.currentPin} /> : null}
           </ReactMapGL>
           <CreateParty />
+          {/* <Geocoder
+            onSelected={(newViewport) => setViewport(newViewport)}
+            mapboxApiAccessToken={MAPBOX_TOKEN}
+            position='top-left'
+            viewport={viewport}
+            value=''
+          /> */}
         </>
       )}
     </div>
