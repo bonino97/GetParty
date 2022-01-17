@@ -30,7 +30,7 @@ import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
-    overflow: 'scroll',
+    overflowY: 'scroll',
   },
   media: {
     height: 0,

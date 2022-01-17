@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { withStyles } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
@@ -6,7 +6,11 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
 
+import Context from 'app/AppContext';
+
 const CreateComment = ({ classes }) => {
+  const { state, dispatch } = useContext(Context);
+  const { currentUser } = state;
   const [comment, setComment] = useState('');
 
   const onCommentSubmit = (e) => {
@@ -28,37 +32,8 @@ const CreateComment = ({ classes }) => {
       onSubmit={onCommentSubmit}
       className='absolute bottom-0 right-0 left-0 py-16 px-8'
     >
-      {/* <Paper className='flex items-center relative rounded-24 shadow border border-white'>
-        <TextField
-          autoFocus={false}
-          id='message-input'
-          className='flex-1'
-          InputProps={{
-            disableUnderline: true,
-            classes: {
-              root: 'flex flex-grow flex-shrink-0 mx-16 ltr:mr-48 rtl:ml-48 my-8',
-              input: '',
-            },
-            placeholder: 'Type your message',
-          }}
-          InputLabelProps={{
-            shrink: false,
-          }}
-          onChange={onInputChange}
-          value={comment}
-        />
-        <IconButton
-          className='absolute ltr:right-0 rtl:left-0 top-0'
-          type='submit'
-        >
-          <Icon className='text-24' color='action'>
-            send
-          </Icon>
-        </IconButton>
-      </Paper> */}
-
       <div className='flex flex-auto -mx-4'>
-        <Avatar className='mx-4' src='assets/images/avatars/profile.jpg' />
+        <Avatar className='mx-4' src={currentUser?.picture} />
         <div className='flex-1 mx-4'>
           <Paper className='w-full mb-16 shadow-0'>
             <Input

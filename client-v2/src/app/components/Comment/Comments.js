@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
@@ -7,6 +6,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
+
+import './Comments.css';
 
 const Comments = ({ classes }) => {
   const comments = [
@@ -18,21 +19,20 @@ const Comments = ({ classes }) => {
       },
       time: 'June 10, 2015',
       message:
-        'That’s a wonderful place. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat.',
+        'That’s a wonderful place. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat. That’s a wonderful place. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat.That’s a wonderful place. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat.That’s a wonderful place. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat.',
     },
   ];
   return (
     comments &&
     comments.length > 0 && (
-      <div className=''>
+      <div>
         <div className='flex items-center'>
           <Typography>{comments.length} comments</Typography>
           <Icon className='text-16 mx-4' color='action'>
             keyboard_arrow_down
           </Icon>
         </div>
-
-        <List>
+        <List className='list-style'>
           {comments.map((comment) => (
             <div key={comment.id}>
               <ListItem className='px-0 -mx-8'>
@@ -46,13 +46,13 @@ const Comments = ({ classes }) => {
                   primary={
                     <div className='flex'>
                       <Typography
-                        className='font-normal'
+                        className='font-semibold'
                         color='initial'
                         paragraph={false}
                       >
                         {comment.user.name}
                       </Typography>
-                      <Typography className='mx-4' variant='caption'>
+                      <Typography className='ml-36' variant='caption'>
                         {comment.time}
                       </Typography>
                     </div>
