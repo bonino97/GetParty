@@ -64,11 +64,11 @@ export default function PinContent({ pin }) {
   const classes = useStyles();
   const pinDate = formatDistanceToNowStrict(Number(pin?.createdAt)) + ' ago';
 
-  const isAuthUser = () => state.currentUser._id === pin.author._id;
+  const isAuthUser = () => state?.currentUser?._id === pin?.author?._id;
 
   const handleDeletePin = async () => {
     const { deletePin } = await client.request(DELETE_PIN_MUTATION, {
-      pinId: pin._id,
+      pinId: pin?._id,
     });
     dispatch({ type: 'DELETE_PIN', payload: deletePin });
     setOpen(false);
@@ -105,7 +105,7 @@ export default function PinContent({ pin }) {
           title={pin?.title}
           subheader={pinDate}
         />
-        {pin.image && (
+        {pin?.image && (
           <CardMedia
             className={classes?.media}
             image={pin?.image}
@@ -115,7 +115,7 @@ export default function PinContent({ pin }) {
 
         <CardContent>
           <Typography variant='body2' color='textSecondary' component='p'>
-            {pin.content}
+            {pin?.content}
           </Typography>
         </CardContent>
         <CardActions disableSpacing>

@@ -100,15 +100,17 @@ const Map = ({ classes }) => {
             onClick={handleMapClick}
             {...viewport}
           >
-            {/* Navigation Control */}
-            <div className={classes.navigationControl}>
-              <NavigationControl
-                onViewportChange={(newViewport) => setViewport(newViewport)}
-              />
+            <div className={classes.geolocateControl}>
               <GeolocateControl
                 positionOptions={{ enableHighAccuracy: true }}
                 trackUserLocation={true}
                 auto
+              />
+            </div>
+            {/* Navigation Control */}
+            <div className={classes.navigationControl}>
+              <NavigationControl
+                onViewportChange={(newViewport) => setViewport(newViewport)}
               />
             </div>
 
@@ -178,9 +180,15 @@ const styles = {
     display: 'flex',
     flexDirection: 'column-reverse',
   },
-  navigationControl: {
+  geolocateControl: {
     position: 'absolute',
     top: 0,
+    left: 0,
+    margin: '1em',
+  },
+  navigationControl: {
+    position: 'absolute',
+    top: 35,
     left: 0,
     margin: '1em',
   },
