@@ -197,13 +197,13 @@ const Login = () => {
                     className='text-24 font-semibold logo-text'
                     color='inherit'
                   >
-                    FUSE
+                    GET
                   </Typography>
                   <Typography
                     className='text-16 tracking-widest -mt-8 font-700'
                     color='textSecondary'
                   >
-                    REACT
+                    PARTY
                   </Typography>
                 </div>
               </div>
