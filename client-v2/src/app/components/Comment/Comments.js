@@ -14,65 +14,74 @@ const Comments = ({ classes }) => {
   const { state } = useContext(Context);
   const { currentPin } = state;
   const { comments } = currentPin;
-  console.log(comments);
-  return (
-    comments &&
-    comments?.length > 0 && (
-      <div>
-        <div className='flex items-center'>
-          <Typography>{comments?.length} comments</Typography>
-          <Icon className='text-16 mx-4' color='action'>
-            keyboard_arrow_down
-          </Icon>
-        </div>
-        <List className='list-style'>
-          {comments?.map((comment) => (
-            <div key={comment?._id}>
-              <ListItem className='px-0 -mx-8'>
-                <Avatar
-                  alt={comment?.author?.name}
-                  src={comment?.author?.picture}
-                  className='mx-8'
-                />
-                <ListItemText
-                  className='px-4'
-                  primary={
-                    <div className='flex'>
-                      <Typography
-                        className='font-semibold'
-                        color='initial'
-                        paragraph={false}
-                      >
-                        {comment.author?.name}
-                      </Typography>
-                      <Typography className='ml-10' variant='caption'>
-                        {new Date(Number(comment?.createdAt)).toDateString()}
-                      </Typography>
-                    </div>
-                  }
-                  secondary={comment?.text}
-                />
-              </ListItem>
-              <div className='flex items-center mx-52 mb-8'>
-                <Button>Reply</Button>
-                <Icon className='text-14 mx-8 cursor-pointer'>flag</Icon>
+  const handleCommentsView = () => {
+    if (comments && comments?.length > 0) {
+      return (
+        <div>
+          <div className='flex items-center'>
+            <Typography>{comments?.length} comments</Typography>
+            <Icon className='text-16 mx-4' color='action'>
+              keyboard_arrow_down
+            </Icon>
+          </div>
+          <List className='list-style'>
+            {comments?.map((comment) => (
+              <div>
+                <ListItem className='px-0 -mx-8' key={comment?._id}>
+                  <Avatar
+                    alt={comment?.author?.name}
+                    src={comment?.author?.picture}
+                    className='mx-8'
+                  />
+                  <ListItemText
+                    className='px-4'
+                    primary={
+                      <div className='grid grid-flow-row auto-rows-max md:auto-rows-min mb-16'>
+                        <div>
+                          <Typography
+                            className='font-semibold'
+                            color='initial'
+                            paragraph={false}
+                          >
+                            {comment.author?.name}
+                          </Typography>
+                        </div>
+                        <div>
+                          <Typography variant='caption'>
+                            {new Date(
+                              Number(comment?.createdAt)
+                            ).toDateString()}
+                          </Typography>
+                        </div>
+                      </div>
+                    }
+                    secondary={comment?.text}
+                  />
+                </ListItem>
+                <div className='flex items-center mx-52 mb-8'>
+                  <Button>Reply</Button>
+                  <Icon className='text-14 mx-8 cursor-pointer'>flag</Icon>
+                </div>
               </div>
-            </div>
-          ))}
-        </List>
-      </div>
-    )
-  );
-};
+            ))}
+          </List>
+        </div>
+      );
+    }
 
-const styles = (theme) => ({
-  root: {
-    width: '100%',
-    backgroundColor: theme.palette.background.paper,
-  },
-  inline: {
-    display: 'inline',
-  },
-});
+    if ((comments && comments?.length === 0) || !comments) {
+      return (
+        <div className='row text-center justify-center'>
+          <div className='col'>
+            <Typography size='large' className='mb-4'>
+              No comments, be the first!
+            </Typography>
+          </div>
+        </div>
+      );
+    }
+  };
+  return handleCommentsView();
+};
 
 export default Comments;
