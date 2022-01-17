@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 
-import ReactMapGL, { NavigationControl, Marker, Popup } from 'react-map-gl';
+import ReactMapGL, {
+  NavigationControl,
+  Marker,
+  GeolocateControl,
+} from 'react-map-gl';
 import Geocoder from 'react-mapbox-gl-geocoder';
 
 import FuseLoading from '@fuse/core/FuseLoading';
@@ -101,10 +105,15 @@ const Map = ({ classes }) => {
               <NavigationControl
                 onViewportChange={(newViewport) => setViewport(newViewport)}
               />
+              <GeolocateControl
+                positionOptions={{ enableHighAccuracy: true }}
+                trackUserLocation={true}
+                auto
+              />
             </div>
 
             {/* Pin for user current position */}
-            {userPosition && (
+            {/* {userPosition && (
               <Marker
                 latitude={userPosition.latitude}
                 longitude={userPosition.longitude}
@@ -114,7 +123,7 @@ const Map = ({ classes }) => {
                 {' '}
                 <PersonIcon size={25} color='#0953ff'></PersonIcon>
               </Marker>
-            )}
+            )} */}
             {/* Draft Pin */}
             {state?.draft && (
               <Marker
