@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
@@ -6,39 +6,32 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
+import Context from 'app/AppContext';
 
 import './Comments.css';
 
 const Comments = ({ classes }) => {
-  const comments = [
-    {
-      id: '1',
-      user: {
-        name: 'Alice Freeman',
-        avatar: 'assets/images/avatars/alice.jpg',
-      },
-      time: 'June 10, 2015',
-      message:
-        'That’s a wonderful place. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat. That’s a wonderful place. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat.That’s a wonderful place. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat.That’s a wonderful place. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat.',
-    },
-  ];
+  const { state } = useContext(Context);
+  const { currentPin } = state;
+  const { comments } = currentPin;
+  console.log(comments);
   return (
     comments &&
-    comments.length > 0 && (
+    comments?.length > 0 && (
       <div>
         <div className='flex items-center'>
-          <Typography>{comments.length} comments</Typography>
+          <Typography>{comments?.length} comments</Typography>
           <Icon className='text-16 mx-4' color='action'>
             keyboard_arrow_down
           </Icon>
         </div>
         <List className='list-style'>
-          {comments.map((comment) => (
-            <div key={comment.id}>
+          {comments?.map((comment) => (
+            <div key={comment?._id}>
               <ListItem className='px-0 -mx-8'>
                 <Avatar
-                  alt={comment.user.name}
-                  src={comment.user.avatar}
+                  alt={comment?.author?.name}
+                  src={comment?.author?.picture}
                   className='mx-8'
                 />
                 <ListItemText
@@ -50,14 +43,14 @@ const Comments = ({ classes }) => {
                         color='initial'
                         paragraph={false}
                       >
-                        {comment.user.name}
+                        {comment.author?.name}
                       </Typography>
-                      <Typography className='ml-36' variant='caption'>
-                        {comment.time}
+                      <Typography className='ml-10' variant='caption'>
+                        {new Date(Number(comment?.createdAt)).toDateString()}
                       </Typography>
                     </div>
                   }
-                  secondary={comment.message}
+                  secondary={comment?.text}
                 />
               </ListItem>
               <div className='flex items-center mx-52 mb-8'>

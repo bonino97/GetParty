@@ -44,6 +44,7 @@ export const CREATE_COMMENT_MUTATION = `
       longitude
       author {
         _id
+        picture
         name
       }
       comments {
