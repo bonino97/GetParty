@@ -138,7 +138,7 @@ function CreateParty({ classes }) {
               <Icon
                 fontSize='large'
                 color='action'
-                style={{ color: image && '#9f01ff' }}
+                style={{ color: image && '#FEBE3E' }}
               >
                 cloud_upload
               </Icon>
