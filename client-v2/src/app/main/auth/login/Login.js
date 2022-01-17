@@ -94,6 +94,8 @@ import Context from 'app/AppContext';
 import { ME_QUERY } from 'graphql/queries';
 import { BASE_URL } from 'graphql/client';
 
+import './Login.css';
+
 const useStyles = makeStyles((theme) => ({
   root: {},
   leftSection: {},
@@ -300,26 +302,24 @@ const Login = () => {
             >
               Log in with Google
             </Button> */}
+
             <GoogleLogin
               clientId='372691160732-gsoaq00le7f368557s1f0ch2ghfpgoqu.apps.googleusercontent.com'
               onSuccess={onSuccess}
               onFailure={onFailure}
               isSignedIn={true}
-              variant='outlined'
-              color='primary'
-              size='small'
-              className='w-192 mb-8'
+              className='w-192 mb-8 border border-black login-button'
               buttonText='Login with Google'
             />
 
-            <Button
+            {/* <Button
               variant='outlined'
               color='primary'
               size='small'
               className='w-192'
             >
               Log in with Facebook
-            </Button>
+            </Button> */}
           </CardContent>
 
           <div className='flex flex-col items-center justify-center pb-32'>
@@ -346,7 +346,7 @@ const Login = () => {
                 className='text-32 sm:text-44 font-semibold leading-tight'
               >
                 Welcome <br />
-                to the <br /> FUSE React!
+                to <br /> Get Party!
               </Typography>
             </motion.div>
 
@@ -359,8 +359,7 @@ const Login = () => {
                 color='inherit'
                 className='mt-32 font-medium'
               >
-                Powerful and professional admin template for Web Applications,
-                CRM, CMS, Admin Panels and more.
+                Start looking for the party, your party.
               </Typography>
             </motion.div>
           </div>
