@@ -22,6 +22,7 @@ import CreateComment from 'app/components/Comment/CreateComment';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 355,
+    height: 'auto',
   },
 }));
 
@@ -39,22 +40,27 @@ function QuickPanel(props) {
     if (currentPin) {
       return (
         <FuseScrollbars className='p-16'>
-          <div className='grid grid-flow-row auto-rows-max md:auto-rows-min'>
-            <div className='col-auto'>
+          <div className='flex-inline space-y-2 h-screen'>
+            <div className='item w-full h-auto'>
               <Typography className='text-24 font-semibold leading-none text-center'>
                 Comments
               </Typography>
             </div>
-            <div className='pt-20 col-auto'>
+            <div className='item w-full h-auto pt-20'>
               <Comments />
             </div>
-            <div className='col-auto'>
+            <div className='item w-full h-auto border-t border-white"'>
               <CreateComment />
             </div>
           </div>
         </FuseScrollbars>
       );
     }
+    // <div class=''>
+    //   <div class='item w-auto h-auto'>1</div>
+    //   <div class='item w-auto h-screen'>2</div>
+    //   <div class='item w-auto h-auto'>3</div>
+    // </div>;
 
     if (!currentPin) {
       return (

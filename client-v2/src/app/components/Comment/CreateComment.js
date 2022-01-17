@@ -41,7 +41,7 @@ const CreateComment = ({ classes }) => {
   return (
     <form
       onSubmit={handleSubmitComment}
-      className='absolute bottom-0 right-0 left-0 py-16 px-8'
+      className='bottom-0 right-0 left-0 py-16 px-8'
     >
       <div className='flex flex-auto -mx-4'>
         <Avatar className='mx-4' src={currentUser?.picture} />

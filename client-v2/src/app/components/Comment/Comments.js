@@ -59,8 +59,7 @@ const Comments = ({ classes }) => {
                   />
                 </ListItem>
                 <div className='flex items-center mx-52 mb-8'>
-                  <Button>Reply</Button>
-                  <Icon className='text-14 mx-8 cursor-pointer'>flag</Icon>
+                  <Icon className='text-14 cursor-pointer'>flag</Icon>
                 </div>
               </div>
             ))}
