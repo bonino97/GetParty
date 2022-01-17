@@ -16,7 +16,7 @@ const ExampleConfig = {
   },
   routes: [
     {
-      path: '/parties',
+      path: '/parties2',
       component: Example,
     },
   ],

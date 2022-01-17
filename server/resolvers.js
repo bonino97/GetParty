@@ -22,6 +22,11 @@ module.exports = {
         .populate('comments.author');
       return pins;
     },
+    getPin: async (root, args, ctx) => {
+      const pinId = args?.pinId;
+      const pin = await Pin.findById(pinId);
+      return pin;
+    },
   },
   Mutation: {
     createPin: authenticated(async (root, args, ctx) => {

@@ -7,16 +7,12 @@ export const PartiesConfig = {
   },
   routes: [
     {
-      path: '/apps/academy/courses/:courseId/:courseHandle?',
-      component: lazy(() => import('./course/Course')),
+      path: '/parties/:pinId',
+      component: lazy(() => import('./party/Party')),
     },
     {
-      path: '/apps/academy/courses',
-      component: lazy(() => import('./courses/Courses')),
-    },
-    {
-      path: '/apps/academy',
-      component: () => <Redirect to='/apps/academy/courses' />,
+      path: '/parties',
+      component: lazy(() => import('./parties/Parties')),
     },
   ],
 };

@@ -10,7 +10,7 @@ import FuseLoading from '@fuse/core/FuseLoading';
 
 import { Subscription } from 'react-apollo';
 
-import { useAuthClient } from 'graphql/authClient';
+import { useClient } from 'graphql/client';
 
 import { GET_PINS_QUERY } from 'graphql/queries';
 import {
@@ -41,7 +41,7 @@ const MAPBOX_TOKEN =
 const MAP_STYLE = 'mapbox://styles/mapbox/dark-v10';
 
 const Map = ({ classes }) => {
-  const client = useAuthClient();
+  const client = useClient();
   const { state, dispatch } = useContext(Context);
 
   useEffect(() => {
