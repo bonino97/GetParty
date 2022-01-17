@@ -171,7 +171,6 @@ const Map = ({ classes }) => {
             subscription={PIN_ADDED_SUBSCRIPTION}
             onSubscriptionData={({ subscriptionData }) => {
               const { pinAdded } = subscriptionData?.data;
-              console.log(pinAdded);
               dispatch({ type: 'CREATE_PIN', payload: pinAdded });
             }}
           />
@@ -179,7 +178,6 @@ const Map = ({ classes }) => {
             subscription={PIN_UPDATED_SUBSCRIPTION}
             onSubscriptionData={({ subscriptionData }) => {
               const { pinUpdated } = subscriptionData?.data;
-              console.log(pinUpdated);
               dispatch({ type: 'CREATE_COMMENT', payload: pinUpdated });
             }}
           />
@@ -187,7 +185,6 @@ const Map = ({ classes }) => {
             subscription={PIN_DELETED_SUBSCRIPTION}
             onSubscriptionData={({ subscriptionData }) => {
               const { pinDeleted } = subscriptionData?.data;
-              console.log(pinDeleted);
               dispatch({ type: 'DELETE_PIN', payload: pinDeleted });
             }}
           />
