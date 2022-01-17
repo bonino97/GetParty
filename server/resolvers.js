@@ -1,6 +1,13 @@
 const { AuthenticationError } = require('apollo-server');
+const { PubSub } = require('graphql-subscriptions');
+const {
+  PIN_ADDED,
+  PIN_DELETED,
+  PIN_UPDATED,
+} = require('./constants/subscriptions');
 
 const Pin = require('./models/Pin');
+const pubsub = new PubSub();
 
 const authenticated = (next) => (root, args, ctx, info) => {
   if (!ctx.currentUser) throw new AuthenticationError('You must be logged in');
@@ -26,6 +33,7 @@ module.exports = {
         }).save();
 
         const pinAdded = await Pin.populate(newPin, 'author');
+        pubsub.publish(PIN_ADDED, { pinAdded });
         return pinAdded;
       } catch (error) {
         throw new Error(error);
@@ -36,6 +44,7 @@ module.exports = {
         const pinDeleted = await Pin.findOneAndDelete({
           _id: args.pinId,
         }).exec();
+        pubsub.publish(PIN_DELETED, { pinDeleted });
         return pinDeleted;
       } catch (error) {
         throw new Error(error);
@@ -51,7 +60,19 @@ module.exports = {
       )
         .populate('author')
         .populate('comments.author');
+      pubsub.publish(PIN_UPDATED, { pinUpdated });
       return pinUpdated;
     }),
+  },
+  Subscription: {
+    pinAdded: {
+      subscribe: () => pubsub.asyncIterator(PIN_ADDED),
+    },
+    pinDeleted: {
+      subscribe: () => pubsub.asyncIterator(PIN_DELETED),
+    },
+    pinUpdated: {
+      subscribe: () => pubsub.asyncIterator(PIN_UPDATED),
+    },
   },
 };

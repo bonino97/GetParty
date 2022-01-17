@@ -93,7 +93,7 @@ const Login = () => {
   };
 
   const onFailure = async (err) => {
-    console.error(err);
+    dispatch({ type: 'IS_LOGGED_IN', payload: false });
   };
 
   return (
