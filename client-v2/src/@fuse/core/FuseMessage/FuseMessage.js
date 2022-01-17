@@ -1,4 +1,4 @@
-import { amber, blue, green } from '@material-ui/core/colors';
+import { amber, blue, green, red } from '@material-ui/core/colors';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -13,19 +13,19 @@ import { hideMessage } from 'app/store/fuse/messageSlice';
 const useStyles = makeStyles((theme) => ({
   root: {},
   success: {
-    backgroundColor: green[600],
-    color: '#FFFFFF',
+    backgroundColor: green[100],
+    color: 'rgb(30, 70, 32)',
   },
   error: {
-    backgroundColor: theme.palette.error.dark,
-    color: theme.palette.getContrastText(theme.palette.error.dark),
+    backgroundColor: red[100],
+    color: 'rgb(97, 26, 21)',
   },
   info: {
-    backgroundColor: blue[600],
+    backgroundColor: blue[100],
     color: '#FFFFFF',
   },
   warning: {
-    backgroundColor: amber[600],
+    backgroundColor: amber[100],
     color: '#FFFFFF',
   },
 }));
@@ -63,18 +63,18 @@ function FuseMessage(props) {
       <SnackbarContent
         className={clsx(classes[options.variant])}
         message={
-          <div className="flex items-center">
+          <div className='flex items-center'>
             {variantIcon[options.variant] && (
-              <Icon color="inherit">{variantIcon[options.variant]}</Icon>
+              <Icon color='inherit'>{variantIcon[options.variant]}</Icon>
             )}
-            <Typography className="mx-8">{options.message}</Typography>
+            <Typography className='mx-8'>{options.message}</Typography>
           </div>
         }
         action={[
           <IconButton
-            key="close"
-            aria-label="Close"
-            color="inherit"
+            key='close'
+            aria-label='Close'
+            color='inherit'
             onClick={() => dispatch(hideMessage())}
           >
             <Icon>close</Icon>

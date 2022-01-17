@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -21,13 +22,10 @@ import MessageIcon from '@material-ui/icons/Message';
 import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict';
 
 import { DELETE_PIN_MUTATION } from 'graphql/mutations';
-
-import Context from 'app/AppContext';
-
 import { useAuthClient } from 'graphql/authClient';
 
-import { useDispatch } from 'react-redux';
-
+import Context from 'app/AppContext';
+import { showMessage } from 'app/store/fuse/messageSlice';
 import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store/stateSlice';
 
 const useStyles = makeStyles((theme) => ({
@@ -67,9 +65,24 @@ export default function PinContent({ pin }) {
   const isAuthUser = () => state?.currentUser?._id === pin?.author?._id;
 
   const handleDeletePin = async () => {
-    await client.request(DELETE_PIN_MUTATION, {
+    const { deletePin } = await client.request(DELETE_PIN_MUTATION, {
       pinId: pin?._id,
     });
+
+    if (deletePin) {
+      reduxDispatch(
+        showMessage({
+          message: 'Party removed successfully...',
+          autoHideDuration: 3000,
+          anchorOrigin: {
+            vertical: 'bottom', //top bottom
+            horizontal: 'right', //left center right
+          },
+          variant: 'error', //success error info warning null
+        })
+      );
+    }
+
     setOpen(false);
   };
 

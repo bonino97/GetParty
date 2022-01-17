@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
@@ -14,12 +15,14 @@ import {
   AppBar,
 } from '@material-ui/core';
 import { orange } from '@material-ui/core/colors';
+import { showMessage } from 'app/store/fuse/messageSlice';
 import Context from 'app/AppContext';
 import { useAuthClient } from 'graphql/authClient';
 import { CREATE_PIN_MUTATION } from 'graphql/mutations';
 
 function CreateParty({ classes }) {
   const client = useAuthClient();
+  const reduxDispatch = useDispatch();
   const { state, dispatch } = useContext(Context);
   const { draft } = state;
 
@@ -43,8 +46,23 @@ function CreateParty({ classes }) {
         latitude,
         longitude,
       };
-      await client.request(CREATE_PIN_MUTATION, createPinInput);
-
+      const { createPin } = await client.request(
+        CREATE_PIN_MUTATION,
+        createPinInput
+      );
+      if (createPin) {
+        reduxDispatch(
+          showMessage({
+            message: 'Party added successfully...',
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom', //top bottom
+              horizontal: 'right', //left center right
+            },
+            variant: 'success', //success error info warning null
+          })
+        );
+      }
       handleDeleteDraft();
     } catch (error) {
       setSubmitting(false);

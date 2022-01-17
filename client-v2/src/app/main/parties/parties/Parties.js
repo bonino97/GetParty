@@ -23,6 +23,7 @@ import { Link } from 'react-router-dom';
 import reducer from '../store';
 import { getCategories, selectCategories } from '../store/categoriesSlice';
 import { getCourses, selectCourses } from '../store/coursesSlice';
+import { hideMessage, showMessage } from 'app/store/fuse/messageSlice';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -96,64 +97,96 @@ function Courses(props) {
   }
 
   return (
-    <div className="flex flex-col flex-auto flex-shrink-0 w-full">
+    <div className='flex flex-col flex-auto flex-shrink-0 w-full'>
       <div
         className={clsx(
           classes.header,
           'relative overflow-hidden flex flex-shrink-0 items-center justify-center h-200 sm:h-288'
         )}
       >
-        <div className="flex flex-col max-w-2xl mx-auto w-full p-24 sm:p-32">
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0 } }}>
-            <Typography color="inherit" className="text-24 sm:text-44 font-bold tracking-tight">
+        <div className='flex flex-col max-w-2xl mx-auto w-full p-24 sm:p-32'>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0 } }}
+          >
+            <Typography
+              color='inherit'
+              className='text-24 sm:text-44 font-bold tracking-tight'
+            >
               Welcome to Academy
             </Typography>
-          </motion.div>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.3 } }}>
-            <Typography
-              color="inherit"
-              className="text-12 sm:text-14 mt-8 sm:mt-16 opacity-75 leading-tight sm:leading-loose"
+            <Button
+              onClick={() =>
+                dispatch(
+                  showMessage({
+                    message: 'Hi, how are you?', //text or html
+                    autoHideDuration: 3000, //ms
+                    anchorOrigin: {
+                      vertical: 'top', //top bottom
+                      horizontal: 'right', //left center right
+                    },
+                    variant: 'success', //success error info warning null
+                  })
+                )
+              }
             >
-              Our courses will step you through the process of building a small application, or
-              adding a new feature to an existing application. Our courses will step you through the
-              process of building a small application, or adding a new feature to an existing
-              application.
+              Top - Right
+            </Button>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0.3 } }}
+          >
+            <Typography
+              color='inherit'
+              className='text-12 sm:text-14 mt-8 sm:mt-16 opacity-75 leading-tight sm:leading-loose'
+            >
+              Our courses will step you through the process of building a small
+              application, or adding a new feature to an existing application.
+              Our courses will step you through the process of building a small
+              application, or adding a new feature to an existing application.
             </Typography>
           </motion.div>
         </div>
 
         <Icon className={classes.headerIcon}> school </Icon>
       </div>
-      <div className="flex flex-col flex-1 max-w-2xl w-full mx-auto px-8 sm:px-16 py-24">
-        <div className="flex flex-col flex-shrink-0 sm:flex-row items-center justify-between py-24">
+      <div className='flex flex-col flex-1 max-w-2xl w-full mx-auto px-8 sm:px-16 py-24'>
+        <div className='flex flex-col flex-shrink-0 sm:flex-row items-center justify-between py-24'>
           <TextField
-            label="Search for a course"
-            placeholder="Enter a keyword..."
-            className="flex w-full sm:w-320 mb-16 sm:mb-0 mx-16"
+            label='Search for a course'
+            placeholder='Enter a keyword...'
+            className='flex w-full sm:w-320 mb-16 sm:mb-0 mx-16'
             value={searchText}
             inputProps={{
               'aria-label': 'Search',
             }}
             onChange={handleSearchText}
-            variant="outlined"
+            variant='outlined'
             InputLabelProps={{
               shrink: true,
             }}
           />
-          <FormControl className="flex w-full sm:w-320 mx-16" variant="outlined">
-            <InputLabel htmlFor="category-label-placeholder"> Category </InputLabel>
+          <FormControl
+            className='flex w-full sm:w-320 mx-16'
+            variant='outlined'
+          >
+            <InputLabel htmlFor='category-label-placeholder'>
+              {' '}
+              Category{' '}
+            </InputLabel>
             <Select
               value={selectedCategory}
               onChange={handleSelectedCategory}
               input={
                 <OutlinedInput
                   labelWidth={'category'.length * 9}
-                  name="category"
-                  id="category-label-placeholder"
+                  name='category'
+                  id='category-label-placeholder'
                 />
               }
             >
-              <MenuItem value="all">
+              <MenuItem value='all'>
                 <em> All </em>
               </MenuItem>
               {categories.map((category) => (
@@ -188,67 +221,74 @@ function Courses(props) {
             filteredData &&
             (filteredData.length > 0 ? (
               <motion.div
-                className="flex flex-wrap py-24"
+                className='flex flex-wrap py-24'
                 variants={container}
-                initial="hidden"
-                animate="show"
+                initial='hidden'
+                animate='show'
               >
                 {filteredData.map((course) => {
-                  const category = categories.find((_cat) => _cat.value === course.category);
+                  const category = categories.find(
+                    (_cat) => _cat.value === course.category
+                  );
                   return (
                     <motion.div
                       variants={item}
-                      className="w-full pb-24 sm:w-1/2 lg:w-1/3 sm:p-16"
+                      className='w-full pb-24 sm:w-1/2 lg:w-1/3 sm:p-16'
                       key={course.id}
                     >
-                      <Card className="flex flex-col h-256 shadow">
+                      <Card className='flex flex-col h-256 shadow'>
                         <div
-                          className="flex flex-shrink-0 items-center justify-between px-24 h-64"
+                          className='flex flex-shrink-0 items-center justify-between px-24 h-64'
                           style={{
                             background: category.color,
-                            color: theme.palette.getContrastText(category.color),
+                            color: theme.palette.getContrastText(
+                              category.color
+                            ),
                           }}
                         >
-                          <Typography className="font-medium truncate" color="inherit">
+                          <Typography
+                            className='font-medium truncate'
+                            color='inherit'
+                          >
                             {category.label}
                           </Typography>
-                          <div className="flex items-center justify-center opacity-75">
-                            <Icon className="text-20 mx-8" color="inherit">
+                          <div className='flex items-center justify-center opacity-75'>
+                            <Icon className='text-20 mx-8' color='inherit'>
                               access_time
                             </Icon>
-                            <div className="text-14 font-medium whitespace-nowrap">
+                            <div className='text-14 font-medium whitespace-nowrap'>
                               {course.length}
                               min
                             </div>
                           </div>
                         </div>
-                        <CardContent className="flex flex-col flex-auto items-center justify-center">
-                          <Typography className="text-center text-16 font-medium">
+                        <CardContent className='flex flex-col flex-auto items-center justify-center'>
+                          <Typography className='text-center text-16 font-medium'>
                             {course.title}
                           </Typography>
                           <Typography
-                            className="text-center text-13 mt-8 font-normal"
-                            color="textSecondary"
+                            className='text-center text-13 mt-8 font-normal'
+                            color='textSecondary'
                           >
                             {course.updated}
                           </Typography>
                         </CardContent>
-                        <CardActions className="justify-center pb-24">
+                        <CardActions className='justify-center pb-24'>
                           <Button
                             to={`/apps/academy/courses/${course.id}/${course.slug}`}
                             component={Link}
-                            className="justify-start px-32"
-                            color="primary"
-                            variant="outlined"
+                            className='justify-start px-32'
+                            color='primary'
+                            variant='outlined'
                           >
                             {buttonStatus(course)}
                           </Button>
                         </CardActions>
                         <LinearProgress
-                          className="w-full"
-                          variant="determinate"
+                          className='w-full'
+                          variant='determinate'
                           value={(course.activeStep * 100) / course.totalSteps}
-                          color="secondary"
+                          color='secondary'
                         />
                       </Card>
                     </motion.div>
@@ -256,8 +296,8 @@ function Courses(props) {
                 })}
               </motion.div>
             ) : (
-              <div className="flex flex-1 items-center justify-center">
-                <Typography color="textSecondary" className="text-24 my-24">
+              <div className='flex flex-1 items-center justify-center'>
+                <Typography color='textSecondary' className='text-24 my-24'>
                   No courses found!
                 </Typography>
               </div>
