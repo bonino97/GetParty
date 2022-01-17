@@ -43,12 +43,8 @@ function CreateParty({ classes }) {
         latitude,
         longitude,
       };
-      const { createPin } = await client.request(
-        CREATE_PIN_MUTATION,
-        createPinInput
-      );
+      await client.request(CREATE_PIN_MUTATION, createPinInput);
 
-      dispatch({ type: 'CREATE_PIN', payload: createPin });
       handleDeleteDraft();
     } catch (error) {
       setSubmitting(false);

@@ -1,5 +1,4 @@
-const { AuthenticationError } = require('apollo-server');
-const { PubSub } = require('graphql-subscriptions');
+const { AuthenticationError, PubSub } = require('apollo-server');
 const {
   PIN_ADDED,
   PIN_DELETED,
@@ -66,13 +65,13 @@ module.exports = {
   },
   Subscription: {
     pinAdded: {
-      subscribe: () => pubsub.asyncIterator(PIN_ADDED),
+      subscribe: () => pubsub.asyncIterator([PIN_ADDED]),
     },
     pinDeleted: {
-      subscribe: () => pubsub.asyncIterator(PIN_DELETED),
+      subscribe: () => pubsub.asyncIterator([PIN_DELETED]),
     },
     pinUpdated: {
-      subscribe: () => pubsub.asyncIterator(PIN_UPDATED),
+      subscribe: () => pubsub.asyncIterator([PIN_UPDATED]),
     },
   },
 };

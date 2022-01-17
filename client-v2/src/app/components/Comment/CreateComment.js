@@ -25,12 +25,7 @@ const CreateComment = ({ classes }) => {
     }
 
     const createCommentProps = { pinId: currentPin?._id, text: comment };
-    const { createComment } = await client.request(
-      CREATE_COMMENT_MUTATION,
-      createCommentProps
-    );
-
-    dispatch({ type: 'CREATE_COMMENT', payload: createComment });
+    await client.request(CREATE_COMMENT_MUTATION, createCommentProps);
     setComment('');
   };
 

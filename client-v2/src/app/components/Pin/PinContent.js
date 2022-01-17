@@ -67,10 +67,9 @@ export default function PinContent({ pin }) {
   const isAuthUser = () => state?.currentUser?._id === pin?.author?._id;
 
   const handleDeletePin = async () => {
-    const { deletePin } = await client.request(DELETE_PIN_MUTATION, {
+    await client.request(DELETE_PIN_MUTATION, {
       pinId: pin?._id,
     });
-    dispatch({ type: 'DELETE_PIN', payload: deletePin });
     setOpen(false);
   };
 

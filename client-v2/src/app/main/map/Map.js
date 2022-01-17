@@ -5,13 +5,19 @@ import ReactMapGL, {
   Marker,
   GeolocateControl,
 } from 'react-map-gl';
-import Geocoder from 'react-mapbox-gl-geocoder';
 
 import FuseLoading from '@fuse/core/FuseLoading';
+
+import { Subscription } from 'react-apollo';
 
 import { useAuthClient } from 'graphql/authClient';
 
 import { GET_PINS_QUERY } from 'graphql/queries';
+import {
+  PIN_ADDED_SUBSCRIPTION,
+  PIN_UPDATED_SUBSCRIPTION,
+  PIN_DELETED_SUBSCRIPTION,
+} from 'graphql/subscriptions';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -126,6 +132,7 @@ const Map = ({ classes }) => {
                 <PersonIcon size={25} color='#0953ff'></PersonIcon>
               </Marker>
             )} */}
+
             {/* Draft Pin */}
             {state?.draft && (
               <Marker
@@ -158,6 +165,33 @@ const Map = ({ classes }) => {
 
             {state?.currentPin ? <PinContent pin={state?.currentPin} /> : null}
           </ReactMapGL>
+          {/* Subscriptions for Adding / Updating / Deleting pins */}
+
+          <Subscription
+            subscription={PIN_ADDED_SUBSCRIPTION}
+            onSubscriptionData={({ subscriptionData }) => {
+              const { pinAdded } = subscriptionData?.data;
+              console.log(pinAdded);
+              dispatch({ type: 'CREATE_PIN', payload: pinAdded });
+            }}
+          />
+          <Subscription
+            subscription={PIN_UPDATED_SUBSCRIPTION}
+            onSubscriptionData={({ subscriptionData }) => {
+              const { pinUpdated } = subscriptionData?.data;
+              console.log(pinUpdated);
+              dispatch({ type: 'CREATE_COMMENT', payload: pinUpdated });
+            }}
+          />
+          <Subscription
+            subscription={PIN_DELETED_SUBSCRIPTION}
+            onSubscriptionData={({ subscriptionData }) => {
+              const { pinDeleted } = subscriptionData?.data;
+              console.log(pinDeleted);
+              dispatch({ type: 'DELETE_PIN', payload: pinDeleted });
+            }}
+          />
+
           <CreateParty />
           {/* <Geocoder
             onSelected={(newViewport) => setViewport(newViewport)}
