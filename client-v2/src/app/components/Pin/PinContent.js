@@ -24,7 +24,7 @@ import { DELETE_PIN_MUTATION } from 'graphql/mutations';
 
 import Context from 'app/AppContext';
 
-import { useClient } from 'graphql/client';
+import { useAuthClient } from 'graphql/authClient';
 
 import { useDispatch } from 'react-redux';
 
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function PinContent({ pin }) {
-  const client = useClient();
+  const client = useAuthClient();
   const reduxDispatch = useDispatch();
   const { state, dispatch } = useContext(Context);
   const [open, setOpen] = useState(true);

@@ -25,7 +25,7 @@ import * as yup from 'yup';
 
 import Context from 'app/AppContext';
 import { ME_QUERY } from 'graphql/queries';
-import { BASE_URL } from 'graphql/client';
+import { BASE_URL } from 'graphql/authClient';
 
 import './Login.css';
 

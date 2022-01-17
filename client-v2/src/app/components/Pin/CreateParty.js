@@ -15,11 +15,11 @@ import {
 } from '@material-ui/core';
 import { orange } from '@material-ui/core/colors';
 import Context from 'app/AppContext';
-import { useClient } from 'graphql/client';
+import { useAuthClient } from 'graphql/authClient';
 import { CREATE_PIN_MUTATION } from 'graphql/mutations';
 
 function CreateParty({ classes }) {
-  const client = useClient();
+  const client = useAuthClient();
   const { state, dispatch } = useContext(Context);
   const { draft } = state;
 

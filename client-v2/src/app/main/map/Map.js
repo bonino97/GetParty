@@ -9,7 +9,7 @@ import Geocoder from 'react-mapbox-gl-geocoder';
 
 import FuseLoading from '@fuse/core/FuseLoading';
 
-import { useClient } from 'graphql/client';
+import { useAuthClient } from 'graphql/authClient';
 
 import { GET_PINS_QUERY } from 'graphql/queries';
 
@@ -35,7 +35,7 @@ const MAPBOX_TOKEN =
 const MAP_STYLE = 'mapbox://styles/mapbox/dark-v10';
 
 const Map = ({ classes }) => {
-  const client = useClient();
+  const client = useAuthClient();
   const { state, dispatch } = useContext(Context);
 
   useEffect(() => {

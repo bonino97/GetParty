@@ -9,10 +9,10 @@ import Input from '@material-ui/core/Input';
 import Context from 'app/AppContext';
 
 import { CREATE_COMMENT_MUTATION } from 'graphql/mutations';
-import { useClient } from 'graphql/client';
+import { useAuthClient } from 'graphql/authClient';
 
 const CreateComment = ({ classes }) => {
-  const client = useClient();
+  const client = useAuthClient();
 
   const { state, dispatch } = useContext(Context);
   const { currentUser, currentPin } = state;
@@ -29,7 +29,7 @@ const CreateComment = ({ classes }) => {
       CREATE_COMMENT_MUTATION,
       createCommentProps
     );
-    
+
     dispatch({ type: 'CREATE_COMMENT', payload: createComment });
     setComment('');
   };
