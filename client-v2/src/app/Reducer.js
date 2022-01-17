@@ -64,6 +64,17 @@ export default function Reducer(state, { type, payload }) {
         pins: filteredPins,
         currentPin: null,
       };
+    case 'CREATE_COMMENT':
+      const updatedCurrentPin = payload;
+      // Find and replace
+      const updatedPins = state.pins.map((pin) =>
+        pin._id === updatedCurrentPin._id ? updatedCurrentPin : pin
+      );
+      return {
+        ...state,
+        pins: updatedPins,
+        currentPin: updatedCurrentPin,
+      };
     default:
       return state;
   }

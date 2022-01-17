@@ -16,6 +16,7 @@ import { Dialog } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MessageIcon from '@material-ui/icons/Message';
 
 import { DELETE_PIN_MUTATION } from 'graphql/mutations';
 
@@ -132,6 +133,12 @@ export default function PinContent({ pin }) {
             onClick={() => reduxDispatch(toggleQuickPanel())}
           >
             <VisibilityIcon />
+          </IconButton>
+          <IconButton
+            aria-label='view party'
+            onClick={() => reduxDispatch(toggleQuickPanel())}
+          >
+            <MessageIcon />
           </IconButton>
           <IconButton
             className={clsx(classes.expand, {

@@ -48,7 +48,6 @@ function CreateParty({ classes }) {
         createPinInput
       );
 
-      console.log('Succesfully: ', createPin);
       dispatch({ type: 'CREATE_PIN', payload: createPin });
       handleDeleteDraft();
     } catch (error) {

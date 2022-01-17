@@ -8,28 +8,39 @@ import Input from '@material-ui/core/Input';
 
 import Context from 'app/AppContext';
 
+import { CREATE_COMMENT_MUTATION } from 'graphql/mutations';
+import { useClient } from 'graphql/client';
+
 const CreateComment = ({ classes }) => {
+  const client = useClient();
+
   const { state, dispatch } = useContext(Context);
-  const { currentUser } = state;
+  const { currentUser, currentPin } = state;
   const [comment, setComment] = useState('');
 
-  const onCommentSubmit = (e) => {
+  const handleSubmitComment = async (e) => {
     e.preventDefault();
     if (comment === '') {
       return;
     }
 
-    console.log('enter: ', comment);
+    const createCommentProps = { pinId: currentPin?._id, text: comment };
+    const { createComment } = await client.request(
+      CREATE_COMMENT_MUTATION,
+      createCommentProps
+    );
+    
+    dispatch({ type: 'CREATE_COMMENT', payload: createComment });
+    setComment('');
   };
 
   const onInputChange = (e) => {
-    console.log(e.target.value);
     setComment(e.target.value);
   };
 
   return (
     <form
-      onSubmit={onCommentSubmit}
+      onSubmit={handleSubmitComment}
       className='absolute bottom-0 right-0 left-0 py-16 px-8'
     >
       <div className='flex flex-auto -mx-4'>
@@ -48,7 +59,13 @@ const CreateComment = ({ classes }) => {
               value={comment}
             />
           </Paper>
-          <Button variant='contained' color='primary' size='small'>
+          <Button
+            variant='contained'
+            color='primary'
+            size='small'
+            disabled={!comment.trim()}
+            type='submit'
+          >
             Send Comment
           </Button>
         </div>

@@ -14,14 +14,12 @@ module.exports = {
       const pins = await Pin.find({})
         .populate('author')
         .populate('comments.author');
-      console.log(pins);
       return pins;
     },
   },
   Mutation: {
     createPin: authenticated(async (root, args, ctx) => {
       try {
-        console.log(args.input);
         const newPin = await new Pin({
           ...args.input,
           author: ctx.currentUser._id,
@@ -35,7 +33,6 @@ module.exports = {
     }),
     deletePin: authenticated(async (root, args, ctx) => {
       try {
-        console.log(args);
         const pinDeleted = await Pin.findOneAndDelete({
           _id: args.pinId,
         }).exec();
@@ -43,6 +40,18 @@ module.exports = {
       } catch (error) {
         throw new Error(error);
       }
+    }),
+    createComment: authenticated(async (root, args, ctx) => {
+      const newComment = { text: args.text, author: ctx.currentUser._id };
+      const pinId = args.pinId;
+      const pinUpdated = await Pin.findByIdAndUpdate(
+        pinId,
+        { $push: { comments: newComment } },
+        { new: true }
+      )
+        .populate('author')
+        .populate('comments.author');
+      return pinUpdated;
     }),
   },
 };
