@@ -29,7 +29,9 @@ const useStyles = makeStyles((theme) => ({
     color: '#FFFFFF',
   },
   warning: {
-    backgroundColor: amber[100],
+    // backgroundColor: amber[100],
+    // color: '#FFFFFF',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     color: '#FFFFFF',
   },
 }));

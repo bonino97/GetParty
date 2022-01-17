@@ -72,13 +72,13 @@ export default function PinContent({ pin }) {
     if (deletePin) {
       reduxDispatch(
         showMessage({
-          message: 'Party removed successfully...',
+          message: 'Party removed successfully.',
           autoHideDuration: 3000,
           anchorOrigin: {
             vertical: 'bottom', //top bottom
             horizontal: 'right', //left center right
           },
-          variant: 'error', //success error info warning null
+          variant: 'warning', //success error info warning null
         })
       );
     }
