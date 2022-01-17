@@ -18,6 +18,8 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MessageIcon from '@material-ui/icons/Message';
 
+import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict';
+
 import { DELETE_PIN_MUTATION } from 'graphql/mutations';
 
 import Context from 'app/AppContext';
@@ -60,7 +62,7 @@ export default function PinContent({ pin }) {
   const [expanded, setExpanded] = useState(false);
 
   const classes = useStyles();
-  const pinDate = new Date(Number(pin.createdAt)).toDateString();
+  const pinDate = formatDistanceToNowStrict(Number(pin?.createdAt)) + ' ago';
 
   const isAuthUser = () => state.currentUser._id === pin.author._id;
 

@@ -56,18 +56,15 @@ function QuickPanel(props) {
         </FuseScrollbars>
       );
     }
-    // <div class=''>
-    //   <div class='item w-auto h-auto'>1</div>
-    //   <div class='item w-auto h-screen'>2</div>
-    //   <div class='item w-auto h-auto'>3</div>
-    // </div>;
 
     if (!currentPin) {
       return (
-        <div className='flex flex-1 items-center justify-center p-16'>
-          <Typography className='text-24 text-center' color='textSecondary'>
-            Select Party
-          </Typography>
+        <div className='flex-inline space-y-2 h-screen w-auto'>
+          <div className='item justify-center items-center'>
+            <Typography className='text-24 text-center' color='textSecondary'>
+              Select Party
+            </Typography>
+          </div>
         </div>
       );
     }

@@ -7,6 +7,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import Context from 'app/AppContext';
+import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict';
 
 import './Comments.css';
 
@@ -48,9 +49,10 @@ const Comments = ({ classes }) => {
                         </div>
                         <div>
                           <Typography variant='caption'>
-                            {new Date(
+                            {formatDistanceToNowStrict(
                               Number(comment?.createdAt)
-                            ).toDateString()}
+                            )}{' '}
+                            ago
                           </Typography>
                         </div>
                       </div>
@@ -72,7 +74,7 @@ const Comments = ({ classes }) => {
       return (
         <div className='row text-center justify-center'>
           <div className='col'>
-            <Typography size='large' className='mb-4'>
+            <Typography size='large' className='mb-8'>
               No comments, be the first!
             </Typography>
           </div>
