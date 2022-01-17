@@ -13,12 +13,16 @@ import { hideMessage } from 'app/store/fuse/messageSlice';
 const useStyles = makeStyles((theme) => ({
   root: {},
   success: {
-    backgroundColor: green[100],
-    color: 'rgb(30, 70, 32)',
+    // backgroundColor: green[100],
+    // color: 'rgb(30, 70, 32)',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    color: '#FFFFFF',
   },
   error: {
-    backgroundColor: red[100],
-    color: 'rgb(97, 26, 21)',
+    // backgroundColor: red[100],
+    // color: 'rgb(97, 26, 21)',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    color: '#FFFFFF',
   },
   info: {
     backgroundColor: blue[100],

@@ -53,7 +53,7 @@ function CreateParty({ classes }) {
       if (createPin) {
         reduxDispatch(
           showMessage({
-            message: 'Party added successfully...',
+            message: 'Party added successfully.',
             autoHideDuration: 3000,
             anchorOrigin: {
               vertical: 'bottom', //top bottom
