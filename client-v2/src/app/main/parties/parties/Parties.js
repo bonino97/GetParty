@@ -134,8 +134,7 @@ function Parties(props) {
               variant='outlined'
             >
               <InputLabel htmlFor='category-label-placeholder'>
-                {' '}
-                Category{' '}
+                Category
               </InputLabel>
               <Select
                 value={selectedCategory}

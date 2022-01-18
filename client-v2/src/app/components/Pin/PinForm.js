@@ -26,6 +26,9 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
 
 import Context from 'app/AppContext';
 
@@ -236,340 +239,355 @@ const PinForm = ({}) => {
           className='flex flex-col md:overflow-hidden'
         >
           <DialogContent classes={{ root: 'p-24' }}>
-            <div>
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='title'
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-24'
-                      label='Party Name'
-                      placeholder='Whats the name of the party?'
-                      id='title'
-                      error={!!errors.name}
-                      helperText={errors?.name?.message}
-                      variant='outlined'
-                      required
-                      fullWidth
-                    />
-                  )}
-                />
-              </div>
+            {activeStep === 0 && (
+              <div>
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='title'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className='mb-24'
+                        label='Party Name'
+                        placeholder='Whats the name of the party?'
+                        id='title'
+                        error={!!errors.name}
+                        helperText={errors?.name?.message}
+                        variant='outlined'
+                        required
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
 
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='content'
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-24'
-                      name='content'
-                      label='Description'
-                      placeholder='Description of party.'
-                      variant='outlined'
-                      multiline
-                      rows={5}
-                      fullWidth
-                    />
-                  )}
-                />
-              </div>
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='content'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className='mb-24'
+                        name='content'
+                        label='Description'
+                        placeholder='Description of party.'
+                        variant='outlined'
+                        multiline
+                        rows={5}
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
 
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='phone'
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-24'
-                      label='Phone'
-                      placeholder='Phone number of the party.'
-                      id='phone'
-                      variant='outlined'
-                      fullWidth
-                    />
-                  )}
-                />
-              </div>
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='phone'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className='mb-24'
+                        label='Phone'
+                        placeholder='Phone number of the party.'
+                        id='phone'
+                        variant='outlined'
+                        fullWidth
+                        type='phone'
+                      />
+                    )}
+                  />
+                </div>
 
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='partyType'
-                  render={({ field }) => (
-                    <Select
-                      labelId='demo-simple-select-outlined-label'
-                      id='demo-simple-select-outlined'
-                      native
-                      {...field}
-                      fullWidth
-                      className='mb-24'
-                      name='partyType'
-                      label='Party Type'
-                      inputProps={{
-                        name: 'partyType',
-                        id: 'outlined-age-native-simple',
-                      }}
-                    >
-                      <MenuItem value=''>
-                        <em>None</em>
-                      </MenuItem>
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                  )}
-                />
-              </div>
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='partyType'
+                    render={({ field }) => (
+                      <FormControl className='flex w-full ' variant='outlined'>
+                        <InputLabel htmlFor='category-label-placeholder'>
+                          Category
+                        </InputLabel>
+                        <Select
+                          input={
+                            <OutlinedInput
+                              {...field}
+                              className='mb-24'
+                              name='partyType'
+                              id='partyType-placeholder'
+                              placeholder='Select a party type.'
+                              variant='outlined'
+                            />
+                          }
+                        >
+                          <MenuItem value='all'>
+                            <em> None </em>
+                          </MenuItem>
+                          <MenuItem value='category2'>Category 2</MenuItem>
+                          <MenuItem value='category3'>Category 3</MenuItem>
+                          <MenuItem value='category4'>Category 4</MenuItem>
+                          <MenuItem value='category5'>Category 5</MenuItem>
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </div>
 
-              <div className='flex'>
-                <Controller
-                  name='takeFees'
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <FormControlLabel
-                      className='mt-8 mb-16'
-                      label='Take fees?'
-                      control={
-                        <Switch
-                          onChange={(ev) => {
-                            onChange(ev.target.checked);
-                          }}
-                          checked={value}
-                          name='takeFees'
-                        />
-                      }
-                    />
-                  )}
-                />
-              </div>
+                <div className='flex'>
+                  <Controller
+                    name='startDate'
+                    control={control}
+                    defaultValue=''
+                    render={({ field: { onChange, value } }) => (
+                      <DateTimePicker
+                        label='Start Date'
+                        inputVariant='outlined'
+                        value={value}
+                        onChange={onChange}
+                        className='mb-24'
+                        maxDate={endDate}
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
 
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='nickname'
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-24'
-                      label='Nickname'
-                      id='nickname'
-                      variant='outlined'
-                      fullWidth
-                    />
-                  )}
-                />
-              </div>
-            </div>
+                <div className='flex'>
+                  <Controller
+                    name='endDate'
+                    control={control}
+                    defaultValue=''
+                    render={({ field: { onChange, value } }) => (
+                      <DateTimePicker
+                        label='Due Date'
+                        inputVariant='outlined'
+                        value={value}
+                        onChange={onChange}
+                        className='mb-24'
+                        minDate={startDate}
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
 
-            <div>
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='email'
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-24'
-                      label='Email'
-                      id='email'
-                      variant='outlined'
-                      fullWidth
-                    />
-                  )}
-                />
-              </div>
+                <div className='flex'>
+                  <Controller
+                    name='takeFees'
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <FormControlLabel
+                        className='mt-8 mb-16'
+                        label='Take fees?'
+                        control={
+                          <Switch
+                            onChange={(ev) => {
+                              onChange(ev.target.checked);
+                            }}
+                            checked={value}
+                            name='takeFees'
+                          />
+                        }
+                      />
+                    )}
+                  />
+                </div>
 
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='company'
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-24'
-                      label='Company'
-                      id='company'
-                      variant='outlined'
-                      fullWidth
-                    />
-                  )}
-                />
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='nickname'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className='mb-24'
+                        label='Nickname'
+                        id='nickname'
+                        variant='outlined'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
               </div>
+            )}
 
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='jobTitle'
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-24'
-                      label='Job title'
-                      id='jobTitle'
-                      name='jobTitle'
-                      variant='outlined'
-                      fullWidth
-                    />
-                  )}
-                />
-              </div>
+            {activeStep === 1 && (
+              <div>
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='email'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className='mb-24'
+                        label='Email'
+                        id='email'
+                        variant='outlined'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
 
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='birthday'
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-24'
-                      id='birthday'
-                      label='Birthday'
-                      type='date'
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      variant='outlined'
-                      fullWidth
-                    />
-                  )}
-                />
-              </div>
-            </div>
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='company'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className='mb-24'
+                        label='Company'
+                        id='company'
+                        variant='outlined'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
 
-            <div>
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='address'
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-24'
-                      label='Address'
-                      id='address'
-                      variant='outlined'
-                      fullWidth
-                    />
-                  )}
-                />
-              </div>
-              <div className='flex'>
-                <Controller
-                  name='startDate'
-                  control={control}
-                  defaultValue=''
-                  render={({ field: { onChange, value } }) => (
-                    <DateTimePicker
-                      label='Start Date'
-                      inputVariant='outlined'
-                      value={value}
-                      onChange={onChange}
-                      className='mb-24'
-                      maxDate={endDate}
-                      fullWidth
-                    />
-                  )}
-                />
-              </div>
-              <div className='flex'>
-                <Controller
-                  name='endDate'
-                  control={control}
-                  defaultValue=''
-                  render={({ field: { onChange, value } }) => (
-                    <DateTimePicker
-                      label='Due Date'
-                      inputVariant='outlined'
-                      value={value}
-                      onChange={onChange}
-                      className='mb-24'
-                      minDate={startDate}
-                      fullWidth
-                    />
-                  )}
-                />
-              </div>
-            </div>
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='jobTitle'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className='mb-24'
+                        label='Job title'
+                        id='jobTitle'
+                        name='jobTitle'
+                        variant='outlined'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
 
-            <div>
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='email'
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-24'
-                      label='Email'
-                      id='email'
-                      variant='outlined'
-                      fullWidth
-                    />
-                  )}
-                />
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='birthday'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className='mb-24'
+                        id='birthday'
+                        label='Birthday'
+                        type='date'
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        variant='outlined'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
               </div>
+            )}
 
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='company'
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-24'
-                      label='Company'
-                      id='company'
-                      variant='outlined'
-                      fullWidth
-                    />
-                  )}
-                />
+            {activeStep === 2 && (
+              <div>
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='address'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className='mb-24'
+                        label='Address'
+                        id='address'
+                        variant='outlined'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
               </div>
+            )}
 
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='jobTitle'
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-24'
-                      label='Job title'
-                      id='jobTitle'
-                      name='jobTitle'
-                      variant='outlined'
-                      fullWidth
-                    />
-                  )}
-                />
-              </div>
+            {activeStep === 3 && (
+              <div>
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='email'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className='mb-24'
+                        label='Email'
+                        id='email'
+                        variant='outlined'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
 
-              <div className='flex'>
-                <Controller
-                  control={control}
-                  name='birthday'
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-24'
-                      id='birthday'
-                      label='Birthday'
-                      type='date'
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      variant='outlined'
-                      fullWidth
-                    />
-                  )}
-                />
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='company'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className='mb-24'
+                        label='Company'
+                        id='company'
+                        variant='outlined'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
+
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='jobTitle'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className='mb-24'
+                        label='Job title'
+                        id='jobTitle'
+                        name='jobTitle'
+                        variant='outlined'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
+
+                <div className='flex'>
+                  <Controller
+                    control={control}
+                    name='birthday'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        className='mb-24'
+                        id='birthday'
+                        label='Birthday'
+                        type='date'
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        variant='outlined'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </DialogContent>
 
           <DialogActions className='justify-between p-20 pb-16 border-t border-white'>
