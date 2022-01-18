@@ -182,7 +182,6 @@ function Parties(props) {
                 animate='show'
               >
                 {pins.map((pin) => {
-                  console.log(pin);
                   return (
                     <motion.div
                       variants={item}

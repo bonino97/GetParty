@@ -23,7 +23,7 @@ const PinSchema = mongoose.Schema(
     priceOfTicket: Number,
     takeFees: Boolean,
 
-    periodicEvent: Boolean,
+    periodicParty: Boolean,
     publicParty: Boolean,
     entryRequirements: String,
     tags: [String],

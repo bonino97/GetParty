@@ -65,6 +65,7 @@ const Map = ({ classes }) => {
     setLoading(true);
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
+        console.log(position);
         const { latitude, longitude } = position.coords;
         setViewport({ latitude, longitude, zoom: 13 });
         setUserPosition({ latitude, longitude });
