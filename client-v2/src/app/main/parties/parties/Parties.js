@@ -1,5 +1,4 @@
 import React, { useContext, useMemo, useEffect, useState } from 'react';
-import _ from '@lodash';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -108,7 +107,7 @@ function Parties(props) {
             </motion.div>
           </div>
 
-          <Icon className={classes.headerIcon}> school </Icon>
+          <Icon className={classes.headerIcon}> audiotrack </Icon>
         </div>
         <div className='flex flex-col flex-1 max-w-2xl w-full mx-auto px-8 sm:px-16 py-24'>
           {/* Filters */}
