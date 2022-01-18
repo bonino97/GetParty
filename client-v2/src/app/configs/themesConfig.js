@@ -542,7 +542,7 @@ const themesConfig = {
       type: 'dark',
       text: darkText,
       primary: {
-        light: 'FFECC5',
+        light: '#FFECC5',
         main: '#FEBE3E',
         dark: '#FD991B',
       },

@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef, useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,24 +10,34 @@ import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict';
 
 import './Comments.css';
 
-const Comments = ({ classes }) => {
+const Comments = ({}) => {
   const { state } = useContext(Context);
   const { currentPin } = state;
   const { comments } = currentPin;
+  const commentRef = useRef(null);
+  
+  useEffect(() => {
+    scrollToBottom();
+  }, [comments]);
+
+  const scrollToBottom = () => {
+    commentRef?.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const handleCommentsView = () => {
     if (comments && comments?.length > 0) {
       return (
-        <div>
+        <>
           <div className='flex items-center'>
             <Typography>{comments?.length} comments</Typography>
             <Icon className='text-16 mx-4' color='action'>
               keyboard_arrow_down
             </Icon>
           </div>
-          <List className='list-style'>
+          <List ref={commentRef} className='list-style'>
             {comments?.map((comment) => (
-              <div>
-                <ListItem className='px-0 -mx-8' key={comment?._id}>
+              <div key={comment?.createdAt}>
+                <ListItem className='px-0 -mx-8'>
                   <Avatar
                     alt={comment?.author?.name}
                     src={comment?.author?.picture}
@@ -66,7 +75,7 @@ const Comments = ({ classes }) => {
               </div>
             ))}
           </List>
-        </div>
+        </>
       );
     }
 

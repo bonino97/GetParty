@@ -11,15 +11,16 @@ import Context from 'app/AppContext';
 import { CREATE_COMMENT_MUTATION } from 'graphql/mutations';
 import { useAuthClient } from 'graphql/authClient';
 
-const CreateComment = ({ classes }) => {
+const CreateComment = ({}) => {
   const client = useAuthClient();
 
-  const { state, dispatch } = useContext(Context);
+  const { state } = useContext(Context);
   const { currentUser, currentPin } = state;
   const [comment, setComment] = useState('');
 
   const handleSubmitComment = async (e) => {
     e.preventDefault();
+
     if (comment === '') {
       return;
     }
@@ -31,6 +32,12 @@ const CreateComment = ({ classes }) => {
 
   const onInputChange = (e) => {
     setComment(e.target.value);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmitComment(e);
+    }
   };
 
   return (
@@ -52,6 +59,7 @@ const CreateComment = ({ classes }) => {
               disableUnderline
               onChange={onInputChange}
               value={comment}
+              onKeyPress={handleKeyPress}
             />
           </Paper>
           <Button
