@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 function Parties(props) {
   const { state, dispatch } = useContext(Context);
   const { pins } = state;
-
+  console.log(state);
   const classes = useStyles(props);
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -68,6 +68,7 @@ function Parties(props) {
 
   const getPins = async () => {
     const { getPins } = await client.request(GET_PINS_QUERY);
+    console.log(getPins);
     dispatch({ type: 'GET_PINS', payload: getPins });
   };
 
@@ -174,6 +175,7 @@ function Parties(props) {
                 y: 0,
               },
             };
+
             return pins && pins.length > 0 ? (
               <motion.div
                 className='flex flex-wrap py-24'

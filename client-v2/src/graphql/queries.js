@@ -1,5 +1,5 @@
 export const ME_QUERY = `
-  {
+  query MyProfile {
     me {
       _id
       name
@@ -10,15 +10,43 @@ export const ME_QUERY = `
 `;
 
 export const GET_PINS_QUERY = `
-  {
+  query GetPins {
     getPins {
       _id
       createdAt
       title
-      image
       content
+      phone
+      image
+      partyType
+      startDate
+      endDate
+
+      location {
+        street
+        city
+        state
+        zipCode
+        country
+      }
+
+      availableTickets
+      priceOfTicket
+      takeFees
+
+      periodicParty
+      publicParty
+      entryRequirements
+      tags
+      instagram
+      twitter
+      facebook
+
+      slug
+
       latitude
       longitude
+
       author {
         _id
         name
@@ -29,7 +57,7 @@ export const GET_PINS_QUERY = `
         text
         createdAt
         author {
-          _id 
+          _id
           name
           picture
         }
