@@ -19,7 +19,8 @@ module.exports = {
     getPins: async (root, args, ctx) => {
       const pins = await Pin.find({})
         .populate('author')
-        .populate('comments.author');
+        .populate('comments.author')
+        .sort({ createdAt: -1 });
       return pins;
     },
     getPin: async (root, args, ctx) => {
