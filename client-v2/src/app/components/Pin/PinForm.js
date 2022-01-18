@@ -143,7 +143,7 @@ const defaultValues = {
   takeFees: false,
 
   periodicParty: false,
-  publicParty: false,
+  publicParty: true,
   entryRequirements: '',
 
   tags: '',
@@ -281,14 +281,13 @@ const PinForm = ({}) => {
         facebook: formValues?.facebook,
       };
 
-      console.log(createPinInput);
-
       const { createPin } = await client?.request(
         CREATE_PIN_MUTATION,
         createPinInput
       );
 
       if (createPin) {
+        setActiveStep(0);
         reset(defaultValues);
         reduxDispatch(
           showMessage({
@@ -704,7 +703,7 @@ const PinForm = ({}) => {
                     render={({ field: { onChange, value } }) => (
                       <FormControlLabel
                         className='mt-8 mb-24'
-                        label='Is it a private party?'
+                        label='Its a public party?'
                         control={
                           <Switch
                             onChange={(ev) => {
@@ -747,7 +746,7 @@ const PinForm = ({}) => {
                     render={({ field: { onChange, value } }) => (
                       <FormControlLabel
                         className='mt-8 mb-24'
-                        label='Is it a periodic party?'
+                        label='Its a periodic party?'
                         control={
                           <Switch
                             onChange={(ev) => {
