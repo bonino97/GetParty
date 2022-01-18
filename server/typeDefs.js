@@ -1,6 +1,8 @@
 const { gql } = require('apollo-server');
 
 module.exports = gql`
+  scalar Date
+
   type User {
     _id: ID
     name: String
@@ -13,20 +15,81 @@ module.exports = gql`
     _id: ID
     createdAt: String
     title: String
-    image: String
     content: String
+    phone: String
+    image: String
+    partyType: String
+    startDate: Date
+    endDate: Date
+
+    location: Location
+
+    availableTickets: Int
+    priceOfTicket: Int
+    takeFees: Boolean
+
+    periodicParty: Boolean
+    publicParty: Boolean
+    entryRequirements: String
+    tags: [String]
+    instagram: String
+    twitter: String
+    facebook: String
+
+    slug: String
+
     latitude: Float
     longitude: Float
+
     author: User
+    staff: [User]
+    attendees: [User]
+    followers: [User]
     comments: [Comments]
   }
 
   input CreatePinInput {
-    title: String
+    title: String!
     content: String
     image: String
+    partyType: String
+    startDate: Date
+    endDate: Date
+
+    phone: String
+    location: LocationInput
+
+    availableTickets: Int
+    priceOfTicket: Int
+    takeFees: Boolean
+
+    periodicParty: Boolean
+    publicParty: Boolean
+
+    entryRequirements: String
+    tags: [String]
+    instagram: String
+    twitter: String
+    facebook: String
+
     latitude: Float
     longitude: Float
+  }
+
+  input LocationInput {
+    street: String
+    city: String
+    state: String
+    zipCode: String
+    country: String
+  }
+
+  type Location {
+    street: String
+    city: String
+    state: String
+    zipCode: String
+    country: String
   }
 
   type Comments {

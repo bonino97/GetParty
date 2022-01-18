@@ -32,6 +32,7 @@ module.exports = {
   Mutation: {
     createPin: authenticated(async (root, args, ctx) => {
       try {
+        console.log(args);
         const newPin = await new Pin({
           ...args.input,
           author: ctx.currentUser._id,
@@ -41,6 +42,7 @@ module.exports = {
         pubsub.publish(PIN_ADDED, { pinAdded });
         return pinAdded;
       } catch (error) {
+        console.log(error);
         throw new Error(error);
       }
     }),

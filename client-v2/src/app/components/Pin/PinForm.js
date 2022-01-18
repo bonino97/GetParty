@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useContext, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -35,7 +36,13 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { DateTimePicker } from '@material-ui/pickers';
 import { Autocomplete } from '@material-ui/lab';
 
+import { showMessage } from 'app/store/fuse/messageSlice';
+
 import Context from 'app/AppContext';
+
+import { useAuthClient } from 'graphql/authClient';
+import { CREATE_PIN_MUTATION } from 'graphql/mutations';
+
 import './PinForm.css';
 
 /**
@@ -169,18 +176,22 @@ const getSteps = () => {
 const steps = getSteps();
 
 const PinForm = ({}) => {
+  const client = useAuthClient();
   const classes = useStyles();
+  const reduxDispatch = useDispatch();
   const { state, dispatch } = useContext(Context);
   const { draft } = state;
 
   const [image, setImage] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const { control, watch, handleSubmit, formState, getValues } = useForm({
-    mode: 'onChange',
-    defaultValues,
-    resolver: yupResolver(schema),
-  });
+  const { control, watch, handleSubmit, formState, getValues, reset } = useForm(
+    {
+      mode: 'onChange',
+      defaultValues,
+      resolver: yupResolver(schema),
+    }
+  );
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -248,14 +259,16 @@ const PinForm = ({}) => {
         endDate: formValues?.endDate,
         image: formValues?.image,
 
-        street: formValues?.street,
-        city: formValues?.city,
-        state: formValues?.state,
-        zipCode: formValues?.zipCode,
-        country: formValues?.country,
+        location: {
+          street: formValues?.street,
+          city: formValues?.city,
+          state: formValues?.state,
+          zipCode: formValues?.zipCode,
+          country: formValues?.country,
+        },
 
-        availableTickets: formValues?.availableTickets,
-        priceOfTicket: formValues?.priceOfTicket,
+        availableTickets: Number(formValues?.availableTickets),
+        priceOfTicket: Number(formValues?.priceOfTicket),
         takeFees: formValues?.takeFees,
 
         periodicParty: formValues?.periodicParty,
@@ -276,6 +289,7 @@ const PinForm = ({}) => {
       );
 
       if (createPin) {
+        reset(defaultValues);
         reduxDispatch(
           showMessage({
             message: 'Party added successfully.',
@@ -325,7 +339,11 @@ const PinForm = ({}) => {
           ))}
         </Stepper>
 
-        <form noValidate className='flex flex-col md:overflow-hidden'>
+        <form
+          autoComplete='none'
+          noValidate
+          className='flex flex-col md:overflow-hidden'
+        >
           <DialogContent classes={{}}>
             {activeStep === 0 && (
               <div>
@@ -336,6 +354,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mb-16'
                         label='Party Name'
                         placeholder='Whats the name of the party?'
@@ -358,6 +377,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mb-16'
                         name='content'
                         label='Description'
@@ -482,6 +502,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mb-24'
                         label='Phone'
                         placeholder='Phone number of the party.'
@@ -490,6 +511,9 @@ const PinForm = ({}) => {
                         autoFocus
                         fullWidth
                         type='number'
+                        InputProps={{
+                          inputProps: { min: 0 },
+                        }}
                       />
                     )}
                   />
@@ -501,6 +525,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mb-24'
                         label='Street'
                         placeholder='Complete street and number of party location.'
@@ -520,6 +545,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mb-24'
                         label='City'
                         placeholder='City of party location.'
@@ -539,6 +565,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mb-24'
                         label='State'
                         placeholder='State of party location.'
@@ -558,6 +585,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mb-24'
                         label='Zip Code'
                         placeholder='Zip Code of party location.'
@@ -578,6 +606,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mb-24'
                         label='Country'
                         placeholder='Country of party location.'
@@ -601,6 +630,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mt-8 mb-16'
                         label='Available Tickets'
                         id='availableTickets'
@@ -609,6 +639,9 @@ const PinForm = ({}) => {
                         type='number'
                         autoFocus
                         fullWidth
+                        InputProps={{
+                          inputProps: { min: 0 },
+                        }}
                       />
                     )}
                   />
@@ -620,6 +653,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mt-8 mb-16'
                         label='Price of Ticket'
                         placeholder='Whats the party ticket price?'
@@ -628,6 +662,7 @@ const PinForm = ({}) => {
                           startAdornment: (
                             <InputAdornment position='start'>$</InputAdornment>
                           ),
+                          inputProps: { min: 0 },
                         }}
                         type='number'
                         variant='outlined'
@@ -691,6 +726,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mt-16 mb-24'
                         name='entryRequirements'
                         label='Entry Requirements'
@@ -747,6 +783,7 @@ const PinForm = ({}) => {
                         }}
                         renderInput={(params) => (
                           <TextField
+                            autoComplete='none'
                             {...params}
                             placeholder='Select multiple tags'
                             label='Tags'
@@ -768,6 +805,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mb-24'
                         label='Instagram'
                         placeholder='Instagram url'
@@ -787,6 +825,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mb-24'
                         label='Twitter'
                         placeholder='Twitter url'
@@ -806,6 +845,7 @@ const PinForm = ({}) => {
                     render={({ field }) => (
                       <TextField
                         {...field}
+                        autoComplete='none'
                         className='mb-24'
                         label='Facebook'
                         placeholder='Facebook url'
@@ -844,7 +884,7 @@ const PinForm = ({}) => {
                 variant='contained'
                 color='primary'
                 className={classes.button}
-                disabled={_.isEmpty(dirtyFields) || !isValid}
+                disabled={_.isEmpty(dirtyFields) || !isValid || submitting}
                 type='button'
                 onClick={handleSubmit(onSubmit)}
               >

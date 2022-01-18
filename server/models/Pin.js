@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const PinSchema = mongoose.Schema(
   {
-
     title: String,
     content: String,
     phone: String,
