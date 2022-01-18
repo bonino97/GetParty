@@ -4,25 +4,9 @@ const PinSchema = mongoose.Schema(
   {
     title: String,
     content: String,
+    phone: String,
     image: String,
-    latitude: Number,
-    longitude: Number,
-
     partyType: String,
-    musicType: String,
-    slug: String,
-    availableTickets: Number,
-    priceOfTicket: Number,
-
-    startDate: Date,
-    startTime: Date,
-    endDate: Date,
-    endTime: Date,
-
-    entryRequirements: String,
-
-    periodicEvent: Boolean,
-
     location: {
       street: String,
       city: String,
@@ -31,16 +15,26 @@ const PinSchema = mongoose.Schema(
       country: String,
     },
 
+    availableTickets: Number,
+    priceOfTicket: Number,
     takeFees: Boolean,
+
+    startDate: Date,
+    endDate: Date,
+    periodicEvent: Boolean,
     publicParty: Boolean,
+    entryRequirements: String,
     tags: [String],
+
+    slug: String,
+    latitude: Number,
+    longitude: Number,
 
     author: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'User',
     },
-
     staff: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -62,7 +56,6 @@ const PinSchema = mongoose.Schema(
         ref: 'User',
       },
     ],
-
     comments: [
       {
         text: String,

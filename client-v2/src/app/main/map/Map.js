@@ -23,8 +23,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 import PinIcon from 'app/components/Icons/PinIcon';
 import PlaceIcon from 'app/components/Icons/PlaceIcon';
-import PersonIcon from 'app/components/Icons/PersonIcon';
 import CreateParty from 'app/components/Pin/CreateParty';
+import PinForm from 'app/components/Pin/PinForm';
 import Context from 'app/AppContext';
 
 import PinContent from 'app/components/Pin/PinContent';
@@ -189,7 +189,7 @@ const Map = ({ classes }) => {
             }}
           />
 
-          <CreateParty />
+          <PinForm />
           {/* <Geocoder
             onSelected={(newViewport) => setViewport(newViewport)}
             mapboxApiAccessToken={MAPBOX_TOKEN}
