@@ -2,11 +2,15 @@ const mongoose = require('mongoose');
 
 const PinSchema = mongoose.Schema(
   {
+
     title: String,
     content: String,
     phone: String,
     image: String,
-    partyType: String,
+    partyType: String, // Buscar diferentes tipos de musica ?
+    startDate: Date,
+    endDate: Date,
+
     location: {
       street: String,
       city: String,
@@ -19,12 +23,13 @@ const PinSchema = mongoose.Schema(
     priceOfTicket: Number,
     takeFees: Boolean,
 
-    startDate: Date,
-    endDate: Date,
     periodicEvent: Boolean,
     publicParty: Boolean,
     entryRequirements: String,
     tags: [String],
+    instagram: String,
+    twitter: String,
+    facebook: String,
 
     slug: String,
     latitude: Number,
