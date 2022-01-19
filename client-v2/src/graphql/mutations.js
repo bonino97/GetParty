@@ -55,12 +55,40 @@ export const CREATE_PIN_MUTATION = `
       
     }) {
       _id
-      createdAt
-      title 
-      image
+      title
       content
+      image
+      category
+      startDate
+      endDate
+
+      phone
+      location {
+        street
+        city
+        state
+        zipCode
+        country
+      }
+
+      availableTickets
+      priceOfTicket
+      takeFees
+
+      isPeriodic
+      isPrivate
+      entryRequirements
+      tags
+      instagram
+      twitter
+      facebook
+
+      
+      slug
       latitude
       longitude
+      createdAt
+
       author {
         _id
         name

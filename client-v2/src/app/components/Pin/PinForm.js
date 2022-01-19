@@ -144,7 +144,7 @@ const defaultValues = {
   takeFees: false,
 
   isPeriodic: false,
-  isPrivate: true,
+  isPrivate: false,
   entryRequirements: '',
 
   tags: '',
@@ -256,11 +256,6 @@ const PinForm = ({}) => {
         formValues.image = await handleImageUpload();
       }
 
-      const date = formValues?.endDate
-        ? formValues.endDate
-        : (formValues.endDate = addHours(formValues?.startDate, 6));
-      console.log(date);
-      console.log(formValues?.startDate);
       const createPinInput = {
         latitude,
         longitude,

@@ -13,7 +13,7 @@ module.exports = gql`
 
   type Pin {
     _id: ID
-    createdAt: String
+    
     title: String
     content: String
     phone: String
@@ -40,7 +40,8 @@ module.exports = gql`
 
     latitude: Float
     longitude: Float
-
+    createdAt: String
+    
     author: User
     staff: [User]
     attendees: [User]

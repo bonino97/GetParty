@@ -4,12 +4,39 @@ export const PIN_ADDED_SUBSCRIPTION = gql`
   subscription {
     pinAdded {
       _id
-      createdAt
       title
-      image
       content
+      image
+      category
+      startDate
+      endDate
+
+      phone
+      location {
+        street
+        city
+        state
+        zipCode
+        country
+      }
+
+      availableTickets
+      priceOfTicket
+      takeFees
+
+      isPeriodic
+      isPrivate
+      entryRequirements
+      tags
+      instagram
+      twitter
+      facebook
+
+      slug
       latitude
       longitude
+      createdAt
+
       author {
         _id
         name
