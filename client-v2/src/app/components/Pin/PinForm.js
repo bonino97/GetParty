@@ -187,7 +187,6 @@ const PinForm = ({}) => {
   const reduxDispatch = useDispatch();
   const { state, dispatch } = useContext(Context);
   const { draft } = state;
-  console.log(draft);
   const [image, setImage] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -213,13 +212,14 @@ const PinForm = ({}) => {
       draft?.latitude,
       draft?.longitude
     );
-
+    
     if (!location) return false;
 
-    setValue(address, location?.address);
-    setValue(city, location?.city);
-    setValue(state, location?.state);
-    setValue(country, location?.country);
+    setValue('address', location?.address);
+    setValue('city', location?.city);
+    setValue('state', location?.state);
+    setValue('zipCode', location?.zipCode);
+    setValue('country', location?.country);
   }, [draft]);
 
   const handleNext = () => {
@@ -557,7 +557,7 @@ const PinForm = ({}) => {
                       {...field}
                       autoComplete='none'
                       className='mb-24'
-                      label='Street'
+                      label='Address'
                       placeholder='Complete address of party location.'
                       id='address'
                       name='address'

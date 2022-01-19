@@ -17,23 +17,40 @@ export const getReverseGeocodingData = async (lat, long) => {
 
     if (!features) return false;
 
-    const address = features?.filter((place) =>
-      place?.place_type?.includes('poi')
-    )[0]?.properties?.address;
-    const city = features?.filter((place) =>
-      place?.place_type?.includes('place')
-    )[0]?.text;
-    const state = features?.filter((place) =>
-      place?.place_type?.includes('region')
-    )[0]?.text;
-    const country = features?.filter((place) =>
-      place?.place_type?.includes('country')
-    )[0]?.text;
+    let completeAddress = features?.filter((place) =>
+      place?.place_type?.includes('address')
+    )[0];
+
+    let address;
+
+    if (completeAddress) {
+      address = completeAddress?.address + ' ' + completeAddress?.text;
+    }
+
+    if (!completeAddress) {
+      address =
+        features?.filter((place) => place?.place_type?.includes('poi'))[0]
+          ?.properties?.address || '';
+    }
+
+    const city =
+      features?.filter((place) => place?.place_type?.includes('place'))[0]
+        ?.text || '';
+    const state =
+      features?.filter((place) => place?.place_type?.includes('region'))[0]
+        ?.text || '';
+    const zipCode =
+      features?.filter((place) => place?.place_type?.includes('postcode'))[0]
+        ?.text || '';
+    const country =
+      features?.filter((place) => place?.place_type?.includes('country'))[0]
+        ?.text || '';
 
     const location = {
       address,
       city,
       state,
+      zipCode,
       country,
     };
     return location;
