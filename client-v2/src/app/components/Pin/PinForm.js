@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import _ from '@lodash';
 import axios from 'axios';
+import { addHours, isValid as isValidDate, addYears } from 'date-fns';
 
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -174,13 +175,7 @@ const getSteps = () => {
   return [0, 1, 2, 3, 4];
 };
 
-const addHours = (date, hours) => {
-  const newDate = new Date(date);
-  newDate.setHours(newDate.getHours() + hours);
-  return newDate;
-};
-
-const maxYearDate = new Date(new Date().getFullYear(), 11, 31);
+const oneYearDate = addYears(new Date(), 1);
 
 const steps = getSteps();
 
@@ -451,7 +446,7 @@ const PinForm = ({}) => {
                       onChange={onChange}
                       className='mb-16'
                       minDate={Date.now()}
-                      maxDate={endDate ? endDate : maxYearDate}
+                      maxDate={isValidDate(endDate) ? endDate : oneYearDate}
                       fullWidth
                     />
                   )}

@@ -177,7 +177,6 @@ function Parties(props) {
                 animate='show'
               >
                 {pins.map((pin) => {
-                  console.log(pin);
                   return (
                     !isPast(new Date(pin?.endDate)) && (
                       <NoPastedPartyItem {...pin} key={pin?._id} />

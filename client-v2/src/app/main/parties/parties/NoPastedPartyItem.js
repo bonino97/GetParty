@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 
 import { Link } from 'react-router-dom';
 
-import { formatDistanceToNowStrict } from 'date-fns';
+import { intervalToDuration, formatDistance } from 'date-fns';
 
 const NoPastedPartyItem = (pin) => {
   const item = {
@@ -22,6 +22,13 @@ const NoPastedPartyItem = (pin) => {
       y: 0,
     },
   };
+
+  console.log(
+    intervalToDuration({
+      start: new Date(pin.startDate),
+      end: new Date(pin.endDate),
+    })
+  );
 
   return (
     <motion.div
@@ -37,14 +44,16 @@ const NoPastedPartyItem = (pin) => {
           }}
         >
           <Typography className='font-medium truncate' color='inherit'>
-            {/* Web */}
+            {pin?.title}
           </Typography>
           <div className='flex items-center justify-center opacity-75'>
             <Icon className='text-20 mx-8' color='inherit'>
               access_time
             </Icon>
             <div className='text-14 font-medium whitespace-nowrap'>
-              In {formatDistanceToNowStrict(new Date(pin?.startDate))}
+              {formatDistance(new Date(pin?.startDate), new Date(), {
+                addSuffix: true,
+              })}
             </div>
           </div>
         </div>
@@ -59,11 +68,29 @@ const NoPastedPartyItem = (pin) => {
             Ultima Actualizacion del Curso
           </Typography>
         </CardContent>
-        <CardActions className='justify-center pb-24'>
+        <CardActions disableSpacing className='flex space-x-0.5 h-auto w-auto'>
+          <Button
+            size='small'
+            className='item w-1/4 h-auto'
+            aria-label='Add to favorites'
+          >
+            <Icon className='text-16' color='action'>
+              favorite
+            </Icon>
+            <Typography className='mx-4'></Typography>
+            <Typography>(100)</Typography>
+          </Button>
+          <Button className='item w-1/4 h-auto' aria-label='Share'>
+            <Icon className='text-16' color='action'>
+              share
+            </Icon>
+            <Typography className='mx-4'></Typography>
+            <Typography>(10)</Typography>
+          </Button>
           <Button
             to={`/apps/academy/courses/1/angular`}
             component={Link}
-            className='justify-start px-32'
+            className='item w-1/4 h-auto'
             color='primary'
             variant='outlined'
           >
