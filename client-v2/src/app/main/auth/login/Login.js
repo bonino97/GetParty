@@ -26,6 +26,7 @@ import * as yup from 'yup';
 import Context from 'app/AppContext';
 import { ME_QUERY } from 'graphql/queries';
 import { BASE_URL } from 'graphql/authClient';
+import { CLIENT_ID } from 'app/constants/GoogleData';
 
 import './Login.css';
 
@@ -237,7 +238,7 @@ const Login = () => {
             </Button> */}
 
             <GoogleLogin
-              clientId='372691160732-gsoaq00le7f368557s1f0ch2ghfpgoqu.apps.googleusercontent.com'
+              clientId={CLIENT_ID}
               onSuccess={onSuccess}
               onFailure={onFailure}
               isSignedIn={true}
