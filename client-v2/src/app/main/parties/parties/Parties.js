@@ -20,7 +20,7 @@ import Context from 'app/AppContext';
 
 import { categoriesList } from 'app/constants/CategoriesList';
 
-import NoPastedPartyItem from './NoPastedPartyItem';
+import NoStartedPartyItem from './NoStartedPartyItem';
 import NoParties from './NoParties';
 
 const useStyles = makeStyles((theme) => ({
@@ -54,7 +54,7 @@ function Parties(props) {
   useEffect(() => {
     getPins();
   }, []);
-  
+
   function handleSelectedCategory(event) {
     setSelectedCategory(event.target.value);
   }

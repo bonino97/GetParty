@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 
 import { intervalToDuration, formatDistance } from 'date-fns';
 
-const NoPastedPartyItem = (pin) => {
+const NoStartedPartyItem = (pin) => {
   const item = {
     hidden: {
       opacity: 0,
@@ -102,4 +102,4 @@ const NoPastedPartyItem = (pin) => {
   );
 };
 
-export default NoPastedPartyItem;
+export default NoStartedPartyItem;
