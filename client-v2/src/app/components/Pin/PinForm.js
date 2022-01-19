@@ -711,7 +711,7 @@ const PinForm = ({}) => {
                   render={({ field: { onChange, value } }) => (
                     <FormControlLabel
                       className='mt-8 mb-24'
-                      label='Its a public party?'
+                      label='Its a private party?'
                       control={
                         <Switch
                           onChange={(ev) => {

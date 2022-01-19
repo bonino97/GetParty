@@ -179,7 +179,7 @@ function Parties(props) {
                 {pins.map((pin) => {
                   return (
                     !isPast(new Date(pin?.endDate)) && (
-                      <NoPastedPartyItem {...pin} key={pin?._id} />
+                      <NoStartedPartyItem {...pin} key={pin?._id} />
                     )
                   );
                 })}

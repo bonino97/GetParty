@@ -1,10 +1,14 @@
 import React from 'react';
+
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+
 import { motion } from 'framer-motion';
 
 import { Link } from 'react-router-dom';
@@ -43,9 +47,13 @@ const NoStartedPartyItem = (pin) => {
             color: 'black',
           }}
         >
-          <Typography className='font-medium truncate' color='inherit'>
-            {pin?.title}
-          </Typography>
+          <IconButton
+            color='inherit'
+            aria-label='add to favoriteBordere'
+            component='span'
+          >
+            <FavoriteBorderIcon />
+          </IconButton>
           <div className='flex items-center justify-center opacity-75'>
             <Icon className='text-20 mx-8' color='inherit'>
               access_time
@@ -69,18 +77,7 @@ const NoStartedPartyItem = (pin) => {
           </Typography>
         </CardContent>
         <CardActions disableSpacing className='flex space-x-0.5 h-auto w-auto'>
-          <Button
-            size='small'
-            className='item w-1/4 h-auto'
-            aria-label='Add to favorites'
-          >
-            <Icon className='text-16' color='action'>
-              favorite
-            </Icon>
-            <Typography className='mx-4'></Typography>
-            <Typography>(100)</Typography>
-          </Button>
-          <Button className='item w-1/4 h-auto' aria-label='Share'>
+          <Button className='item w-1/2 h-auto' aria-label='Share'>
             <Icon className='text-16' color='action'>
               share
             </Icon>
@@ -90,7 +87,7 @@ const NoStartedPartyItem = (pin) => {
           <Button
             to={`/apps/academy/courses/1/angular`}
             component={Link}
-            className='item w-1/4 h-auto'
+            className='item w-1/2 h-auto'
             color='primary'
             variant='outlined'
           >
