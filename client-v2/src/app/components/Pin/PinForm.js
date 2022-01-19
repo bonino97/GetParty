@@ -130,7 +130,7 @@ const defaultValues = {
   phone: '',
   category: '',
   startDate: new Date(),
-  endDate: new Date(),
+  endDate: null,
   image: '',
 
   street: '',
@@ -172,6 +172,12 @@ const useStyles = makeStyles((theme) => ({
 
 const getSteps = () => {
   return [0, 1, 2, 3, 4];
+};
+
+const addHours = (date, hours) => {
+  const newDate = new Date(date);
+  newDate.setHours(newDate.getHours() + hours);
+  return newDate;
 };
 
 const steps = getSteps();
@@ -248,6 +254,11 @@ const PinForm = ({}) => {
         formValues.image = await handleImageUpload();
       }
 
+      const date = formValues?.endDate
+        ? formValues.endDate
+        : (formValues.endDate = addHours(formValues?.startDate, 6));
+      console.log(date);
+      console.log(formValues?.startDate);
       const createPinInput = {
         latitude,
         longitude,
@@ -257,7 +268,9 @@ const PinForm = ({}) => {
         phone: formValues?.phone,
         category: formValues?.category,
         startDate: formValues?.startDate,
-        endDate: formValues?.endDate,
+        endDate: formValues?.endDate
+          ? formValues.endDate
+          : addHours(formValues?.startDate, 6),
         image: formValues?.image,
 
         location: {
@@ -412,10 +425,15 @@ const PinForm = ({}) => {
                           />
                         }
                       >
+                        <MenuItem key={'None'} selected value='None'>
+                          <em>None</em>
+                        </MenuItem>
                         {categoriesList &&
                           categoriesList.map((category) => {
                             return (
-                              <MenuItem value={category}>{category}</MenuItem>
+                              <MenuItem key={category} value={category}>
+                                {category}
+                              </MenuItem>
                             );
                           })}
                       </Select>

@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 function Parties(props) {
   const { state, dispatch } = useContext(Context);
   const { pins } = state;
-  
+
   const classes = useStyles(props);
 
   const [searchText, setSearchText] = useState('');
@@ -144,6 +144,9 @@ function Parties(props) {
                   />
                 }
               >
+                <MenuItem key={'None'} selected value='None'>
+                  <em>None</em>
+                </MenuItem>
                 {categoriesList &&
                   categoriesList.map((category) => {
                     return <MenuItem value={category}>{category}</MenuItem>;

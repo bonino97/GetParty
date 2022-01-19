@@ -12,5 +12,5 @@ exports.categoriesList = [
   'R&B',
   'Reggae',
   'Rock',
-  'Others',
+  'Other',
 ];
