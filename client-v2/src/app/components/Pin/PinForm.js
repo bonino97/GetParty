@@ -177,7 +177,6 @@ const getSteps = () => {
 const steps = getSteps();
 
 const PinForm = ({}) => {
-  console.log(categoriesList);
   const client = useAuthClient();
   const classes = useStyles();
   const reduxDispatch = useDispatch();
@@ -413,9 +412,6 @@ const PinForm = ({}) => {
                           />
                         }
                       >
-                        <MenuItem value='all'>
-                          <em> None </em>
-                        </MenuItem>
                         {categoriesList &&
                           categoriesList.map((category) => {
                             return (

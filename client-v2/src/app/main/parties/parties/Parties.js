@@ -1,8 +1,4 @@
 import React, { useContext, useMemo, useEffect, useState } from 'react';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
 import FormControl from '@material-ui/core/FormControl';
 import Icon from '@material-ui/core/Icon';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -15,15 +11,14 @@ import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 
-import { isPast, formatDistanceToNowStrict } from 'date-fns';
-
-import { Link } from 'react-router-dom';
+import { isPast } from 'date-fns';
 
 import { useClient } from 'graphql/client';
 import { GET_PINS_QUERY } from 'graphql/queries';
 
 import Context from 'app/AppContext';
-import { PIN_DELETED_SUBSCRIPTION } from 'graphql/subscriptions';
+
+import { categoriesList } from 'app/constants/CategoriesList';
 
 import NoPastedPartyItem from './NoPastedPartyItem';
 import NoParties from './NoParties';
@@ -48,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 function Parties(props) {
   const { state, dispatch } = useContext(Context);
   const { pins } = state;
-  console.log(state);
+  
   const classes = useStyles(props);
 
   const [searchText, setSearchText] = useState('');
@@ -150,10 +145,10 @@ function Parties(props) {
                   />
                 }
               >
-                <MenuItem value='all'>
-                  <em> All </em>
-                </MenuItem>
-                <MenuItem value='category2'>Category 2</MenuItem>
+                {categoriesList &&
+                  categoriesList.map((category) => {
+                    return <MenuItem value={category}>{category}</MenuItem>;
+                  })}
               </Select>
             </FormControl>
           </div>
