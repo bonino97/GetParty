@@ -16,14 +16,9 @@ const languages = [
     flag: 'us',
   },
   {
-    id: 'tr',
-    title: 'Turkish',
-    flag: 'tr',
-  },
-  {
-    id: 'ar',
-    title: 'Arabic',
-    flag: 'sa',
+    id: 'es',
+    title: 'Spanish',
+    flag: 'es',
   },
 ];
 
@@ -51,14 +46,17 @@ function LanguageSwitcher(props) {
 
   return (
     <>
-      <Button className="h-40 w-64" onClick={langMenuClick}>
+      <Button className='h-40 w-64' onClick={langMenuClick}>
         <img
-          className="mx-4 min-w-20"
+          className='mx-4 min-w-20'
           src={`assets/images/flags/${currentLanguage.flag}.png`}
           alt={currentLanguage.title}
         />
 
-        <Typography className="mx-4 font-semibold uppercase" color="textSecondary">
+        <Typography
+          className='mx-4 font-semibold uppercase'
+          color='textSecondary'
+        >
           {currentLanguage.id}
         </Typography>
       </Button>
@@ -81,9 +79,9 @@ function LanguageSwitcher(props) {
       >
         {languages.map((lng) => (
           <MenuItem key={lng.id} onClick={() => handleLanguageChange(lng)}>
-            <ListItemIcon className="min-w-40">
+            <ListItemIcon className='min-w-40'>
               <img
-                className="min-w-20"
+                className='min-w-20'
                 src={`assets/images/flags/${lng.flag}.png`}
                 alt={lng.title}
               />
@@ -91,15 +89,6 @@ function LanguageSwitcher(props) {
             <ListItemText primary={lng.title} />
           </MenuItem>
         ))}
-
-        <MenuItem
-          component={Link}
-          to="/documentation/configuration/multi-language"
-          onClick={langMenuClose}
-          role="button"
-        >
-          <ListItemText primary="Learn More" />
-        </MenuItem>
       </Popover>
     </>
   );
