@@ -23,7 +23,7 @@ export const GET_PINS_QUERY = `
       endDate
 
       location {
-        street
+        address
         city
         state
         zipCode

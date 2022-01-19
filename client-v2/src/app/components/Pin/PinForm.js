@@ -44,8 +44,10 @@ import Context from 'app/AppContext';
 import { useAuthClient } from 'graphql/authClient';
 import { CREATE_PIN_MUTATION } from 'graphql/mutations';
 
-import { categoriesList } from 'app/constants/CategoriesList';
+import { CATEGORIES_LIST } from 'app/constants/CategoriesList';
 import './PinForm.css';
+
+import { getReverseGeocodingData } from 'app/services/geoCoding/getReverseGeocodingData';
 
 /**
  * Stepper Stuff
@@ -134,7 +136,7 @@ const defaultValues = {
   endDate: null,
   image: '',
 
-  street: '',
+  address: '',
   city: '',
   state: '',
   zipCode: '',
@@ -185,19 +187,40 @@ const PinForm = ({}) => {
   const reduxDispatch = useDispatch();
   const { state, dispatch } = useContext(Context);
   const { draft } = state;
-
+  console.log(draft);
   const [image, setImage] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const { control, watch, handleSubmit, formState, getValues, reset } = useForm(
-    {
-      mode: 'onChange',
-      defaultValues,
-      resolver: yupResolver(schema),
-    }
-  );
+  const {
+    control,
+    watch,
+    handleSubmit,
+    formState,
+    getValues,
+    reset,
+    setValue,
+  } = useForm({
+    mode: 'onChange',
+    defaultValues,
+    resolver: yupResolver(schema),
+  });
 
   const [activeStep, setActiveStep] = useState(0);
+
+  useEffect(async () => {
+    if (draft?.longitude === 0) return false;
+    const location = await getReverseGeocodingData(
+      draft?.latitude,
+      draft?.longitude
+    );
+
+    if (!location) return false;
+
+    setValue(address, location?.address);
+    setValue(city, location?.city);
+    setValue(state, location?.state);
+    setValue(country, location?.country);
+  }, [draft]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -266,7 +289,7 @@ const PinForm = ({}) => {
         image: formValues?.image,
 
         location: {
-          street: formValues?.street,
+          address: formValues?.address,
           city: formValues?.city,
           state: formValues?.state,
           zipCode: formValues?.zipCode,
@@ -420,8 +443,8 @@ const PinForm = ({}) => {
                         <MenuItem key={'None'} selected value='None'>
                           <em>None</em>
                         </MenuItem>
-                        {categoriesList &&
-                          categoriesList.map((category) => {
+                        {CATEGORIES_LIST &&
+                          CATEGORIES_LIST.map((category) => {
                             return (
                               <MenuItem key={category} value={category}>
                                 {category}
@@ -528,16 +551,16 @@ const PinForm = ({}) => {
               <div className='flex'>
                 <Controller
                   control={control}
-                  name='street'
+                  name='address'
                   render={({ field }) => (
                     <TextField
                       {...field}
                       autoComplete='none'
                       className='mb-24'
                       label='Street'
-                      placeholder='Complete street and number of party location.'
-                      id='street'
-                      name='street'
+                      placeholder='Complete address of party location.'
+                      id='address'
+                      name='address'
                       variant='outlined'
                       fullWidth
                     />

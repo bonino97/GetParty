@@ -64,7 +64,7 @@ export const CREATE_PIN_MUTATION = `
 
       phone
       location {
-        street
+        address
         city
         state
         zipCode

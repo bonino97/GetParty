@@ -1,4 +1,4 @@
-exports.categoriesList = [
+export const CATEGORIES_LIST = [
   'Alternative',
   'Blues & Jazz',
   'Electronic',
@@ -14,3 +14,4 @@ exports.categoriesList = [
   'Rock',
   'Other',
 ];
+

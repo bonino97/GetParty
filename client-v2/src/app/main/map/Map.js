@@ -29,16 +29,13 @@ import Context from 'app/AppContext';
 
 import PinContent from 'app/components/Pin/PinContent';
 
+import { MAPBOX_TOKEN, MAP_STYLE } from 'app/constants/MapboxData';
+
 const INITIAL_VIEWPORT = {
   latitude: 37.7577,
   longitude: -122.4376,
   zoom: 10,
 };
-
-const MAPBOX_TOKEN =
-  'pk.eyJ1IjoiYm9uaWtpYTk3IiwiYSI6ImNrczlsdzd1dDB4aW4ybnJtcjJkeW9teHIifQ.fsXRvcqpttjN1XzKopniAg';
-
-const MAP_STYLE = 'mapbox://styles/mapbox/dark-v10';
 
 const Map = ({ classes }) => {
   const client = useClient();

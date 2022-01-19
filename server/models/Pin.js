@@ -11,7 +11,7 @@ const PinSchema = mongoose.Schema(
     endDate: Date,
 
     location: {
-      street: String,
+      address: String,
       city: String,
       state: String,
       zipCode: String,

@@ -18,7 +18,7 @@ import { GET_PINS_QUERY } from 'graphql/queries';
 
 import Context from 'app/AppContext';
 
-import { categoriesList } from 'app/constants/CategoriesList';
+import { CATEGORIES_LIST } from 'app/constants/CategoriesList';
 
 import NoStartedPartyItem from './NoStartedPartyItem';
 import NoParties from './NoParties';
@@ -147,8 +147,8 @@ function Parties(props) {
                 <MenuItem key={'None'} disabled value='None'>
                   <em>None</em>
                 </MenuItem>
-                {categoriesList &&
-                  categoriesList.map((category) => {
+                {CATEGORIES_LIST &&
+                  CATEGORIES_LIST.map((category) => {
                     return (
                       <MenuItem key={category} value={category}>
                         {category}

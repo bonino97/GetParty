@@ -13,7 +13,7 @@ export const PIN_ADDED_SUBSCRIPTION = gql`
 
       phone
       location {
-        street
+        address
         city
         state
         zipCode

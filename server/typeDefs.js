@@ -78,7 +78,7 @@ module.exports = gql`
   }
 
   input LocationInput {
-    street: String
+    address: String
     city: String
     state: String
     zipCode: String
@@ -86,7 +86,7 @@ module.exports = gql`
   }
 
   type Location {
-    street: String
+    address: String
     city: String
     state: String
     zipCode: String
