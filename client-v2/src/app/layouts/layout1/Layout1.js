@@ -61,9 +61,7 @@ function Layout1(props) {
             />
           )}
 
-          <div className='sticky top-0 z-99'>
-            {/* <SettingsPanel /> */}
-          </div>
+          <div className='sticky top-0 z-99'>{/* <SettingsPanel /> */}</div>
 
           <div className='flex flex-col flex-auto min-h-0 relative z-10'>
             <FuseDialog />
@@ -72,11 +70,11 @@ function Layout1(props) {
             {props.children}
           </div>
 
-          {config.footer.display && (
+          {/* {config.footer.display && (s
             <FooterLayout1
               className={config.footer.style === 'fixed' && 'sticky bottom-0'}
             />
-          )}
+          )} */}
         </main>
 
         {config.navbar.display && config.navbar.position === 'right' && (
