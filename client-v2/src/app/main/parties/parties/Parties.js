@@ -65,7 +65,6 @@ function Parties(props) {
 
   const getPins = async () => {
     const { getPins } = await client.request(GET_PINS_QUERY);
-    console.log(getPins);
     dispatch({ type: 'GET_PINS', payload: getPins });
   };
 
@@ -114,7 +113,7 @@ function Parties(props) {
           {/* Filters */}
           <div className='flex flex-col flex-shrink-0 sm:flex-row items-center justify-between py-24'>
             <TextField
-              label='Search for a course'
+              label='Search for a party'
               placeholder='Enter a keyword...'
               className='flex w-full sm:w-320 mb-16 sm:mb-0 mx-16'
               value={searchText}
