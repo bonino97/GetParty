@@ -180,6 +180,8 @@ const addHours = (date, hours) => {
   return newDate;
 };
 
+const maxYearDate = new Date(new Date().getFullYear(), 11, 31);
+
 const steps = getSteps();
 
 const PinForm = ({}) => {
@@ -446,7 +448,6 @@ const PinForm = ({}) => {
                 <Controller
                   name='startDate'
                   control={control}
-                  defaultValue=''
                   render={({ field: { onChange, value } }) => (
                     <DateTimePicker
                       label='Start Date'
@@ -455,7 +456,7 @@ const PinForm = ({}) => {
                       onChange={onChange}
                       className='mb-16'
                       minDate={Date.now()}
-                      maxDate={endDate}
+                      maxDate={endDate ? endDate : maxYearDate}
                       fullWidth
                     />
                   )}
@@ -466,7 +467,6 @@ const PinForm = ({}) => {
                 <Controller
                   name='endDate'
                   control={control}
-                  defaultValue=''
                   render={({ field: { onChange, value } }) => (
                     <DateTimePicker
                       label='End Date'
