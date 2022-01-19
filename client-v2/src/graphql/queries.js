@@ -18,7 +18,7 @@ export const GET_PINS_QUERY = `
       content
       phone
       image
-      partyType
+      category
       startDate
       endDate
 
@@ -34,8 +34,8 @@ export const GET_PINS_QUERY = `
       priceOfTicket
       takeFees
 
-      periodicParty
-      publicParty
+      isPeriodic
+      isPrivate
       entryRequirements
       tags
       instagram

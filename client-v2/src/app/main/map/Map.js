@@ -43,6 +43,7 @@ const MAP_STYLE = 'mapbox://styles/mapbox/dark-v10';
 const Map = ({ classes }) => {
   const client = useClient();
   const { state, dispatch } = useContext(Context);
+  const { draft } = state;
 
   useEffect(() => {
     getPins();
@@ -190,7 +191,8 @@ const Map = ({ classes }) => {
             }}
           />
 
-          <PinForm />
+          {draft && <PinForm />}
+
           {/* <Geocoder
             onSelected={(newViewport) => setViewport(newViewport)}
             mapboxApiAccessToken={MAPBOX_TOKEN}

@@ -12,20 +12,21 @@ import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import withReducer from 'app/store/withReducer';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict';
+
+import { isPast, formatDistanceToNowStrict } from 'date-fns';
 
 import { Link } from 'react-router-dom';
-
-import reducer from 'app/main/parties/store';
 
 import { useClient } from 'graphql/client';
 import { GET_PINS_QUERY } from 'graphql/queries';
 
 import Context from 'app/AppContext';
 import { PIN_DELETED_SUBSCRIPTION } from 'graphql/subscriptions';
+
+import NoPastedPartyItem from './NoPastedPartyItem';
+import NoParties from './NoParties';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -49,6 +50,7 @@ function Parties(props) {
   const { pins } = state;
   console.log(state);
   const classes = useStyles(props);
+
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -155,6 +157,7 @@ function Parties(props) {
               </Select>
             </FormControl>
           </div>
+
           {/* Parties */}
           {useMemo(() => {
             const container = {
@@ -162,17 +165,6 @@ function Parties(props) {
                 transition: {
                   staggerChildren: 0.1,
                 },
-              },
-            };
-
-            const item = {
-              hidden: {
-                opacity: 0,
-                y: 20,
-              },
-              show: {
-                opacity: 1,
-                y: 0,
               },
             };
 
@@ -185,70 +177,14 @@ function Parties(props) {
               >
                 {pins.map((pin) => {
                   return (
-                    <motion.div
-                      variants={item}
-                      className='w-full pb-24 sm:w-1/2 lg:w-1/3 sm:p-16'
-                      key={pin?._id}
-                    >
-                      <Card className='flex flex-col h-256 shadow'>
-                        <div
-                          className='flex flex-shrink-0 items-center justify-between px-24 h-64'
-                          style={{
-                            background:
-                              'linear-gradient(to right, #FD991B 0%, #FEBE3E 100%)',
-                            color: 'black',
-                          }}
-                        >
-                          <Typography
-                            className='font-medium truncate'
-                            color='inherit'
-                          >
-                            {/* Web */}
-                          </Typography>
-                          <div className='flex items-center justify-center opacity-75'>
-                            <Icon className='text-20 mx-8' color='inherit'>
-                              access_time
-                            </Icon>
-                            <div className='text-14 font-medium whitespace-nowrap'>
-                              {formatDistanceToNowStrict(
-                                Number(pin?.createdAt)
-                              ) + ' ago'}
-                            </div>
-                          </div>
-                        </div>
-                        <CardContent className='flex flex-col flex-auto items-center justify-center'>
-                          <Typography className='text-center text-16 font-medium'>
-                            {pin?.title}
-                          </Typography>
-                          <Typography
-                            className='text-center text-13 mt-8 font-normal'
-                            color='textSecondary'
-                          >
-                            Ultima Actualizacion del Curso
-                          </Typography>
-                        </CardContent>
-                        <CardActions className='justify-center pb-24'>
-                          <Button
-                            to={`/apps/academy/courses/1/angular`}
-                            component={Link}
-                            className='justify-start px-32'
-                            color='primary'
-                            variant='outlined'
-                          >
-                            More →
-                          </Button>
-                        </CardActions>
-                      </Card>
-                    </motion.div>
+                    !isPast(new Date(pin?.endDate)) && (
+                      <NoPastedPartyItem {...pin} key={pin?._id} />
+                    )
                   );
                 })}
               </motion.div>
             ) : (
-              <div className='flex flex-1 items-center justify-center'>
-                <Typography color='textSecondary' className='text-24 my-24'>
-                  No parties found!
-                </Typography>
-              </div>
+              <NoParties />
             );
           })}
         </div>
@@ -257,4 +193,4 @@ function Parties(props) {
   );
 }
 
-export default withReducer('academyApp', reducer)(Parties);
+export default Parties;

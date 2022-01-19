@@ -6,7 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import Context from 'app/AppContext';
-import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict';
+import { formatDistanceToNowStrict } from 'date-fns';
 
 import './Comments.css';
 
@@ -15,7 +15,7 @@ const Comments = ({}) => {
   const { currentPin } = state;
   const { comments } = currentPin;
   const commentRef = useRef(null);
-  
+
   useEffect(() => {
     scrollToBottom();
   }, [comments]);

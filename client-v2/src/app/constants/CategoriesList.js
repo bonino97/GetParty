@@ -1,0 +1,16 @@
+exports.categoriesList = [
+  'Alternative',
+  'Blues & Jazz',
+  'Electronic',
+  'Hip Hop/Rap',
+  'Indie',
+  'Latin',
+  'Metal',
+  'Pop',
+  'Psychodelic',
+  'Punk/Hardcore',
+  'R&B',
+  'Reggae',
+  'Rock',
+  'Others',
+];

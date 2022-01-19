@@ -43,6 +43,7 @@ import Context from 'app/AppContext';
 import { useAuthClient } from 'graphql/authClient';
 import { CREATE_PIN_MUTATION } from 'graphql/mutations';
 
+import { categoriesList } from 'app/constants/CategoriesList';
 import './PinForm.css';
 
 /**
@@ -127,9 +128,9 @@ const defaultValues = {
   title: '',
   content: '',
   phone: '',
-  partyType: '',
-  startDate: null,
-  endDate: null,
+  category: '',
+  startDate: new Date(),
+  endDate: new Date(),
   image: '',
 
   street: '',
@@ -142,8 +143,8 @@ const defaultValues = {
   priceOfTicket: 0,
   takeFees: false,
 
-  periodicParty: false,
-  publicParty: true,
+  isPeriodic: false,
+  isPrivate: true,
   entryRequirements: '',
 
   tags: '',
@@ -176,6 +177,7 @@ const getSteps = () => {
 const steps = getSteps();
 
 const PinForm = ({}) => {
+  console.log(categoriesList);
   const client = useAuthClient();
   const classes = useStyles();
   const reduxDispatch = useDispatch();
@@ -254,7 +256,7 @@ const PinForm = ({}) => {
         title: formValues?.title,
         content: formValues?.content,
         phone: formValues?.phone,
-        partyType: formValues?.partyType,
+        category: formValues?.category,
         startDate: formValues?.startDate,
         endDate: formValues?.endDate,
         image: formValues?.image,
@@ -271,8 +273,8 @@ const PinForm = ({}) => {
         priceOfTicket: Number(formValues?.priceOfTicket),
         takeFees: formValues?.takeFees,
 
-        periodicParty: formValues?.periodicParty,
-        publicParty: formValues?.publicParty,
+        isPeriodic: formValues?.isPeriodic,
+        isPrivate: formValues?.isPrivate,
         entryRequirements: formValues?.entryRequirements,
 
         tags: formValues?.tags,
@@ -309,601 +311,602 @@ const PinForm = ({}) => {
   };
 
   return (
-    draft && (
-      <Dialog
-        classes={{
-          paper: 'm-24',
-        }}
-        fullWidth
-        maxWidth='md'
-        open={true}
+    <Dialog
+      classes={{
+        paper: 'm-24',
+      }}
+      fullWidth
+      maxWidth='md'
+      open={true}
+    >
+      <AppBar position='static'>
+        <Toolbar className='flex w-full'>
+          <Typography variant='subtitle1' className='text-white font-600'>
+            Create Party
+          </Typography>
+        </Toolbar>
+      </AppBar>
+
+      <Stepper
+        alternativeLabel
+        activeStep={activeStep}
+        connector={<QontoConnector />}
       >
-        <AppBar position='static'>
-          <Toolbar className='flex w-full'>
-            <Typography variant='subtitle1' className='text-white font-600'>
-              Create Party
-            </Typography>
-          </Toolbar>
-        </AppBar>
+        {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel StepIconComponent={QontoStepIcon}></StepLabel>
+          </Step>
+        ))}
+      </Stepper>
 
-        <Stepper
-          alternativeLabel
-          activeStep={activeStep}
-          connector={<QontoConnector />}
-        >
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel StepIconComponent={QontoStepIcon}></StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-
-        <form
-          autoComplete='none'
-          noValidate
-          className='flex flex-col md:overflow-hidden'
-        >
-          <DialogContent classes={{}}>
-            {activeStep === 0 && (
-              <div>
-                <div className='flex'>
-                  <Controller
-                    control={control}
-                    name='title'
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mb-16'
-                        label='Party Name'
-                        placeholder='Whats the name of the party?'
-                        id='title'
-                        error={!!errors?.title}
-                        helperText={errors?.title?.message}
-                        variant='outlined'
-                        required
-                        autoFocus
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className='flex'>
-                  <Controller
-                    control={control}
-                    name='content'
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mb-16'
-                        name='content'
-                        label='Description'
-                        placeholder='Description of party.'
-                        variant='outlined'
-                        multiline
-                        rows={2}
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className='flex'>
-                  <Controller
-                    control={control}
-                    name='partyType'
-                    render={({ field }) => (
-                      <FormControl className='flex w-full ' variant='outlined'>
-                        <InputLabel htmlFor='category-label-placeholder'>
-                          Category
-                        </InputLabel>
-                        <Select
-                          input={
-                            <OutlinedInput
-                              {...field}
-                              className='mb-16'
-                              name='partyType'
-                              id='partyType-placeholder'
-                              placeholder='Select a party type.'
-                              variant='outlined'
-                              fullWidth
-                            />
-                          }
-                        >
-                          <MenuItem value='all'>
-                            <em> None </em>
-                          </MenuItem>
-                          <MenuItem value='category2'>Category 2</MenuItem>
-                          <MenuItem value='category3'>Category 3</MenuItem>
-                          <MenuItem value='category4'>Category 4</MenuItem>
-                          <MenuItem value='category5'>Category 5</MenuItem>
-                        </Select>
-                      </FormControl>
-                    )}
-                  />
-                </div>
-
-                <div className='flex'>
-                  <Controller
-                    name='startDate'
-                    control={control}
-                    defaultValue=''
-                    render={({ field: { onChange, value } }) => (
-                      <DateTimePicker
-                        label='Start Date'
-                        inputVariant='outlined'
-                        value={value}
-                        onChange={onChange}
-                        className='mb-16'
-                        maxDate={endDate}
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className='flex'>
-                  <Controller
-                    name='endDate'
-                    control={control}
-                    defaultValue=''
-                    render={({ field: { onChange, value } }) => (
-                      <DateTimePicker
-                        label='End Date'
-                        inputVariant='outlined'
-                        value={value}
-                        onChange={onChange}
-                        className='mb-16'
-                        minDate={startDate}
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className='flex items-center justify-center'>
-                  <div>
-                    <input
-                      accept='image/*'
-                      id='image'
-                      type='file'
-                      className='image-input'
-                      onChange={(e) => setImage(e.target.files[0])}
+      <form
+        autoComplete='none'
+        noValidate
+        className='flex flex-col md:overflow-hidden'
+      >
+        <DialogContent classes={{}}>
+          {activeStep === 0 && (
+            <div>
+              <div className='flex'>
+                <Controller
+                  control={control}
+                  name='title'
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mb-16'
+                      label='Party Name'
+                      placeholder='Whats the name of the party?'
+                      id='title'
+                      error={!!errors?.title}
+                      helperText={errors?.title?.message}
+                      variant='outlined'
+                      required
+                      autoFocus
+                      fullWidth
                     />
-                    <label
-                      htmlFor='image'
-                      className={clsx(
-                        classes.productImageUpload,
-                        'flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5'
-                      )}
-                    >
-                      <Icon
-                        fontSize='large'
-                        color='action'
-                        style={{ color: image && '#FEBE3E' }}
-                      >
-                        cloud_upload
-                      </Icon>
-                    </label>
-                  </div>
-                </div>
+                  )}
+                />
               </div>
-            )}
 
-            {activeStep === 1 && (
-              <div>
-                <div className='flex'>
-                  <Controller
-                    control={control}
-                    name='phone'
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mb-24'
-                        label='Phone'
-                        placeholder='Phone number of the party.'
-                        id='phone'
-                        variant='outlined'
-                        autoFocus
-                        fullWidth
-                        type='number'
-                        InputProps={{
-                          inputProps: { min: 0 },
-                        }}
-                      />
-                    )}
-                  />
-                </div>
-                <div className='flex'>
-                  <Controller
-                    control={control}
-                    name='street'
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mb-24'
-                        label='Street'
-                        placeholder='Complete street and number of party location.'
-                        id='street'
-                        name='street'
-                        variant='outlined'
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className='flex'>
-                  <Controller
-                    control={control}
-                    name='city'
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mb-24'
-                        label='City'
-                        placeholder='City of party location.'
-                        id='city'
-                        name='city'
-                        variant='outlined'
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className='flex'>
-                  <Controller
-                    control={control}
-                    name='state'
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mb-24'
-                        label='State'
-                        placeholder='State of party location.'
-                        id='state'
-                        name='state'
-                        variant='outlined'
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className='flex'>
-                  <Controller
-                    control={control}
-                    name='zipCode'
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mb-24'
-                        label='Zip Code'
-                        placeholder='Zip Code of party location.'
-                        id='zipCode'
-                        name='zipCode'
-                        variant='outlined'
-                        fullWidth
-                        type='number'
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className='flex'>
-                  <Controller
-                    control={control}
-                    name='country'
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mb-24'
-                        label='Country'
-                        placeholder='Country of party location.'
-                        id='country'
-                        name='country'
-                        variant='outlined'
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
+              <div className='flex'>
+                <Controller
+                  control={control}
+                  name='content'
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mb-16'
+                      name='content'
+                      label='Description'
+                      placeholder='Description of party.'
+                      variant='outlined'
+                      multiline
+                      rows={2}
+                      fullWidth
+                    />
+                  )}
+                />
               </div>
-            )}
 
-            {activeStep === 2 && (
-              <div>
-                <div className='flex'>
-                  <Controller
-                    name='availableTickets'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mt-8 mb-16'
-                        label='Available Tickets'
-                        id='availableTickets'
-                        placeholder='Number of available tickets.'
-                        variant='outlined'
-                        type='number'
-                        autoFocus
-                        fullWidth
-                        InputProps={{
-                          inputProps: { min: 0 },
-                        }}
-                      />
-                    )}
-                  />
-                </div>
-                <div className='flex'>
-                  <Controller
-                    name='priceOfTicket'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mt-8 mb-16'
-                        label='Price of Ticket'
-                        placeholder='Whats the party ticket price?'
-                        id='priceOfTicket'
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>$</InputAdornment>
-                          ),
-                          inputProps: { min: 0 },
-                        }}
-                        type='number'
-                        variant='outlined'
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
-                <div className='flex'>
-                  <Controller
-                    name='takeFees'
-                    control={control}
-                    render={({ field: { onChange, value } }) => (
-                      <FormControlLabel
-                        className='mt-8 mb-16'
-                        label='Tax included in price?'
-                        control={
-                          <Switch
-                            onChange={(ev) => {
-                              onChange(ev.target.checked);
-                            }}
-                            checked={value}
-                            name='takeFees'
-                          />
-                        }
-                      />
-                    )}
-                  />
-                </div>
-              </div>
-            )}
-
-            {activeStep === 3 && (
-              <div>
-                <div className='flex'>
-                  <Controller
-                    name='publicParty'
-                    control={control}
-                    render={({ field: { onChange, value } }) => (
-                      <FormControlLabel
-                        className='mt-8 mb-24'
-                        label='Its a public party?'
-                        control={
-                          <Switch
-                            onChange={(ev) => {
-                              onChange(ev.target.checked);
-                            }}
-                            checked={value}
-                            name='publicParty'
-                          />
-                        }
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className='flex'>
-                  <Controller
-                    control={control}
-                    name='entryRequirements'
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mt-16 mb-24'
-                        name='entryRequirements'
-                        label='Entry Requirements'
-                        placeholder='Does the party have any entry requirements?'
-                        variant='outlined'
-                        multiline
-                        rows={2}
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className='flex'>
-                  <Controller
-                    name='periodicParty'
-                    control={control}
-                    render={({ field: { onChange, value } }) => (
-                      <FormControlLabel
-                        className='mt-8 mb-24'
-                        label='Its a periodic party?'
-                        control={
-                          <Switch
-                            onChange={(ev) => {
-                              onChange(ev.target.checked);
-                            }}
-                            checked={value}
-                            name='periodicParty'
-                          />
-                        }
-                      />
-                    )}
-                  />
-                </div>
-              </div>
-            )}
-
-            {activeStep === 4 && (
-              <div>
-                <div className='flex'>
-                  <Controller
-                    name='tags'
-                    control={control}
-                    render={({ field: { onChange, value } }) => (
-                      <Autocomplete
-                        className='mt-8 mb-16'
-                        multiple
-                        freeSolo
-                        options={[]}
-                        value={value}
-                        fullWidth
-                        onChange={(event, newValue) => {
-                          onChange(newValue);
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            autoComplete='none'
-                            {...params}
-                            placeholder='Select multiple tags'
-                            label='Tags'
+              <div className='flex'>
+                <Controller
+                  control={control}
+                  name='category'
+                  render={({ field }) => (
+                    <FormControl className='flex w-full ' variant='outlined'>
+                      <InputLabel htmlFor='category-label-placeholder'>
+                        Category
+                      </InputLabel>
+                      <Select
+                        input={
+                          <OutlinedInput
+                            {...field}
+                            className='mb-16'
+                            name='category'
+                            id='category-placeholder'
+                            placeholder='Select a party type.'
                             variant='outlined'
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
+                            fullWidth
                           />
-                        )}
-                      />
-                    )}
-                  />
-                </div>
+                        }
+                      >
+                        <MenuItem value='all'>
+                          <em> None </em>
+                        </MenuItem>
+                        {categoriesList &&
+                          categoriesList.map((category) => {
+                            return (
+                              <MenuItem value={category}>{category}</MenuItem>
+                            );
+                          })}
+                      </Select>
+                    </FormControl>
+                  )}
+                />
+              </div>
 
-                <div className='flex'>
-                  <Controller
-                    control={control}
-                    name='instagram'
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mb-24'
-                        label='Instagram'
-                        placeholder='Instagram url'
-                        id='instagram'
-                        name='instagram'
-                        variant='outlined'
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
+              <div className='flex'>
+                <Controller
+                  name='startDate'
+                  control={control}
+                  defaultValue=''
+                  render={({ field: { onChange, value } }) => (
+                    <DateTimePicker
+                      label='Start Date'
+                      inputVariant='outlined'
+                      value={value}
+                      onChange={onChange}
+                      className='mb-16'
+                      minDate={Date.now()}
+                      maxDate={endDate}
+                      fullWidth
+                    />
+                  )}
+                />
+              </div>
 
-                <div className='flex'>
-                  <Controller
-                    control={control}
-                    name='twitter'
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mb-24'
-                        label='Twitter'
-                        placeholder='Twitter url'
-                        id='twitter'
-                        name='twitter'
-                        variant='outlined'
-                        fullWidth
-                      />
-                    )}
-                  />
-                </div>
+              <div className='flex'>
+                <Controller
+                  name='endDate'
+                  control={control}
+                  defaultValue=''
+                  render={({ field: { onChange, value } }) => (
+                    <DateTimePicker
+                      label='End Date'
+                      inputVariant='outlined'
+                      value={value}
+                      onChange={onChange}
+                      className='mb-16'
+                      minDate={startDate}
+                      fullWidth
+                    />
+                  )}
+                />
+              </div>
 
-                <div className='flex'>
-                  <Controller
-                    control={control}
-                    name='facebook'
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        autoComplete='none'
-                        className='mb-24'
-                        label='Facebook'
-                        placeholder='Facebook url'
-                        id='facebook'
-                        name='facebook'
-                        variant='outlined'
-                        fullWidth
-                      />
-                    )}
+              <div className='flex items-center justify-center'>
+                <div>
+                  <input
+                    accept='image/*'
+                    id='image'
+                    type='file'
+                    className='image-input'
+                    onChange={(e) => setImage(e.target.files[0])}
                   />
+                  <label
+                    htmlFor='image'
+                    className={clsx(
+                      classes.productImageUpload,
+                      'flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5'
+                    )}
+                  >
+                    <Icon
+                      fontSize='large'
+                      color='action'
+                      style={{ color: image && '#FEBE3E' }}
+                    >
+                      cloud_upload
+                    </Icon>
+                  </label>
                 </div>
               </div>
-            )}
-          </DialogContent>
+            </div>
+          )}
 
-          <DialogActions className='justify-between p-20 pb-16 border-t border-white'>
-            {activeStep === 0 ? (
-              <Button
-                onClick={handleDeleteDraft}
-                variant='contained'
-                color='secondary'
-              >
-                Cancel
-              </Button>
-            ) : (
-              <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                className={classes.button}
-              >
-                Back
-              </Button>
-            )}
-            {activeStep === steps.length - 1 ? (
-              <Button
-                variant='contained'
-                color='primary'
-                className={classes.button}
-                disabled={_.isEmpty(dirtyFields) || !isValid || submitting}
-                type='button'
-                onClick={handleSubmit(onSubmit)}
-              >
-                Finish
-              </Button>
-            ) : (
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={handleNext}
-                className={classes.button}
-                type='button'
-              >
-                Next
-              </Button>
-            )}
-          </DialogActions>
-        </form>
-      </Dialog>
-    )
+          {activeStep === 1 && (
+            <div>
+              <div className='flex'>
+                <Controller
+                  control={control}
+                  name='phone'
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mb-24'
+                      label='Phone'
+                      placeholder='Phone number of the party.'
+                      id='phone'
+                      variant='outlined'
+                      autoFocus
+                      fullWidth
+                      type='number'
+                      InputProps={{
+                        inputProps: { min: 0 },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              <div className='flex'>
+                <Controller
+                  control={control}
+                  name='street'
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mb-24'
+                      label='Street'
+                      placeholder='Complete street and number of party location.'
+                      id='street'
+                      name='street'
+                      variant='outlined'
+                      fullWidth
+                    />
+                  )}
+                />
+              </div>
+
+              <div className='flex'>
+                <Controller
+                  control={control}
+                  name='city'
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mb-24'
+                      label='City'
+                      placeholder='City of party location.'
+                      id='city'
+                      name='city'
+                      variant='outlined'
+                      fullWidth
+                    />
+                  )}
+                />
+              </div>
+
+              <div className='flex'>
+                <Controller
+                  control={control}
+                  name='state'
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mb-24'
+                      label='State'
+                      placeholder='State of party location.'
+                      id='state'
+                      name='state'
+                      variant='outlined'
+                      fullWidth
+                    />
+                  )}
+                />
+              </div>
+
+              <div className='flex'>
+                <Controller
+                  control={control}
+                  name='zipCode'
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mb-24'
+                      label='Zip Code'
+                      placeholder='Zip Code of party location.'
+                      id='zipCode'
+                      name='zipCode'
+                      variant='outlined'
+                      fullWidth
+                      type='number'
+                    />
+                  )}
+                />
+              </div>
+
+              <div className='flex'>
+                <Controller
+                  control={control}
+                  name='country'
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mb-24'
+                      label='Country'
+                      placeholder='Country of party location.'
+                      id='country'
+                      name='country'
+                      variant='outlined'
+                      fullWidth
+                    />
+                  )}
+                />
+              </div>
+            </div>
+          )}
+
+          {activeStep === 2 && (
+            <div>
+              <div className='flex'>
+                <Controller
+                  name='availableTickets'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mt-8 mb-16'
+                      label='Available Tickets'
+                      id='availableTickets'
+                      placeholder='Number of available tickets.'
+                      variant='outlined'
+                      type='number'
+                      autoFocus
+                      fullWidth
+                      InputProps={{
+                        inputProps: { min: 0 },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              <div className='flex'>
+                <Controller
+                  name='priceOfTicket'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mt-8 mb-16'
+                      label='Price of Ticket'
+                      placeholder='Whats the party ticket price?'
+                      id='priceOfTicket'
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>$</InputAdornment>
+                        ),
+                        inputProps: { min: 0 },
+                      }}
+                      type='number'
+                      variant='outlined'
+                      fullWidth
+                    />
+                  )}
+                />
+              </div>
+              <div className='flex'>
+                <Controller
+                  name='takeFees'
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <FormControlLabel
+                      className='mt-8 mb-16'
+                      label='Tax included in price?'
+                      control={
+                        <Switch
+                          onChange={(ev) => {
+                            onChange(ev.target.checked);
+                          }}
+                          checked={value}
+                          name='takeFees'
+                        />
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+          )}
+
+          {activeStep === 3 && (
+            <div>
+              <div className='flex'>
+                <Controller
+                  name='isPrivate'
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <FormControlLabel
+                      className='mt-8 mb-24'
+                      label='Its a public party?'
+                      control={
+                        <Switch
+                          onChange={(ev) => {
+                            onChange(ev.target.checked);
+                          }}
+                          checked={value}
+                          name='isPrivate'
+                        />
+                      }
+                    />
+                  )}
+                />
+              </div>
+
+              <div className='flex'>
+                <Controller
+                  control={control}
+                  name='entryRequirements'
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mt-16 mb-24'
+                      name='entryRequirements'
+                      label='Entry Requirements'
+                      placeholder='Does the party have any entry requirements?'
+                      variant='outlined'
+                      multiline
+                      rows={2}
+                      fullWidth
+                    />
+                  )}
+                />
+              </div>
+
+              <div className='flex'>
+                <Controller
+                  name='isPeriodic'
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <FormControlLabel
+                      className='mt-8 mb-24'
+                      label='Its a periodic party?'
+                      control={
+                        <Switch
+                          onChange={(ev) => {
+                            onChange(ev.target.checked);
+                          }}
+                          checked={value}
+                          name='isPeriodic'
+                        />
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+          )}
+
+          {activeStep === 4 && (
+            <div>
+              <div className='flex'>
+                <Controller
+                  name='tags'
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <Autocomplete
+                      className='mt-8 mb-16'
+                      multiple
+                      freeSolo
+                      options={[]}
+                      value={value}
+                      fullWidth
+                      onChange={(event, newValue) => {
+                        onChange(newValue);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          autoComplete='none'
+                          {...params}
+                          placeholder='Select multiple tags'
+                          label='Tags'
+                          variant='outlined'
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
+                      )}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className='flex'>
+                <Controller
+                  control={control}
+                  name='instagram'
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mb-24'
+                      label='Instagram'
+                      placeholder='Instagram url'
+                      id='instagram'
+                      name='instagram'
+                      variant='outlined'
+                      fullWidth
+                    />
+                  )}
+                />
+              </div>
+
+              <div className='flex'>
+                <Controller
+                  control={control}
+                  name='twitter'
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mb-24'
+                      label='Twitter'
+                      placeholder='Twitter url'
+                      id='twitter'
+                      name='twitter'
+                      variant='outlined'
+                      fullWidth
+                    />
+                  )}
+                />
+              </div>
+
+              <div className='flex'>
+                <Controller
+                  control={control}
+                  name='facebook'
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete='none'
+                      className='mb-24'
+                      label='Facebook'
+                      placeholder='Facebook url'
+                      id='facebook'
+                      name='facebook'
+                      variant='outlined'
+                      fullWidth
+                    />
+                  )}
+                />
+              </div>
+            </div>
+          )}
+        </DialogContent>
+
+        <DialogActions className='justify-between p-20 pb-16 border-t border-white'>
+          {activeStep === 0 ? (
+            <Button
+              onClick={handleDeleteDraft}
+              variant='contained'
+              color='secondary'
+            >
+              Cancel
+            </Button>
+          ) : (
+            <Button
+              disabled={activeStep === 0}
+              onClick={handleBack}
+              className={classes.button}
+            >
+              Back
+            </Button>
+          )}
+          {activeStep === steps.length - 1 ? (
+            <Button
+              variant='contained'
+              color='primary'
+              className={classes.button}
+              disabled={_.isEmpty(dirtyFields) || !isValid || submitting}
+              type='button'
+              onClick={handleSubmit(onSubmit)}
+            >
+              Finish
+            </Button>
+          ) : (
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={handleNext}
+              className={classes.button}
+              type='button'
+            >
+              Next
+            </Button>
+          )}
+        </DialogActions>
+      </form>
+    </Dialog>
   );
 };
 

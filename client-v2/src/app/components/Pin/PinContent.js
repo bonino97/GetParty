@@ -19,7 +19,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MessageIcon from '@material-ui/icons/Message';
 
-import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict';
+import { formatDistanceToNowStrict } from 'date-fns';
 
 import { DELETE_PIN_MUTATION } from 'graphql/mutations';
 import { useAuthClient } from 'graphql/authClient';
@@ -96,7 +96,7 @@ export default function PinContent({ pin }) {
   };
 
   return (
-    <Dialog open={open} aria-labelledby='form-dialog-title'>
+    <Dialog open={open} aria-labelledby='form-dialog-title' maxWidth='md'>
       <Card className={classes.root}>
         <CardHeader
           avatar={

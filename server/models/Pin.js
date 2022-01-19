@@ -6,7 +6,7 @@ const PinSchema = mongoose.Schema(
     content: String,
     phone: String,
     image: String,
-    partyType: String, // Buscar diferentes tipos de musica ?
+    category: String, // Buscar diferentes tipos de musica ?
     startDate: Date,
     endDate: Date,
 
@@ -22,8 +22,8 @@ const PinSchema = mongoose.Schema(
     priceOfTicket: Number,
     takeFees: Boolean,
 
-    periodicParty: Boolean,
-    publicParty: Boolean,
+    isPeriodic: Boolean,
+    isPrivate: Boolean,
     entryRequirements: String,
     tags: [String],
     instagram: String,

@@ -3,7 +3,7 @@ export const CREATE_PIN_MUTATION = `
     $title: String!, 
     $content: String!, 
     $image: String,
-    $partyType: String,
+    $category: String,
     $startDate: Date,
     $endDate: Date,
 
@@ -14,8 +14,8 @@ export const CREATE_PIN_MUTATION = `
     $priceOfTicket: Int,
     $takeFees: Boolean,
 
-    $periodicParty: Boolean,
-    $publicParty: Boolean,
+    $isPeriodic: Boolean,
+    $isPrivate: Boolean,
 
     $entryRequirements: String,
     $tags: [String],
@@ -30,7 +30,7 @@ export const CREATE_PIN_MUTATION = `
       title: $title,
       image: $image,
       content: $content,
-      partyType: $partyType,
+      category: $category,
       startDate: $startDate,
       endDate: $endDate,
       
@@ -41,8 +41,8 @@ export const CREATE_PIN_MUTATION = `
       priceOfTicket: $priceOfTicket,
       takeFees: $takeFees,
       
-      periodicParty: $periodicParty,
-      publicParty: $publicParty,
+      isPeriodic: $isPeriodic,
+      isPrivate: $isPrivate,
       entryRequirements: $entryRequirements,
       
       tags: $tags,

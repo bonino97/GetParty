@@ -18,7 +18,7 @@ module.exports = gql`
     content: String
     phone: String
     image: String
-    partyType: String
+    category: String
     startDate: Date
     endDate: Date
 
@@ -28,8 +28,8 @@ module.exports = gql`
     priceOfTicket: Int
     takeFees: Boolean
 
-    periodicParty: Boolean
-    publicParty: Boolean
+    isPeriodic: Boolean
+    isPrivate: Boolean
     entryRequirements: String
     tags: [String]
     instagram: String
@@ -52,7 +52,7 @@ module.exports = gql`
     title: String!
     content: String
     image: String
-    partyType: String
+    category: String
     startDate: Date
     endDate: Date
 
@@ -63,8 +63,8 @@ module.exports = gql`
     priceOfTicket: Int
     takeFees: Boolean
 
-    periodicParty: Boolean
-    publicParty: Boolean
+    isPeriodic: Boolean
+    isPrivate: Boolean
 
     entryRequirements: String
     tags: [String]
