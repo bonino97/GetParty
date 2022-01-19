@@ -24,7 +24,9 @@ export const getReverseGeocodingData = async (lat, long) => {
     let address;
 
     if (completeAddress) {
-      address = completeAddress?.address + ' ' + completeAddress?.text;
+      const number = completeAddress?.address ? completeAddress?.address : '';
+      const street = completeAddress?.text ? completeAddress?.text : '';
+      address = number + ' ' + street;
     }
 
     if (!completeAddress) {
