@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function PinContent({ pin }) {
+const PinContent = ({ pin }) => {
   const client = useAuthClient();
   const reduxDispatch = useDispatch();
   const { state, dispatch } = useContext(Context);
@@ -93,6 +93,11 @@ export default function PinContent({ pin }) {
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+
+  const handleOpenGoogleMap = () => {
+    const url = `https://www.google.com/maps/dir/${state?.currentLocation?.latitude},${state?.currentLocation?.longitude}/${pin?.latitude},${pin?.longitude}`;
+    window.open(url, '_blank');
   };
 
   return (
@@ -144,7 +149,7 @@ export default function PinContent({ pin }) {
           </IconButton>
           <IconButton
             aria-label='view party'
-            onClick={() => reduxDispatch(toggleQuickPanel())}
+            onClick={() => handleOpenGoogleMap()}
           >
             <VisibilityIcon />
           </IconButton>
@@ -168,4 +173,6 @@ export default function PinContent({ pin }) {
       </Card>
     </Dialog>
   );
-}
+};
+
+export default PinContent;

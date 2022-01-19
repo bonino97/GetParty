@@ -75,6 +75,12 @@ export default function Reducer(state, { type, payload }) {
         pins: updatedPins,
         currentPin: updatedCurrentPin,
       };
+    case 'CURRENT_LOCATION':
+      const currentLocation = payload;
+      return {
+        ...state,
+        currentLocation,
+      };
     default:
       return state;
   }

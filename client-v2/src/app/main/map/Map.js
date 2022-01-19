@@ -49,7 +49,6 @@ const Map = ({ classes }) => {
 
   const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
   const [loading, setLoading] = useState(false);
-  const [userPosition, setUserPosition] = useState();
 
   useEffect(() => {
     getUserPosition();
@@ -64,10 +63,12 @@ const Map = ({ classes }) => {
     setLoading(true);
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position);
         const { latitude, longitude } = position.coords;
+        dispatch({
+          type: 'CURRENT_LOCATION',
+          payload: { longitude, latitude },
+        });
         setViewport({ latitude, longitude, zoom: 13 });
-        setUserPosition({ latitude, longitude });
         setLoading(false);
       });
     }
@@ -133,19 +134,6 @@ const Map = ({ classes }) => {
                 onViewportChange={(newViewport) => setViewport(newViewport)}
               />
             </div>
-
-            {/* Pin for user current position */}
-            {/* {userPosition && (
-              <Marker
-                latitude={userPosition.latitude}
-                longitude={userPosition.longitude}
-                offsetLeft={-19}
-                offsetTop={-38}
-              >
-                {' '}
-                <PersonIcon size={25} color='#0953ff'></PersonIcon>
-              </Marker>
-            )} */}
 
             {/* Draft Pin */}
             {state?.draft && (
