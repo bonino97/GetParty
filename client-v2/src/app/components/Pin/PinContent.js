@@ -15,14 +15,14 @@ import ShareIcon from '@material-ui/icons/Share';
 import CloseIcon from '@material-ui/icons/Close';
 import { Dialog } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
-import VisibilityIcon from '@material-ui/icons/Visibility';
+import NavigationIcon from '@material-ui/icons/Navigation';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MessageIcon from '@material-ui/icons/Message';
 
 import { formatDistanceToNowStrict } from 'date-fns';
 
 import { DELETE_PIN_MUTATION } from 'graphql/mutations';
-import { useAuthClient } from 'graphql/authClient';
+import { useClient } from 'graphql/client';
 
 import Context from 'app/AppContext';
 import { showMessage } from 'app/store/fuse/messageSlice';
@@ -53,7 +53,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PinContent = ({ pin }) => {
-  const client = useAuthClient();
+  console.log(pin);
+  const client = useClient();
   const reduxDispatch = useDispatch();
   const { state, dispatch } = useContext(Context);
   const [open, setOpen] = useState(true);
@@ -151,7 +152,7 @@ const PinContent = ({ pin }) => {
             aria-label='view party'
             onClick={() => handleOpenGoogleMap()}
           >
-            <VisibilityIcon />
+            <NavigationIcon />
           </IconButton>
           <IconButton
             aria-label='view party'

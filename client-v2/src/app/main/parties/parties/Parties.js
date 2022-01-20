@@ -8,6 +8,7 @@ import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import Masonry from 'react-masonry-css';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 
@@ -170,20 +171,32 @@ function Parties(props) {
             };
 
             return pins && pins.length > 0 ? (
-              <motion.div
-                className='flex flex-wrap py-24'
-                variants={container}
-                initial='hidden'
-                animate='show'
-              >
-                {pins.map((pin) => {
-                  return (
-                    !isPast(new Date(pin?.endDate)) && (
-                      <NoStartedPartyItem {...pin} key={pin?._id} />
-                    )
-                  );
-                })}
-              </motion.div>
+              <>
+                <div className='flex flex-wrap w-full'>
+                  <Masonry
+                    breakpointCols={{
+                      default: 3,
+                      1920: 3,
+                      1600: 3,
+                      1366: 3,
+                      1280: 3,
+                      960: 2,
+                      600: 1,
+                      480: 1,
+                    }}
+                    className='my-masonry-grid flex w-full'
+                    columnClassName='my-masonry-grid_column flex flex-col p-0 md:p-8'
+                  >
+                    {pins.map((pin) => {
+                      return (
+                        !isPast(new Date(pin?.endDate)) && (
+                          <NoStartedPartyItem {...pin} key={pin?._id} />
+                        )
+                      );
+                    })}
+                  </Masonry>
+                </div>
+              </>
             ) : (
               <NoParties />
             );
