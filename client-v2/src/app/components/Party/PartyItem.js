@@ -16,8 +16,6 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 import MessageIcon from '@material-ui/icons/Message';
 import ShareIcon from '@material-ui/icons/Share';
 
-import { motion } from 'framer-motion';
-
 import { Link } from 'react-router-dom';
 
 import { formatDistance, intlFormat } from 'date-fns';
@@ -31,17 +29,6 @@ import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store
 import { isAuthUser } from 'app/services/authService/isAuthUser';
 
 const PartyItem = (pin) => {
-  const item = {
-    hidden: {
-      opacity: 0,
-      y: 20,
-    },
-    show: {
-      opacity: 1,
-      y: 0,
-    },
-  };
-
   const authClient = useAuthClient();
   const reduxDispatch = useDispatch();
   const { state, dispatch } = useContext(Context);
@@ -115,139 +102,125 @@ const PartyItem = (pin) => {
   };
 
   return (
-    <motion.div
-      variants={item}
-      initial={{ y: 20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1, transition: { delay: 0.1 } }}
+    <Card
+      variants={{
+        hidden: { opacity: 0, y: 40 },
+        show: { opacity: 1, y: 0 },
+      }}
+      key={pin?._id}
+      className='overflow-hidden rounded-16 shadow'
     >
-      <Card
-        component={motion.div}
-        variants={{
-          hidden: { opacity: 0, y: 40 },
-          show: { opacity: 1, y: 0 },
-        }}
-        key={pin?._id}
-        className='mb-32 ml-10 overflow-hidden rounded-16 shadow'
-      >
-        <CardHeader
-          avatar={<Avatar aria-label='Recipe' src={pin?.author?.picture} />}
-          action={
-            <IconButton aria-label='more'>
-              <Icon>favorite_border</Icon>
-            </IconButton>
-          }
-          title={
-            <span className='flex'>
-              <Typography
-                className='font-normal'
-                color='primary'
-                paragraph={false}
-              >
-                {pin?.author?.name}
-              </Typography>
-            </span>
-          }
-          subheader={
-            <div className='flex flex-row opacity-75'>
-              <Icon className='text-16 mt-1 mr-4' color='inherit'>
-                access_time
-              </Icon>
-              <div>
-                {formatDistance(new Date(pin?.startDate), new Date(), {
-                  addSuffix: true,
-                })}
-              </div>
-            </div>
-          }
-        />
-
-        <CardContent className='py-0'>
-          {pin?.image && (
-            <div className='border-1 rounded-8 overflow-hidden'>
-              <img
-                className='w-full border-b-1'
-                src={pin?.image}
-                alt='article'
-              />
-            </div>
-          )}
-          <div className='flex flex-col items-center p-16'>
-            <Typography variant='subtitle1'>{pin?.title}</Typography>
-            <Typography variant='caption'>
-              <Chip
-                icon={<Icon className='text-16'>access_time</Icon>}
-                label={intlFormat(
-                  new Date(pin?.startDate),
-                  {
-                    weekday: 'short',
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: 'numeric',
-                  },
-                  {
-                    locale: 'en-US',
-                  }
-                )}
-                classes={{
-                  root: 'h-24',
-                  label: 'px-12 py-4 text-11',
-                }}
-                variant='outlined'
-              />
-            </Typography>
-            <Typography className='mt-16'>{pin?.content}</Typography>
-          </div>
-          <div className='flex flex-col p-4'>
-            <Typography variant='caption'>{getPriceOfTicket()}</Typography>
-          </div>
-          <div className='flex flex-col p-4'>
-            <Typography variant='caption'>{getAddress()}</Typography>
-          </div>
-        </CardContent>
-
-        <CardActions
-          disableSpacing
-          className='flex space-x-0.5 h-auto w-auto p-12'
-        >
-          <Button
-            to={`/apps/academy/courses/1/angular`}
-            component={Link}
-            className='item w-1/2 h-auto'
-            color='primary'
-            variant='outlined'
-          >
-            More →
-          </Button>
-        </CardActions>
-        <CardActions disableSpacing>
-          {isAuthUser(pin, state?.currentUser) && (
-            <IconButton
-              onClick={() => handleDeletePin()}
-              aria-label='delete pin'
+      <CardHeader
+        avatar={<Avatar aria-label='Recipe' src={pin?.author?.picture} />}
+        action={
+          <IconButton aria-label='more'>
+            <Icon>favorite_border</Icon>
+          </IconButton>
+        }
+        title={
+          <span className='flex'>
+            <Typography
+              className='font-normal'
+              color='primary'
+              paragraph={false}
             >
-              <DeleteIcon />
-            </IconButton>
-          )}
-          <IconButton aria-label='share'>
-            <ShareIcon />
+              {pin?.author?.name}
+            </Typography>
+          </span>
+        }
+        subheader={
+          <div className='flex flex-row opacity-75'>
+            <Icon className='text-16 mt-1 mr-4' color='inherit'>
+              access_time
+            </Icon>
+            <div>
+              {formatDistance(new Date(pin?.startDate), new Date(), {
+                addSuffix: true,
+              })}
+            </div>
+          </div>
+        }
+      />
+
+      <CardContent className='py-0'>
+        {pin?.image && (
+          <div className='border-1 rounded-8 overflow-hidden'>
+            <img className='w-full border-b-1' src={pin?.image} alt='article' />
+          </div>
+        )}
+        <div className='flex flex-col items-center p-16'>
+          <Typography variant='subtitle1'>{pin?.title}</Typography>
+          <Typography variant='caption'>
+            <Chip
+              icon={<Icon className='text-16'>access_time</Icon>}
+              label={intlFormat(
+                new Date(pin?.startDate),
+                {
+                  weekday: 'short',
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric',
+                },
+                {
+                  locale: 'en-US',
+                }
+              )}
+              classes={{
+                root: 'h-24',
+                label: 'px-12 py-4 text-11',
+              }}
+              variant='outlined'
+            />
+          </Typography>
+          <Typography className='mt-16'>{pin?.content}</Typography>
+        </div>
+        <div className='flex flex-col p-4'>
+          <Typography variant='caption'>{getPriceOfTicket()}</Typography>
+        </div>
+        <div className='flex flex-col p-4'>
+          <Typography variant='caption'>{getAddress()}</Typography>
+        </div>
+      </CardContent>
+
+      <CardActions
+        disableSpacing
+        className='flex space-x-0.5 h-auto w-auto p-12'
+      >
+        <Button
+          to={`/apps/academy/courses/1/angular`}
+          component={Link}
+          className='item w-1/2 h-auto'
+          color='primary'
+          variant='outlined'
+        >
+          More →
+        </Button>
+      </CardActions>
+      <CardActions disableSpacing>
+        {isAuthUser(pin, state?.currentUser) && (
+          <IconButton onClick={() => handleDeletePin()} aria-label='delete pin'>
+            <DeleteIcon />
           </IconButton>
-          <IconButton
-            aria-label='view party'
-            onClick={() => handleOpenGoogleMap()}
-          >
-            <NavigationIcon />
-          </IconButton>
-          <IconButton
-            aria-label='view party'
-            onClick={() => reduxDispatch(toggleQuickPanel())}
-          >
-            <MessageIcon />
-          </IconButton>
-        </CardActions>
-      </Card>
-    </motion.div>
+        )}
+        <IconButton aria-label='share'>
+          <ShareIcon />
+        </IconButton>
+        <IconButton
+          aria-label='view party'
+          onClick={() => handleOpenGoogleMap()}
+        >
+          <NavigationIcon />
+        </IconButton>
+        <IconButton
+          aria-label='view party'
+          onClick={() => reduxDispatch(toggleQuickPanel())}
+        >
+          <MessageIcon />
+        </IconButton>
+      </CardActions>
+    </Card>
   );
 };
 

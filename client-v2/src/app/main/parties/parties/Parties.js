@@ -12,9 +12,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Select from '@material-ui/core/Select';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+
+import { makeStyles } from '@material-ui/core/styles';
 
 import {
   PIN_ADDED_SUBSCRIPTION,
@@ -182,7 +183,28 @@ const Parties = (props) => {
                     {pins.map((pin) => {
                       return (
                         !isPast(new Date(pin?.endDate)) && (
-                          <PartyItem {...pin} key={pin?._id} />
+                          <motion.div
+                            className='mb-32 ml-10 '
+                            key={pin?._id}
+                            variants={{
+                              hidden: {
+                                opacity: 0,
+                                y: 20,
+                              },
+                              show: {
+                                opacity: 1,
+                                y: 0,
+                              },
+                            }}
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{
+                              y: 0,
+                              opacity: 1,
+                              transition: { delay: 0.1 },
+                            }}
+                          >
+                            <PartyItem {...pin} />
+                          </motion.div>
                         )
                       );
                     })}

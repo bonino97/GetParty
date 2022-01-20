@@ -160,8 +160,9 @@ const Map = ({ classes }) => {
               </Marker>
             ))}
 
-            {state?.currentPin ? <PartyContent pin={state?.currentPin} /> : null}
+            {state?.currentPin && <PartyContent pin={state?.currentPin} />}
           </ReactMapGL>
+
           {/* Subscriptions for Adding / Updating / Deleting pins */}
 
           <Subscription

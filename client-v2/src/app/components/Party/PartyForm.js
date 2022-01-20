@@ -189,6 +189,7 @@ const PartyForm = ({}) => {
   const { draft } = state;
   const [image, setImage] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const {
     control,
@@ -251,8 +252,9 @@ const PartyForm = ({}) => {
     }
   };
 
-  const handleDeleteDraft = () => {
+  const handleClose = () => {
     setSubmitting(false);
+    setOpen(false);
     dispatch({ type: 'DELETE_DRAFT' });
   };
 
@@ -330,7 +332,7 @@ const PartyForm = ({}) => {
           })
         );
       }
-      handleDeleteDraft();
+      handleClose();
     } catch (error) {
       setSubmitting(false);
       console.error('Error creating party: ', error);
@@ -344,7 +346,9 @@ const PartyForm = ({}) => {
       }}
       fullWidth
       maxWidth='md'
-      open={true}
+      open={open}
+      keepMounted
+      onClose={handleClose}
     >
       <AppBar position='static'>
         <Toolbar className='flex w-full'>
@@ -893,11 +897,7 @@ const PartyForm = ({}) => {
 
         <DialogActions className='justify-between p-20 pb-16 border-t border-white'>
           {activeStep === 0 ? (
-            <Button
-              onClick={handleDeleteDraft}
-              variant='contained'
-              color='secondary'
-            >
+            <Button onClick={handleClose} variant='contained' color='secondary'>
               Cancel
             </Button>
           ) : (
