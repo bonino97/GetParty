@@ -31,14 +31,7 @@ import { isAuthUser } from 'app/services/authService/isAuthUser';
 const PartyItem = (pin) => {
   const authClient = useAuthClient();
   const reduxDispatch = useDispatch();
-  const quickPanelState = useSelector(({ quickPanel }) => quickPanel?.state);
   const { state, dispatch } = useContext(Context);
-
-  useEffect(() => {
-    if (!quickPanelState) {
-      dispatch({ type: 'SET_PIN', payload: null });
-    }
-  }, [quickPanelState]);
 
   const getPriceOfTicket = () => {
     if (pin?.priceOfTicket === 0) {
@@ -131,17 +124,13 @@ const PartyItem = (pin) => {
         }
         title={
           <span className='flex'>
-            <Typography
-              className='font-normal'
-              color='primary'
-              paragraph={false}
-            >
+            <Typography className='font-bold' color='inherit' paragraph={false}>
               {pin?.author?.name}
             </Typography>
           </span>
         }
         subheader={
-          <div className='flex flex-row opacity-75'>
+          <div className='flex flex-row opacity-50 text-12'>
             <Icon className='text-16 mt-1 mr-4' color='inherit'>
               access_time
             </Icon>
@@ -162,30 +151,8 @@ const PartyItem = (pin) => {
           </div>
         )}
         <div className='flex flex-col items-center p-16'>
-          <Typography variant='subtitle1'>{pin?.title}</Typography>
-          <Typography variant='caption'>
-            <Chip
-              icon={<Icon className='text-16'>access_time</Icon>}
-              label={pin?.startDate && intlFormat(
-                new Date(pin?.startDate),
-                {
-                  weekday: 'short',
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
-                  hour: 'numeric',
-                  minute: 'numeric',
-                },
-                {
-                  locale: 'en-US',
-                }
-              )}
-              classes={{
-                root: 'h-24',
-                label: 'px-12 py-4 text-11',
-              }}
-              variant='outlined'
-            />
+          <Typography color='inherit' className='font-bold' variant='subtitle1'>
+            {pin?.title}
           </Typography>
           <Typography className='mt-16'>{pin?.content}</Typography>
         </div>
@@ -194,6 +161,35 @@ const PartyItem = (pin) => {
         </div>
         <div className='flex flex-col p-4'>
           <Typography variant='caption'>{getAddress()}</Typography>
+        </div>
+        <div className='flex flex-col pt-4 pb-4'>
+          <Typography variant='caption'>
+            <Chip
+              icon={<Icon className='text-16'>access_time</Icon>}
+              label={
+                pin?.startDate &&
+                intlFormat(
+                  new Date(pin?.startDate),
+                  {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                  },
+                  {
+                    locale: 'en-US',
+                  }
+                )
+              }
+              classes={{
+                root: 'h-24',
+                label: 'text-11',
+              }}
+              variant='outlined'
+            />
+          </Typography>
         </div>
       </CardContent>
 

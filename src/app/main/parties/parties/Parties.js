@@ -30,6 +30,8 @@ import { CATEGORIES_LIST } from 'app/constants/CategoriesList';
 import PartyItem from 'app/components/Party/PartyItem';
 import NoParties from 'app/main/parties/parties/NoParties';
 
+import { getReverseGeocodingData } from 'app/services/geoCoding/getReverseGeocodingData';
+
 const useStyles = makeStyles((theme) => ({
   header: {
     background: `linear-gradient(to right, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
@@ -49,12 +51,26 @@ const useStyles = makeStyles((theme) => ({
 
 const Parties = (props) => {
   const { state, dispatch } = useContext(Context);
-  const { pins } = state;
+  const { pins, currentLocation } = state;
 
   const classes = useStyles(props);
 
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('None');
+  const [city, setCity] = useState('');
+
+  useEffect(() => {
+    getUserPosition();
+  }, []);
+
+  const getUserPosition = async () => {
+    const address = await getReverseGeocodingData(
+      currentLocation?.latitude,
+      currentLocation?.longitude
+    );
+
+    setCity(address?.city);
+  };
 
   const handleSelectedCategory = (event) => {
     setSelectedCategory(event.target.value);
@@ -83,7 +99,7 @@ const Parties = (props) => {
                 color='inherit'
                 className='text-24 sm:text-44 font-bold tracking-tight'
               >
-                Parties near Miami, Beach!
+                Parties near {city}!
               </Typography>
             </motion.div>
             <motion.div
@@ -151,57 +167,56 @@ const Parties = (props) => {
 
           {/* Parties */}
           {useMemo(() => {
-            const container = {
-              show: {
-                transition: {
-                  staggerChildren: 0.1,
-                },
+            const variants = {
+              hidden: {
+                opacity: 0,
+                y: 20,
               },
+              show: {
+                opacity: 1,
+                y: 0,
+              },
+            };
+            const initial = { y: 20, opacity: 0 };
+            const animate = {
+              y: 0,
+              opacity: 1,
+              transition: { delay: 0.1 },
+            };
+
+            const breakpointCols = {
+              default: 3,
+              1920: 3,
+              1600: 3,
+              1366: 3,
+              1280: 3,
+              960: 2,
+              600: 1,
+              480: 1,
             };
 
             return pins && pins.length > 0 ? (
               <>
                 <div className='flex flex-wrap w-full'>
                   <Masonry
-                    breakpointCols={{
-                      default: 3,
-                      1920: 3,
-                      1600: 3,
-                      1366: 3,
-                      1280: 3,
-                      960: 2,
-                      600: 1,
-                      480: 1,
-                    }}
+                    breakpointCols={breakpointCols}
                     className='my-masonry-grid flex w-full'
                     columnClassName='my-masonry-grid_column flex flex-col p-0 md:p-8'
                   >
                     {pins.map((pin) => {
                       return (
-                        !isPast(new Date(pin?.endDate)) && (
-                          <motion.div
-                            className='mb-32 ml-10 '
-                            key={pin?._id}
-                            variants={{
-                              hidden: {
-                                opacity: 0,
-                                y: 20,
-                              },
-                              show: {
-                                opacity: 1,
-                                y: 0,
-                              },
-                            }}
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{
-                              y: 0,
-                              opacity: 1,
-                              transition: { delay: 0.1 },
-                            }}
-                          >
-                            <PartyItem {...pin} />
-                          </motion.div>
-                        )
+                        // !isPast(new Date(pin?.endDate)) && (
+
+                        // )
+                        <motion.div
+                          className='mb-32 ml-10 '
+                          key={pin?._id}
+                          variants={variants}
+                          initial={initial}
+                          animate={animate}
+                        >
+                          <PartyItem {...pin} />
+                        </motion.div>
                       );
                     })}
                   </Masonry>
@@ -213,6 +228,7 @@ const Parties = (props) => {
           })}
         </div>
       </div>
+      <div className='pb-40'></div>
 
       <Subscription
         subscription={PIN_ADDED_SUBSCRIPTION}

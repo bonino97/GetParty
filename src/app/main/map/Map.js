@@ -40,7 +40,6 @@ const INITIAL_VIEWPORT = {
 const Map = ({ classes }) => {
   const client = useClient();
   const { state, dispatch } = useContext(Context);
-  const { draft } = state;
 
   const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
   const [loading, setLoading] = useState(false);
@@ -48,6 +47,7 @@ const Map = ({ classes }) => {
   useEffect(() => {
     getPins();
     getUserPosition();
+    dispatch({ type: 'SET_PIN', payload: null });
   }, []);
 
   const getPins = async () => {
@@ -72,7 +72,7 @@ const Map = ({ classes }) => {
 
   const handleMapClick = ({ lngLat, leftButton }) => {
     if (!leftButton) return;
-    if (!state.draft) dispatch({ type: 'CREATE_DRAFT' });
+    if (!state?.draft) dispatch({ type: 'CREATE_DRAFT' });
     const [longitude, latitude] = lngLat;
     dispatch({
       type: 'UPDATE_DRAFT_LOCATION',
@@ -134,8 +134,8 @@ const Map = ({ classes }) => {
             {/* Draft Pin */}
             {state?.draft && (
               <Marker
-                latitude={state.draft.latitude}
-                longitude={state.draft.longitude}
+                latitude={state?.draft.latitude}
+                longitude={state?.draft.longitude}
                 offsetLeft={-19}
                 offsetTop={-38}
               >
@@ -187,7 +187,7 @@ const Map = ({ classes }) => {
             }}
           />
 
-          {draft && <PartyForm />}
+          {state?.draft && <PartyForm />}
         </>
       )}
     </div>
