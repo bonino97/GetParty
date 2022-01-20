@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect, useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -29,9 +29,18 @@ import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store
 import { isAuthUser } from 'app/services/authService/isAuthUser';
 
 const PartyItem = (pin) => {
+  console.log(pin);
   const authClient = useAuthClient();
   const reduxDispatch = useDispatch();
+  const quickPanelState = useSelector(({ quickPanel }) => quickPanel?.state);
   const { state, dispatch } = useContext(Context);
+
+  useEffect(() => {
+    console.log(quickPanelState);
+    if (!quickPanelState) {
+      dispatch({ type: 'SET_PIN', payload: null });
+    }
+  }, [quickPanelState]);
 
   const getPriceOfTicket = () => {
     if (pin?.priceOfTicket === 0) {
@@ -101,6 +110,11 @@ const PartyItem = (pin) => {
     window.open(url, '_blank');
   };
 
+  const handleComments = () => {
+    dispatch({ type: 'SET_PIN', payload: pin });
+    reduxDispatch(toggleQuickPanel());
+  };
+
   return (
     <Card
       variants={{
@@ -134,9 +148,10 @@ const PartyItem = (pin) => {
               access_time
             </Icon>
             <div>
-              {formatDistance(new Date(pin?.startDate), new Date(), {
-                addSuffix: true,
-              })}
+              {pin?.startDate &&
+                formatDistance(new Date(pin?.startDate), new Date(), {
+                  addSuffix: true,
+                })}
             </div>
           </div>
         }
@@ -153,7 +168,7 @@ const PartyItem = (pin) => {
           <Typography variant='caption'>
             <Chip
               icon={<Icon className='text-16'>access_time</Icon>}
-              label={intlFormat(
+              label={pin?.startDate && intlFormat(
                 new Date(pin?.startDate),
                 {
                   weekday: 'short',
@@ -184,21 +199,18 @@ const PartyItem = (pin) => {
         </div>
       </CardContent>
 
-      <CardActions
-        disableSpacing
-        className='flex space-x-0.5 h-auto w-auto p-12'
-      >
+      <CardActions disableSpacing className='flex flex-row justify-center'>
         <Button
           to={`/apps/academy/courses/1/angular`}
           component={Link}
-          className='item w-1/2 h-auto'
+          className='justify-center w-full '
           color='primary'
           variant='outlined'
         >
-          More →
+          View all
         </Button>
       </CardActions>
-      <CardActions disableSpacing>
+      <CardActions disableSpacing className='pt-0'>
         {isAuthUser(pin, state?.currentUser) && (
           <IconButton onClick={() => handleDeletePin()} aria-label='delete pin'>
             <DeleteIcon />
@@ -208,14 +220,14 @@ const PartyItem = (pin) => {
           <ShareIcon />
         </IconButton>
         <IconButton
-          aria-label='view party'
+          aria-label='open map to see position'
           onClick={() => handleOpenGoogleMap()}
         >
           <NavigationIcon />
         </IconButton>
         <IconButton
-          aria-label='view party'
-          onClick={() => reduxDispatch(toggleQuickPanel())}
+          aria-label='view comments of party'
+          onClick={() => handleComments(pin)}
         >
           <MessageIcon />
         </IconButton>

@@ -28,10 +28,11 @@ const useStyles = makeStyles((theme) => ({
 
 function QuickPanel(props) {
   const reduxDispatch = useDispatch();
-  const { state, dispatch } = useContext(Context);
+  const { state } = useContext(Context);
   const { currentPin } = state;
 
   const quickPanelState = useSelector(({ quickPanel }) => quickPanel?.state);
+  
   const classes = useStyles();
 
   const handleToggleQuickPanel = () => reduxDispatch(toggleQuickPanel());

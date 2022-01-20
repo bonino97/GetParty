@@ -111,17 +111,47 @@ export const CREATE_COMMENT_MUTATION = `
   mutation CreateComment ($pinId: ID!, $text: String!) {
     createComment(pinId: $pinId, text: $text) {
       _id
-      createdAt
-      title 
-      image
+      title
       content
+      image
+      category
+      startDate
+      endDate
+
+      phone
+      location {
+        address
+        city
+        state
+        zipCode
+        country
+      }
+
+      availableTickets
+      priceOfTicket
+      takeFees
+
+      isPeriodic
+      isPrivate
+      entryRequirements
+      tags
+      instagram
+      twitter
+      facebook
+
+      
+      slug
       latitude
       longitude
+      createdAt
+
       author {
         _id
-        picture
         name
+        email
+        picture
       }
+
       comments {
         text
         createdAt

@@ -64,10 +64,6 @@ const Parties = (props) => {
     setSearchText(event.target.value);
   };
 
-  useEffect(() => {
-    console.log(pins);
-  }, [pins]);
-
   return (
     <>
       <div className='flex flex-col flex-auto flex-shrink-0 w-full'>
