@@ -108,7 +108,7 @@ function NavbarStyle3Content(props) {
 
   return (
     <ClickAwayListener onClickAway={() => setPanelOpen(false)}>
-      <div className={clsx('flex flex-auto flex h-full', classes.root, props.className)}>
+      <div className={clsx('flex flex-auto flex h-full justify-center', classes.root, props.className)}>
         <ThemeProvider theme={contrastTheme}>
           <div
             id="fuse-navbar-side-panel"
