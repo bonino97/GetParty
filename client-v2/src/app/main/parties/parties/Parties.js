@@ -26,7 +26,7 @@ import Context from 'app/AppContext';
 
 import { CATEGORIES_LIST } from 'app/constants/CategoriesList';
 
-import NoStartedPartyItem from 'app/main/parties/parties/NoStartedPartyItem';
+import PartyItem from 'app/components/Party/PartyItem';
 import NoParties from 'app/main/parties/parties/NoParties';
 
 const useStyles = makeStyles((theme) => ({
@@ -182,7 +182,7 @@ const Parties = (props) => {
                     {pins.map((pin) => {
                       return (
                         !isPast(new Date(pin?.endDate)) && (
-                          <NoStartedPartyItem {...pin} key={pin?._id} />
+                          <PartyItem {...pin} key={pin?._id} />
                         )
                       );
                     })}

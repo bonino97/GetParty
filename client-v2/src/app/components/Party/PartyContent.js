@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PinContent = ({ pin }) => {
+const PartyContent = ({ pin }) => {
   const authClient = useAuthClient();
   const reduxDispatch = useDispatch();
   const { state, dispatch } = useContext(Context);
@@ -175,4 +175,4 @@ const PinContent = ({ pin }) => {
   );
 };
 
-export default PinContent;
+export default PartyContent;

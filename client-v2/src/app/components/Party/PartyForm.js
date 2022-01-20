@@ -45,7 +45,7 @@ import { useAuthClient } from 'graphql/authClient';
 import { CREATE_PIN_MUTATION } from 'graphql/mutations';
 
 import { CATEGORIES_LIST } from 'app/constants/CategoriesList';
-import './PinForm.css';
+import './PartyForm.css';
 
 import { getReverseGeocodingData } from 'app/services/geoCoding/getReverseGeocodingData';
 
@@ -181,7 +181,7 @@ const oneYearDate = addYears(new Date(), 1);
 
 const steps = getSteps();
 
-const PinForm = ({}) => {
+const PartyForm = ({}) => {
   const client = useAuthClient();
   const classes = useStyles();
   const reduxDispatch = useDispatch();
@@ -212,7 +212,7 @@ const PinForm = ({}) => {
       draft?.latitude,
       draft?.longitude
     );
-    
+
     if (!location) return false;
 
     setValue('address', location?.address);
@@ -937,4 +937,4 @@ const PinForm = ({}) => {
   );
 };
 
-export default PinForm;
+export default PartyForm;

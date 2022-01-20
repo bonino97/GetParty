@@ -30,7 +30,7 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store/stateSlice';
 import { isAuthUser } from 'app/services/authService/isAuthUser';
 
-const NoStartedPartyItem = (pin) => {
+const PartyItem = (pin) => {
   const item = {
     hidden: {
       opacity: 0,
@@ -251,4 +251,4 @@ const NoStartedPartyItem = (pin) => {
   );
 };
 
-export default NoStartedPartyItem;
+export default PartyItem;

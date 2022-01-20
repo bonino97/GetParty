@@ -24,10 +24,10 @@ import { withStyles } from '@material-ui/core/styles';
 
 import PinIcon from 'app/components/Icons/PinIcon';
 import PlaceIcon from 'app/components/Icons/PlaceIcon';
-import PinForm from 'app/components/Pin/PinForm';
+import PartyForm from 'app/components/Party/PartyForm';
 import Context from 'app/AppContext';
 
-import PinContent from 'app/components/Pin/PinContent';
+import PartyContent from 'app/components/Party/PartyContent';
 
 import { MAPBOX_TOKEN, MAP_STYLE } from 'app/constants/MapboxData';
 
@@ -160,7 +160,7 @@ const Map = ({ classes }) => {
               </Marker>
             ))}
 
-            {state?.currentPin ? <PinContent pin={state?.currentPin} /> : null}
+            {state?.currentPin ? <PartyContent pin={state?.currentPin} /> : null}
           </ReactMapGL>
           {/* Subscriptions for Adding / Updating / Deleting pins */}
 
@@ -186,7 +186,7 @@ const Map = ({ classes }) => {
             }}
           />
 
-          {draft && <PinForm />}
+          {draft && <PartyForm />}
         </>
       )}
     </div>
