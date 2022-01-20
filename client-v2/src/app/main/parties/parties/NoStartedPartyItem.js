@@ -7,6 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
 import Icon from '@material-ui/core/Icon';
+import Chip from '@material-ui/core/Chip';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
@@ -31,8 +32,8 @@ const NoStartedPartyItem = (pin) => {
 
   console.log(
     intervalToDuration({
-      start: new Date(pin.startDate),
-      end: new Date(pin.endDate),
+      start: new Date(pin?.startDate),
+      end: new Date(pin?.endDate),
     })
   );
 
@@ -51,7 +52,8 @@ const NoStartedPartyItem = (pin) => {
     if (pin?.priceOfTicket > 0) {
       return (
         <div className='flex flex-row '>
-          <Icon className='text-16 mt-1 mr-2' color='inherit'>
+          <div>Starts at </div>
+          <Icon className='text-14 mt-2' color='inherit'>
             attach_money
           </Icon>
           <div>{pin?.priceOfTicket}</div>
@@ -59,6 +61,23 @@ const NoStartedPartyItem = (pin) => {
       );
     }
     return 'Free';
+  };
+
+  const getAddress = () => {
+    const address = `
+    ${pin?.location?.address ? pin?.location?.address + ', ' : ''}
+    ${pin?.location?.city ? pin?.location?.city + ', ' : ''}
+    ${pin?.location?.state ? pin?.location?.state + ', ' : ''}
+    ${pin?.location?.country ? pin?.location?.country : ''}`;
+
+    return (
+      <div className='flex flex-row '>
+        <Icon className='text-14 mt-2 mr-2 font-bold' color='inherit'>
+          near_me
+        </Icon>
+        <div>{address}</div>
+      </div>
+    );
   };
 
   return (
@@ -121,25 +140,36 @@ const NoStartedPartyItem = (pin) => {
           <div className='flex flex-col items-center p-16'>
             <Typography variant='subtitle1'>{pin?.title}</Typography>
             <Typography variant='caption'>
-              {intlFormat(
-                new Date(pin?.startDate),
-                {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: 'numeric',
-                  minute: 'numeric',
-                },
-                {
-                  locale: 'en-US',
-                }
-              )}
+              <Chip
+                icon={<Icon className='text-16'>access_time</Icon>}
+                label={intlFormat(
+                  new Date(pin?.startDate),
+                  {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                  },
+                  {
+                    locale: 'en-US',
+                  }
+                )}
+                classes={{
+                  root: 'h-24',
+                  label: 'px-12 py-4 text-11',
+                }}
+                variant='outlined'
+              />
             </Typography>
             <Typography className='mt-16'>{pin?.content}</Typography>
           </div>
-          <div className='flex flex-col p-16'>
+          <div className='flex flex-col p-4'>
             <Typography variant='caption'>{getPriceOfTicket()}</Typography>
+          </div>
+          <div className='flex flex-col p-4'>
+            <Typography variant='caption'>{getAddress()}</Typography>
           </div>
         </CardContent>
 

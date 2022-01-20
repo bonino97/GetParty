@@ -24,7 +24,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 import PinIcon from 'app/components/Icons/PinIcon';
 import PlaceIcon from 'app/components/Icons/PlaceIcon';
-import CreateParty from 'app/components/Pin/CreateParty';
 import PinForm from 'app/components/Pin/PinForm';
 import Context from 'app/AppContext';
 
@@ -43,14 +42,11 @@ const Map = ({ classes }) => {
   const { state, dispatch } = useContext(Context);
   const { draft } = state;
 
-  useEffect(() => {
-    getPins();
-  }, []);
-
   const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    getPins();
     getUserPosition();
   }, []);
 
@@ -191,14 +187,6 @@ const Map = ({ classes }) => {
           />
 
           {draft && <PinForm />}
-
-          {/* <Geocoder
-            onSelected={(newViewport) => setViewport(newViewport)}
-            mapboxApiAccessToken={MAPBOX_TOKEN}
-            position='top-left'
-            viewport={viewport}
-            value=''
-          /> */}
         </>
       )}
     </div>

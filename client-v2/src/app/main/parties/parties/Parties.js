@@ -1,4 +1,11 @@
 import React, { useContext, useMemo, useEffect, useState } from 'react';
+
+import Masonry from 'react-masonry-css';
+import clsx from 'clsx';
+import { motion } from 'framer-motion';
+import { isPast } from 'date-fns';
+import { Subscription } from 'react-apollo';
+
 import FormControl from '@material-ui/core/FormControl';
 import Icon from '@material-ui/core/Icon';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -8,21 +15,19 @@ import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import Masonry from 'react-masonry-css';
-import clsx from 'clsx';
-import { motion } from 'framer-motion';
 
-import { isPast } from 'date-fns';
-
-import { useClient } from 'graphql/client';
-import { GET_PINS_QUERY } from 'graphql/queries';
+import {
+  PIN_ADDED_SUBSCRIPTION,
+  PIN_UPDATED_SUBSCRIPTION,
+  PIN_DELETED_SUBSCRIPTION,
+} from 'graphql/subscriptions';
 
 import Context from 'app/AppContext';
 
 import { CATEGORIES_LIST } from 'app/constants/CategoriesList';
 
-import NoStartedPartyItem from './NoStartedPartyItem';
-import NoParties from './NoParties';
+import NoStartedPartyItem from 'app/main/parties/parties/NoStartedPartyItem';
+import NoParties from 'app/main/parties/parties/NoParties';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -41,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Parties(props) {
+const Parties = (props) => {
   const { state, dispatch } = useContext(Context);
   const { pins } = state;
 
@@ -50,24 +55,17 @@ function Parties(props) {
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('None');
 
-  const client = useClient();
+  const handleSelectedCategory = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+
+  const handleSearchText = (event) => {
+    setSearchText(event.target.value);
+  };
 
   useEffect(() => {
-    getPins();
-  }, []);
-
-  function handleSelectedCategory(event) {
-    setSelectedCategory(event.target.value);
-  }
-
-  function handleSearchText(event) {
-    setSearchText(event.target.value);
-  }
-
-  const getPins = async () => {
-    const { getPins } = await client.request(GET_PINS_QUERY);
-    dispatch({ type: 'GET_PINS', payload: getPins });
-  };
+    console.log(pins);
+  }, [pins]);
 
   return (
     <>
@@ -203,8 +201,30 @@ function Parties(props) {
           })}
         </div>
       </div>
+
+      <Subscription
+        subscription={PIN_ADDED_SUBSCRIPTION}
+        onSubscriptionData={({ subscriptionData }) => {
+          const { pinAdded } = subscriptionData?.data;
+          dispatch({ type: 'CREATE_PIN', payload: pinAdded });
+        }}
+      />
+      <Subscription
+        subscription={PIN_UPDATED_SUBSCRIPTION}
+        onSubscriptionData={({ subscriptionData }) => {
+          const { pinUpdated } = subscriptionData?.data;
+          dispatch({ type: 'CREATE_COMMENT', payload: pinUpdated });
+        }}
+      />
+      <Subscription
+        subscription={PIN_DELETED_SUBSCRIPTION}
+        onSubscriptionData={({ subscriptionData }) => {
+          const { pinDeleted } = subscriptionData?.data;
+          dispatch({ type: 'DELETE_PIN', payload: pinDeleted });
+        }}
+      />
     </>
   );
-}
+};
 
 export default Parties;

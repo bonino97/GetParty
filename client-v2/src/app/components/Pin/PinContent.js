@@ -1,6 +1,9 @@
 import React, { useState, useContext } from 'react';
+
 import { useDispatch } from 'react-redux';
 import clsx from 'clsx';
+import { formatDistanceToNowStrict } from 'date-fns';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -19,10 +22,8 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MessageIcon from '@material-ui/icons/Message';
 
-import { formatDistanceToNowStrict } from 'date-fns';
-
 import { DELETE_PIN_MUTATION } from 'graphql/mutations';
-import { useClient } from 'graphql/client';
+import { useAuthClient } from 'graphql/authClient';
 
 import Context from 'app/AppContext';
 import { showMessage } from 'app/store/fuse/messageSlice';
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 
 const PinContent = ({ pin }) => {
   console.log(pin);
-  const client = useClient();
+  const authClient = useAuthClient();
   const reduxDispatch = useDispatch();
   const { state, dispatch } = useContext(Context);
   const [open, setOpen] = useState(true);
@@ -66,7 +67,7 @@ const PinContent = ({ pin }) => {
   const isAuthUser = () => state?.currentUser?._id === pin?.author?._id;
 
   const handleDeletePin = async () => {
-    const { deletePin } = await client.request(DELETE_PIN_MUTATION, {
+    const { deletePin } = await authClient.request(DELETE_PIN_MUTATION, {
       pinId: pin?._id,
     });
 
