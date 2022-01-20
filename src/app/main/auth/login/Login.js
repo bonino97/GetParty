@@ -25,7 +25,7 @@ import * as yup from 'yup';
 
 import Context from 'app/AppContext';
 import { ME_QUERY } from 'graphql/queries';
-import { BASE_URL } from 'graphql/authClient';
+import { API_URL } from 'app/constants/ApiData';
 import { CLIENT_ID } from 'app/constants/GoogleData';
 
 import './Login.css';
@@ -80,7 +80,7 @@ const Login = () => {
   const onSuccess = async (googleUser) => {
     try {
       const idToken = googleUser.getAuthResponse().id_token;
-      const client = new GraphQLClient(BASE_URL, {
+      const client = new GraphQLClient(API_URL, {
         headers: {
           authorization: idToken,
         },

@@ -1,10 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 
-export const BASE_URL =
-  process.env.NODE_ENV === 'production'
-    ? '<production-url>'
-    : 'http://localhost:4000/graphql';
+import { API_URL } from 'app/constants/ApiData';
 
 export const useClient = () => {
-  return new GraphQLClient(BASE_URL);
+  return new GraphQLClient(API_URL);
 };
