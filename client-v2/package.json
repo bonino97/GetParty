@@ -14,7 +14,6 @@
         "apollo-cache-inmemory": "^1.6.6",
         "apollo-client": "^2.6.10",
         "apollo-link-ws": "^1.0.20",
-        "auth0-lock": "11.30.4",
         "autosuggest-highlight": "3.1.1",
         "axios": "0.21.1",
         "chart.js": "2.9.4",

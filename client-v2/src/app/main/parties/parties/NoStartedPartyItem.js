@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
+import { useDispatch } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -10,13 +11,24 @@ import Icon from '@material-ui/core/Icon';
 import Chip from '@material-ui/core/Chip';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
+import NavigationIcon from '@material-ui/icons/Navigation';
+import MessageIcon from '@material-ui/icons/Message';
+import ShareIcon from '@material-ui/icons/Share';
 
 import { motion } from 'framer-motion';
 
 import { Link } from 'react-router-dom';
 
-import { intervalToDuration, formatDistance, intlFormat } from 'date-fns';
+import { formatDistance, intlFormat } from 'date-fns';
+
+import { DELETE_PIN_MUTATION } from 'graphql/mutations';
+import { useAuthClient } from 'graphql/authClient';
+
+import Context from 'app/AppContext';
+import { showMessage } from 'app/store/fuse/messageSlice';
+import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store/stateSlice';
+import { isAuthUser } from 'app/services/authService/isAuthUser';
 
 const NoStartedPartyItem = (pin) => {
   const item = {
@@ -30,12 +42,9 @@ const NoStartedPartyItem = (pin) => {
     },
   };
 
-  console.log(
-    intervalToDuration({
-      start: new Date(pin?.startDate),
-      end: new Date(pin?.endDate),
-    })
-  );
+  const authClient = useAuthClient();
+  const reduxDispatch = useDispatch();
+  const { state, dispatch } = useContext(Context);
 
   const getPriceOfTicket = () => {
     if (pin?.priceOfTicket === 0) {
@@ -78,6 +87,31 @@ const NoStartedPartyItem = (pin) => {
         <div>{address}</div>
       </div>
     );
+  };
+
+  const handleDeletePin = async () => {
+    const { deletePin } = await authClient.request(DELETE_PIN_MUTATION, {
+      pinId: pin?._id,
+    });
+
+    if (deletePin) {
+      reduxDispatch(
+        showMessage({
+          message: 'Party removed successfully.',
+          autoHideDuration: 3000,
+          anchorOrigin: {
+            vertical: 'bottom', //top bottom
+            horizontal: 'right', //left center right
+          },
+          variant: 'warning', //success error info warning null
+        })
+      );
+    }
+  };
+
+  const handleOpenGoogleMap = () => {
+    const url = `https://www.google.com/maps/dir/${state?.currentLocation?.latitude},${state?.currentLocation?.longitude}/${pin?.latitude},${pin?.longitude}`;
+    window.open(url, '_blank');
   };
 
   return (
@@ -177,13 +211,6 @@ const NoStartedPartyItem = (pin) => {
           disableSpacing
           className='flex space-x-0.5 h-auto w-auto p-12'
         >
-          <Button className='item w-1/2 h-auto' aria-label='Share'>
-            <Icon className='text-16' color='action'>
-              share
-            </Icon>
-            <Typography className='mx-4'>Share</Typography>
-            <Typography>(35)</Typography>
-          </Button>
           <Button
             to={`/apps/academy/courses/1/angular`}
             component={Link}
@@ -193,6 +220,31 @@ const NoStartedPartyItem = (pin) => {
           >
             More →
           </Button>
+        </CardActions>
+        <CardActions disableSpacing>
+          {isAuthUser(pin, state?.currentUser) && (
+            <IconButton
+              onClick={() => handleDeletePin()}
+              aria-label='delete pin'
+            >
+              <DeleteIcon />
+            </IconButton>
+          )}
+          <IconButton aria-label='share'>
+            <ShareIcon />
+          </IconButton>
+          <IconButton
+            aria-label='view party'
+            onClick={() => handleOpenGoogleMap()}
+          >
+            <NavigationIcon />
+          </IconButton>
+          <IconButton
+            aria-label='view party'
+            onClick={() => reduxDispatch(toggleQuickPanel())}
+          >
+            <MessageIcon />
+          </IconButton>
         </CardActions>
       </Card>
     </motion.div>

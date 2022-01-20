@@ -28,6 +28,7 @@ import { useAuthClient } from 'graphql/authClient';
 import Context from 'app/AppContext';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store/stateSlice';
+import { isAuthUser } from 'app/services/authService/isAuthUser';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PinContent = ({ pin }) => {
-  console.log(pin);
   const authClient = useAuthClient();
   const reduxDispatch = useDispatch();
   const { state, dispatch } = useContext(Context);
@@ -63,8 +63,6 @@ const PinContent = ({ pin }) => {
 
   const classes = useStyles();
   const pinDate = formatDistanceToNowStrict(Number(pin?.createdAt)) + ' ago';
-
-  const isAuthUser = () => state?.currentUser?._id === pin?.author?._id;
 
   const handleDeletePin = async () => {
     const { deletePin } = await authClient.request(DELETE_PIN_MUTATION, {
@@ -138,7 +136,7 @@ const PinContent = ({ pin }) => {
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          {isAuthUser() && (
+          {isAuthUser(pin, state?.currentUser) && (
             <IconButton
               onClick={() => handleDeletePin()}
               aria-label='delete pin'

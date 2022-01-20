@@ -74,7 +74,7 @@ const Parties = (props) => {
         <div
           className={clsx(
             classes.header,
-            'relative overflow-hidden flex flex-shrink-0 items-center justify-center h-200 sm:h-288'
+            'relative overflow-hidden flex flex-shrink-0 items-center justify-center h-100 sm:h-168'
           )}
         >
           <div className='flex flex-col max-w-2xl mx-auto w-full p-24 sm:p-32'>
@@ -86,7 +86,7 @@ const Parties = (props) => {
                 color='inherit'
                 className='text-24 sm:text-44 font-bold tracking-tight'
               >
-                Welcome to Get Party ~
+                Parties near Miami, Beach!
               </Typography>
             </motion.div>
             <motion.div
@@ -96,13 +96,7 @@ const Parties = (props) => {
               <Typography
                 color='inherit'
                 className='text-12 sm:text-14 mt-8 sm:mt-16 opacity-75 leading-tight sm:leading-loose'
-              >
-                Our courses will step you through the process of building a
-                small application, or adding a new feature to an existing
-                application. Our courses will step you through the process of
-                building a small application, or adding a new feature to an
-                existing application.
-              </Typography>
+              ></Typography>
             </motion.div>
           </div>
 

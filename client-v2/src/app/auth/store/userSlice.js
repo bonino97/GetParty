@@ -8,14 +8,13 @@ import {
   setDefaultSettings,
 } from 'app/store/fuse/settingsSlice';
 import { showMessage } from 'app/store/fuse/messageSlice';
-import auth0Service from 'app/services/auth0Service';
 import firebaseService from 'app/services/firebaseService';
 import jwtService from 'app/services/jwtService';
 
 export const setUserDataAuth0 = (tokenData) => async (dispatch) => {
   const user = {
     role: ['admin'],
-    from: 'auth0',
+    from: '',
     data: {
       displayName: tokenData.username || tokenData.name,
       photoURL: tokenData.picture,
@@ -136,10 +135,6 @@ export const logoutUser = () => async (dispatch, getState) => {
       firebaseService.signOut();
       break;
     }
-    case 'auth0': {
-      auth0Service.logout();
-      break;
-    }
     default: {
       jwtService.logout();
     }
@@ -161,20 +156,6 @@ export const updateUserData = (user) => async (dispatch, getState) => {
         .updateUserData(user)
         .then(() => {
           dispatch(showMessage({ message: 'User data saved to firebase' }));
-        })
-        .catch((error) => {
-          dispatch(showMessage({ message: error.message }));
-        });
-      break;
-    }
-    case 'auth0': {
-      auth0Service
-        .updateUserData({
-          settings: user.data.settings,
-          shortcuts: user.data.shortcuts,
-        })
-        .then(() => {
-          dispatch(showMessage({ message: 'User data saved to auth0' }));
         })
         .catch((error) => {
           dispatch(showMessage({ message: error.message }));
