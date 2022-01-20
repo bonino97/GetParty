@@ -13,7 +13,7 @@ const navigationConfig = [
     translate: 'MAP',
     title: 'Map',
     type: 'item',
-    icon: 'map',
+    icon: 'near_me',
     url: '/map',
   },
   {
@@ -21,7 +21,7 @@ const navigationConfig = [
     translate: 'PARTIES',
     title: 'Parties',
     type: 'item',
-    icon: 'whatshot',
+    icon: 'headset',
     url: '/parties',
   },
 ];

@@ -114,7 +114,7 @@ function NavbarStyle3Content(props) {
             id="fuse-navbar-side-panel"
             className={clsx(classes.sidePanel, 'flex flex-shrink-0 flex-col items-center')}
           >
-            <img className="w-44 my-32" src="assets/images/logos/fuse.svg" alt="logo" />
+            <img className="w-56 my-32 font-bold" src="assets/icons/custom/get-party.png" alt="logo" />
 
             <FuseScrollbars
               className="flex flex-1 min-h-0 justify-center w-full overflow-y-auto overflow-x-hidden"

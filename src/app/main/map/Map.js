@@ -151,7 +151,6 @@ const Map = ({ classes }) => {
                 offsetLeft={-19}
                 offsetTop={-38}
               >
-                {' '}
                 <PlaceIcon
                   size={35}
                   color={getPinStatus(pin)}
