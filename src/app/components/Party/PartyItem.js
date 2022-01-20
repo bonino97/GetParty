@@ -113,7 +113,7 @@ const PartyItem = (pin) => {
         show: { opacity: 1, y: 0 },
       }}
       key={pin?._id}
-      className='rounded-16 shadow'
+      className='rounded-16 shadow overflow-y-auto'
     >
       <CardHeader
         avatar={<Avatar aria-label='Recipe' src={pin?.author?.picture} />}
@@ -146,7 +146,7 @@ const PartyItem = (pin) => {
 
       <CardContent className='py-0'>
         {pin?.image && (
-          <div className='border-1 rounded-8 overflow-hidden'>
+          <div className='border-1 rounded-8'>
             <img className='w-full border-b-1' src={pin?.image} alt='article' />
           </div>
         )}
