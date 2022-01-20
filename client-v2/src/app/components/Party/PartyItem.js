@@ -29,14 +29,12 @@ import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store
 import { isAuthUser } from 'app/services/authService/isAuthUser';
 
 const PartyItem = (pin) => {
-  console.log(pin);
   const authClient = useAuthClient();
   const reduxDispatch = useDispatch();
   const quickPanelState = useSelector(({ quickPanel }) => quickPanel?.state);
   const { state, dispatch } = useContext(Context);
 
   useEffect(() => {
-    console.log(quickPanelState);
     if (!quickPanelState) {
       dispatch({ type: 'SET_PIN', payload: null });
     }

@@ -119,6 +119,7 @@ export const CREATE_COMMENT_MUTATION = `
       endDate
 
       phone
+      
       location {
         address
         city
