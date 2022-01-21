@@ -38,7 +38,6 @@ const INITIAL_VIEWPORT = {
 };
 
 const Map = ({ classes }) => {
-  console.log(1);
   const client = useClient();
   const { state, dispatch } = useContext(Context);
 

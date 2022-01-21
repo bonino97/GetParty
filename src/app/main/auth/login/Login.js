@@ -123,8 +123,8 @@ const Login = () => {
             >
               <div className='flex items-center mb-48'>
                 <img
-                  className='logo-icon w-48'
-                  src='assets/images/logos/fuse.svg'
+                  className='logo-icon mr-4 mb-2 w-48'
+                  src='assets/icons/custom/get-party-yellow.png'
                   alt='logo'
                 />
                 <div className='border-l-1 mr-4 w-1 h-40' />

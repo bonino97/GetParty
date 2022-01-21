@@ -77,8 +77,12 @@ self.addEventListener('install', async (event) => {
 
   const cache = await caches.open('cache-1');
   await cache.addAll([
-      'assets/fonts/material-design-icons/MaterialIconsOutlined.css',
-      'assets/fonts/meteocons/style.css',
-      'favicon.ico'
+    'assets/fonts/material-design-icons/MaterialIconsOutlined.css',
+    'assets/fonts/meteocons/style.css',
+    'favicon.ico',
   ]);
+});
+
+self.addEventListener('fetch', async (event) => {
+  console.log('fetching: ', event.request.url);
 });
