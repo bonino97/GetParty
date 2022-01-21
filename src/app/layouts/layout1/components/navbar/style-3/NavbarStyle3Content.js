@@ -65,7 +65,9 @@ function NavbarStyle3Content(props) {
   const theme = useTheme();
   const mdDown = useMediaQuery(theme.breakpoints.down('md'));
   const dispatch = useDispatch();
-  const contrastTheme = useSelector(selectContrastMainTheme(theme.palette.primary.main));
+  const contrastTheme = useSelector(
+    selectContrastMainTheme(theme.palette.primary.main)
+  );
   const location = useLocation();
 
   useEffect(() => {
@@ -108,22 +110,35 @@ function NavbarStyle3Content(props) {
 
   return (
     <ClickAwayListener onClickAway={() => setPanelOpen(false)}>
-      <div className={clsx('flex flex-auto flex h-full justify-center', classes.root, props.className)}>
+      <div
+        className={clsx(
+          'flex flex-auto flex h-full justify-center',
+          classes.root,
+          props.className
+        )}
+      >
         <ThemeProvider theme={contrastTheme}>
           <div
-            id="fuse-navbar-side-panel"
-            className={clsx(classes.sidePanel, 'flex flex-shrink-0 flex-col items-center')}
+            id='fuse-navbar-side-panel'
+            className={clsx(
+              classes.sidePanel,
+              'flex flex-shrink-0 flex-col items-center'
+            )}
           >
-            <img className="w-56 my-32 font-bold" src="assets/icons/custom/get-party.png" alt="logo" />
+            <img
+              className='w-56 my-32 font-bold'
+              src='assets/icons/custom/get-party.png'
+              alt='logo'
+            />
 
             <FuseScrollbars
-              className="flex flex-1 min-h-0 justify-center w-full overflow-y-auto overflow-x-hidden"
+              className='flex flex-1 min-h-0 justify-center w-full overflow-y-auto overflow-x-hidden'
               option={{ suppressScrollX: true, wheelPropagation: false }}
             >
               <FuseNavigation
                 className={clsx('navigation')}
                 navigation={navigation}
-                layout="vertical-2"
+                layout='vertical-2'
                 onItemClick={handleParentItemClick}
                 firstLevel
                 selectedId={selectedNavigation[0]?.id}
@@ -135,7 +150,7 @@ function NavbarStyle3Content(props) {
 
         {selectedNavigation.length > 0 && (
           <FuseScrollbars
-            id="fuse-navbar-panel"
+            id='fuse-navbar-panel'
             className={clsx(
               classes.panel,
               panelOpen && 'opened',
@@ -146,7 +161,7 @@ function NavbarStyle3Content(props) {
             <FuseNavigation
               className={clsx('navigation')}
               navigation={selectedNavigation}
-              layout="vertical"
+              layout='vertical'
               onItemClick={handleChildItemClick}
             />
           </FuseScrollbars>

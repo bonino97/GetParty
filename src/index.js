@@ -22,7 +22,6 @@ import history from '@history';
 import ProtectedRoute from './ProtectedRoute';
 
 import reportWebVitals from './reportWebVitals';
-import * as serviceWorker from './serviceWorkerRegistration';
 
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
@@ -60,5 +59,3 @@ const Root = () => {
 
 ReactDOM.render(<Root />, document.getElementById('root'));
 reportWebVitals();
-
-serviceWorker.register();

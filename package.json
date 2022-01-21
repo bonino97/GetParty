@@ -1,5 +1,5 @@
 {
-    "name": "fuse-react-app",
+    "name": "get-party-app",
     "version": "6.2.0",
     "private": true,
     "dependencies": {
@@ -69,18 +69,6 @@
         "velocity-animate": "1.5.2",
         "velocity-react": "1.4.3",
         "web-vitals": "2.1.0",
-        "workbox-background-sync": "^5.1.4",
-        "workbox-broadcast-update": "^5.1.4",
-        "workbox-cacheable-response": "^5.1.4",
-        "workbox-core": "^5.1.4",
-        "workbox-expiration": "^5.1.4",
-        "workbox-google-analytics": "^5.1.4",
-        "workbox-navigation-preload": "^5.1.4",
-        "workbox-precaching": "^5.1.4",
-        "workbox-range-requests": "^5.1.4",
-        "workbox-routing": "^5.1.4",
-        "workbox-strategies": "^5.1.4",
-        "workbox-streams": "^5.1.4",
         "yup": "0.32.9"
     },
     "peerDependencies": {
@@ -124,13 +112,14 @@
     },
     "scripts": {
         "start": "craco start",
-        "build": "cross-env GENERATE_SOURCEMAP=false craco build",
+        "build": "cross-env GENERATE_SOURCEMAP=false craco build && yarn pwa",
         "test": "craco test --env=node",
         "eject": "craco eject",
         "build-docs": "find ./src/app/main/documentation/material-ui-components \\( -name '*.ts' -o -name '*.tsx' \\) -type f -delete && babel-node --presets @babel/preset-env src/app/main/documentation/material-ui-components/build.js",
         "analyze": "craco build && source-map-explorer 'build/static/js/*.js' --html analyze-result.html",
         "pnpify-sdk": "yarn pnpify --sdk",
-        "lint": "eslint"
+        "lint": "eslint",
+        "pwa": "workbox injectManifest"
     },
     "browserslist": {
         "production": [
