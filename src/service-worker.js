@@ -72,6 +72,13 @@ self.addEventListener('message', (event) => {
 
 // Any other custom service worker logic can go here.
 
-self.addEventListener('install', (event) => {
+self.addEventListener('install', async (event) => {
   console.log('instalando!');
+
+  const cache = await caches.open('cache-1');
+  await cache.addAll([
+      'assets/fonts/material-design-icons/MaterialIconsOutlined.css',
+      'assets/fonts/meteocons/style.css',
+      'favicon.ico'
+  ]);
 });
