@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, memo } from 'react';
 
 import ReactMapGL, {
   NavigationControl,
@@ -38,6 +38,7 @@ const INITIAL_VIEWPORT = {
 };
 
 const Map = ({ classes }) => {
+  console.log(1);
   const client = useClient();
   const { state, dispatch } = useContext(Context);
 
@@ -233,4 +234,4 @@ const styles = {
   },
 };
 
-export default withStyles(styles)(Map);
+export default memo(withStyles(styles)(Map));

@@ -1,10 +1,10 @@
-import Map from './Map';
+import { lazy } from 'react';
 
 export const MapConfig = {
   routes: [
     {
       path: '/map',
-      component: Map,
+      component: lazy(() => import('./Map')),
     },
   ],
 };

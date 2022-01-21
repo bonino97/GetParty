@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useEffect, useState } from 'react';
+import React, { useContext, useMemo, useEffect, useState, memo } from 'react';
 
 import Masonry from 'react-masonry-css';
 import clsx from 'clsx';
@@ -255,4 +255,4 @@ const Parties = (props) => {
   );
 };
 
-export default Parties;
+export default memo(Parties);
