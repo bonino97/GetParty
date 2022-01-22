@@ -42,7 +42,7 @@ export default function Reducer(state, { type, payload }) {
       };
     case 'CREATE_PIN':
       const newPin = payload;
-      const prevPins = state.pins.filter((pin) => pin._id !== newPin._id);
+      const prevPins = state.pins.filter((pin) => pin?._id !== newPin?._id);
       return {
         ...state,
         pins: [...prevPins, newPin],
@@ -56,7 +56,7 @@ export default function Reducer(state, { type, payload }) {
     case 'DELETE_PIN':
       const deletedPin = payload;
       const filteredPins = state.pins.filter(
-        (pin) => pin._id !== deletedPin._id
+        (pin) => pin?._id !== deletedPin?._id
       );
 
       return {
@@ -68,7 +68,7 @@ export default function Reducer(state, { type, payload }) {
       const updatedCurrentPin = payload;
       // Find and replace
       const updatedPins = state.pins.map((pin) =>
-        pin._id === updatedCurrentPin._id ? updatedCurrentPin : pin
+        pin?._id === updatedCurrentPin?._id ? updatedCurrentPin : pin
       );
       return {
         ...state,
