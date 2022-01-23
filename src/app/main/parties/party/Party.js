@@ -1,3 +1,8 @@
+import React, { useEffect, useState, memo } from 'react';
+import _ from '@lodash';
+import clsx from 'clsx';
+import { motion } from 'framer-motion';
+
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -6,11 +11,8 @@ import Icon from '@material-ui/core/Icon';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-// import GoogleMap from 'google-map-react';
-import React, { useEffect, useState, memo } from 'react';
-import { useSelector } from 'react-redux';
-import _ from '@lodash';
-import clsx from 'clsx';
+import { makeStyles } from '@material-ui/core/styles';
+
 import FusePageCarded from '@fuse/core/FusePageCarded';
 
 const orderStatuses = [
@@ -86,7 +88,24 @@ const orderStatuses = [
   },
 ];
 
-function OrdersStatus(props) {
+const useStyles = makeStyles((theme) => ({
+  header: {
+    background: `linear-gradient(to right, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
+    color: theme.palette.getContrastText(theme.palette.primary.main),
+  },
+  headerIcon: {
+    position: 'absolute',
+    top: -64,
+    left: 0,
+    opacity: 0.04,
+    fontSize: 512,
+    width: 512,
+    height: 512,
+    pointerEvents: 'none',
+  },
+}));
+
+const OrdersStatus = (props) => {
   return (
     <div
       className={clsx(
@@ -97,19 +116,20 @@ function OrdersStatus(props) {
       {props.name}
     </div>
   );
-}
+};
 
-function Marker(props) {
+const Marker = (props) => {
   return (
     <Tooltip title={props.text} placement='top'>
       <Icon className='text-red'>place</Icon>
     </Tooltip>
   );
-}
+};
 
-function Party() {
-  // const order = useSelector(({ eCommerceApp }) => eCommerceApp.order);
+const Party = (props) => {
   const [map, setMap] = useState('shipping');
+
+  const classes = useStyles(props);
 
   useEffect(() => {
     setMap('shipping');
@@ -126,10 +146,36 @@ function Party() {
         header: 'min-h-72 h-72 sm:h-136 sm:min-h-136',
       }}
       header={
-        <div className='flex flex-1 w-full items-center justify-center'>
-          <div className='flex flex-1 flex-col items-center sm:items-start'>
-            <h1>Get Party App!</h1>
+        <div
+          className={clsx(
+            classes.header,
+            'relative overflow-hidden flex flex-shrink-0 items-center justify-center h-100 sm:h-168'
+          )}
+        >
+          <div className='flex flex-col max-w-2xl mx-auto w-full p-24 sm:p-32'>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transition: { delay: 0 } }}
+            >
+              <Typography
+                color='inherit'
+                className='text-24 sm:text-44 font-bold tracking-tight'
+              >
+                Parties near Corral de Bustos!
+              </Typography>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transition: { delay: 0.3 } }}
+            >
+              <Typography
+                color='inherit'
+                className='text-12 sm:text-14 mt-8 sm:mt-16 opacity-75 leading-tight sm:leading-loose'
+              ></Typography>
+            </motion.div>
           </div>
+
+          <Icon className={classes.headerIcon}> audiotrack </Icon>
         </div>
       }
       content={
@@ -423,6 +469,6 @@ function Party() {
       innerScroll
     />
   );
-}
+};
 
 export default memo(Party);
