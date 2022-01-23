@@ -1,170 +1,428 @@
-import FusePageSimple from '@fuse/core/FusePageSimple';
-import FuseScrollbars from '@fuse/core/FuseScrollbars';
-import { green } from '@material-ui/core/colors';
-import Fab from '@material-ui/core/Fab';
-import Hidden from '@material-ui/core/Hidden';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import Avatar from '@material-ui/core/Avatar';
 import Icon from '@material-ui/core/Icon';
-import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import Stepper from '@material-ui/core/Stepper';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
-import withReducer from 'app/store/withReducer';
-import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
-import { useDeepCompareEffect } from '@fuse/hooks';
-import SwipeableViews from 'react-swipeable-views';
-import reducer from '../store';
-import { getCourse, updateCourse } from '../store/courseSlice';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+// import GoogleMap from 'google-map-react';
+import React, { useEffect, useState, memo } from 'react';
+import { useSelector } from 'react-redux';
+import _ from '@lodash';
+import clsx from 'clsx';
+import FusePageCarded from '@fuse/core/FusePageCarded';
 
-const useStyles = makeStyles((theme) => ({
-  stepLabel: {
-    cursor: 'pointer!important',
+const orderStatuses = [
+  {
+    id: 1,
+    name: 'Awaiting check payment',
+    color: 'bg-blue text-white',
   },
-  successFab: {
-    background: `${green[500]}!important`,
-    color: 'white!important',
+  {
+    id: 2,
+    name: 'Payment accepted',
+    color: 'bg-green text-white',
   },
-}));
+  {
+    id: 3,
+    name: 'Preparing the order',
+    color: 'bg-orange text-black',
+  },
+  {
+    id: 4,
+    name: 'Shipped',
+    color: 'bg-purple text-white',
+  },
+  {
+    id: 5,
+    name: 'Delivered',
+    color: 'bg-green-700 text-white',
+  },
+  {
+    id: 6,
+    name: 'Canceled',
+    color: 'bg-pink text-white',
+  },
+  {
+    id: 7,
+    name: 'Refunded',
+    color: 'bg-red text-white',
+  },
+  {
+    id: 8,
+    name: 'Payment error',
+    color: 'bg-red-700 text-white',
+  },
+  {
+    id: 9,
+    name: 'On pre-order (paid)',
+    color: 'bg-purple-300 text-white',
+  },
+  {
+    id: 10,
+    name: 'Awaiting bank wire payment',
+    color: 'bg-blue text-white',
+  },
+  {
+    id: 11,
+    name: 'Awaiting PayPal payment',
+    color: 'bg-blue-700 text-white',
+  },
+  {
+    id: 12,
+    name: 'Remote payment accepted',
+    color: 'bg-green-800 text-white',
+  },
+  {
+    id: 13,
+    name: 'On pre-order (not paid)',
+    color: 'bg-purple-700 text-white',
+  },
+  {
+    id: 14,
+    name: 'Awaiting Cash-on-delivery payment',
+    color: 'bg-blue-800 text-white',
+  },
+];
 
-function Course(props) {
-  const dispatch = useDispatch();
-  const course = useSelector(({ academyApp }) => academyApp.course);
-  const theme = useTheme();
+function OrdersStatus(props) {
+  return (
+    <div
+      className={clsx(
+        'inline text-12 font-semibold py-4 px-12 rounded-full truncate',
+        _.find(orderStatuses, { name: props.name }).color
+      )}
+    >
+      {props.name}
+    </div>
+  );
+}
 
-  const routeParams = useParams();
-  const classes = useStyles(props);
-  const pageLayout = useRef(null);
+function Marker(props) {
+  return (
+    <Tooltip title={props.text} placement='top'>
+      <Icon className='text-red'>place</Icon>
+    </Tooltip>
+  );
+}
 
-  useDeepCompareEffect(() => {
-    /**
-     * Get the Course Data
-     */
-    dispatch(getCourse(routeParams));
-  }, [dispatch, routeParams]);
+function Party() {
+  // const order = useSelector(({ eCommerceApp }) => eCommerceApp.order);
+  const [map, setMap] = useState('shipping');
 
   useEffect(() => {
-    /**
-     * If the course is opened for the first time
-     * Change ActiveStep to 1
-     */
-    if (course && course.activeStep === 0) {
-      dispatch(updateCourse({ activeStep: 1 }));
-    }
-  }, [dispatch, course]);
+    setMap('shipping');
 
-  function handleChangeActiveStep(index) {
-    dispatch(updateCourse({ activeStep: index + 1 }));
-  }
-
-  function handleNext() {
-    dispatch(updateCourse({ activeStep: course.activeStep + 1 }));
-  }
-
-  function handleBack() {
-    dispatch(updateCourse({ activeStep: course.activeStep - 1 }));
-  }
-
-  const activeStep = course && course.activeStep !== 0 ? course.activeStep : 1;
+    return () => {
+      false;
+    };
+  }, []);
 
   return (
-    <FusePageSimple
+    <FusePageCarded
       classes={{
-        content: 'flex flex-col flex-auto overflow-hidden',
-        header: 'h-72 min-h-72 lg:ltr:rounded-bl-20 lg:rtl:rounded-br-20',
-        sidebar: 'border-0',
+        content: 'flex',
+        header: 'min-h-72 h-72 sm:h-136 sm:min-h-136',
       }}
       header={
-        <div className="flex flex-1 items-center px-16 lg:px-24">
-          <Hidden lgUp>
-            <IconButton
-              onClick={(ev) => pageLayout.current.toggleLeftSidebar()}
-              aria-label="open left sidebar"
-            >
-              <Icon>menu</Icon>
-            </IconButton>
-          </Hidden>
-          <IconButton to="/apps/academy/courses" component={Link}>
-            <Icon>{theme.direction === 'ltr' ? 'arrow_back' : 'arrow_forward'}</Icon>
-          </IconButton>
-          {course && <Typography className="flex-1 text-20 mx-16">{course.title}</Typography>}
+        <div className='flex flex-1 w-full items-center justify-center'>
+          <div className='flex flex-1 flex-col items-center sm:items-start'>
+            <h1>Get Party App!</h1>
+          </div>
         </div>
       }
       content={
-        course && (
-          <div className="flex flex-1 relative overflow-hidden">
-            <FuseScrollbars className="w-full overflow-auto">
-              <SwipeableViews
-                className="overflow-hidden"
-                index={activeStep - 1}
-                enableMouseEvents
-                onChangeIndex={handleChangeActiveStep}
+        <div className='p-16 sm:p-24 max-w-2xl w-full'>
+          <div className='pb-48'>
+            <div className='pb-16 flex items-center'>
+              <Icon color='action'>account_circle</Icon>
+              <Typography
+                className='h2 mx-12 font-medium'
+                color='textSecondary'
               >
-                {course.steps.map((step, index) => (
-                  <div
-                    className="flex justify-center p-16 pb-64 sm:p-24 sm:pb-64 md:p-48 md:pb-64"
-                    key={step.id}
-                  >
-                    <Paper className="w-full max-w-lg rounded-20 p-16 md:p-24 shadow text-14 leading-normal">
-                      <div
-                        dangerouslySetInnerHTML={{ __html: step.content }}
-                        dir={theme.direction}
-                      />
-                    </Paper>
-                  </div>
-                ))}
-              </SwipeableViews>
-            </FuseScrollbars>
+                Customer
+              </Typography>
+            </div>
 
-            <div className="flex justify-center w-full absolute left-0 right-0 bottom-0 pb-16 md:pb-32">
-              <div className="flex justify-between w-full max-w-xl px-8">
-                <div>
-                  {activeStep !== 1 && (
-                    <Fab className="" color="secondary" onClick={handleBack}>
-                      <Icon>{theme.direction === 'ltr' ? 'chevron_left' : 'chevron_right'}</Icon>
-                    </Fab>
-                  )}
-                </div>
-                <div>
-                  {activeStep < course.steps.length ? (
-                    <Fab className="" color="secondary" onClick={handleNext}>
-                      <Icon>{theme.direction === 'ltr' ? 'chevron_right' : 'chevron_left'}</Icon>
-                    </Fab>
-                  ) : (
-                    <Fab className={classes.successFab} to="/apps/academy/courses" component={Link}>
-                      <Icon>check</Icon>
-                    </Fab>
-                  )}
-                </div>
+            <div className='mb-24'>
+              <div className='table-responsive mb-48'>
+                <table className='simple'>
+                  <thead>
+                    <tr>
+                      <th>
+                        <Typography className='font-semibold'>Name</Typography>
+                      </th>
+                      <th>
+                        <Typography className='font-semibold'>Email</Typography>
+                      </th>
+                      <th>
+                        <Typography className='font-semibold'>Phone</Typography>
+                      </th>
+                      <th>
+                        <Typography className='font-semibold'>
+                          Company
+                        </Typography>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div className='flex items-center'>
+                          {/* <Avatar src={order.customer.avatar} /> */}
+                          <Typography className='truncate mx-8'>
+                            Juan Cruz Lombardo Bonino
+                          </Typography>
+                        </div>
+                      </td>
+                      <td>
+                        <Typography className='truncate'>
+                          juanbonino97@gmail.com
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography className='truncate'>
+                          +543468518855
+                        </Typography>
+                      </td>
+                      <td>Get Party Company. A pelatelli</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
+
+              <Accordion
+                className='border-0 shadow-0 overflow-hidden'
+                expanded={map === 'shipping'}
+                onChange={() => setMap(map !== 'shipping' ? 'shipping' : false)}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  classes={{ root: 'border border-solid rounded-16 mb-16' }}
+                >
+                  <Typography className='font-semibold'>
+                    Shipping Address
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails className='flex flex-col md:flex-row -mx-8'>
+                  <Typography className='w-full md:max-w-256 mb-16 md:mb-0 mx-8 text-16'>
+                    San Luis 724
+                  </Typography>
+                  <div className='w-full h-320 rounded-16 overflow-hidden mx-8'>
+                    {/* <GoogleMap
+                bootstrapURLKeys={{
+                  key: process.env.REACT_APP_MAP_KEY,
+                }}
+                defaultZoom={15}
+                defaultCenter={[
+                  order.customer.shippingAddress.lat,
+                  order.customer.shippingAddress.lng,
+                ]}
+              >
+                <Marker
+                  text={order.customer.shippingAddress.address}
+                  lat={order.customer.shippingAddress.lat}
+                  lng={order.customer.shippingAddress.lng}
+                />
+              </GoogleMap> */}
+                  </div>
+                </AccordionDetails>
+              </Accordion>
+
+              <Accordion
+                className='shadow-0 border-0 overflow-hidden'
+                expanded={map === 'invoice'}
+                onChange={() => setMap(map !== 'invoice' ? 'invoice' : false)}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  classes={{ root: 'border border-solid rounded-16 mb-16' }}
+                >
+                  <Typography className='font-semibold'>
+                    Invoice Address
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails className='flex flex-col md:flex-row -mx-8'>
+                  <Typography className='w-full md:max-w-256 mb-16 md:mb-0 mx-8 text-16'>
+                    San Luis 724
+                  </Typography>
+                  <div className='w-full h-320 rounded-16 overflow-hidden mx-8'>
+                    {/* <GoogleMap
+                bootstrapURLKeys={{
+                  key: process.env.REACT_APP_MAP_KEY,
+                }}
+                defaultZoom={15}
+                defaultCenter={[
+                  order.customer.invoiceAddress.lat,
+                  order.customer.invoiceAddress.lng,
+                ]}
+              >
+                <Marker
+                  text={order.customer.invoiceAddress.address}
+                  lat={order.customer.invoiceAddress.lat}
+                  lng={order.customer.invoiceAddress.lng}
+                />
+              </GoogleMap> */}
+                  </div>
+                </AccordionDetails>
+              </Accordion>
             </div>
           </div>
-        )
-      }
-      leftSidebarContent={
-        course && (
-          <Stepper
-            classes={{ root: 'bg-transparent' }}
-            activeStep={activeStep - 1}
-            orientation="vertical"
-          >
-            {course.steps.map((step, index) => {
-              return (
-                <Step key={step.id} onClick={() => handleChangeActiveStep(index)}>
-                  <StepLabel classes={{ root: classes.stepLabel }}>{step.title}</StepLabel>
-                </Step>
-              );
-            })}
-          </Stepper>
-        )
+
+          <div className='pb-48'>
+            <div className='pb-16 flex items-center'>
+              <Icon color='action'>access_time</Icon>
+              <Typography
+                className='h2 mx-12 font-medium'
+                color='textSecondary'
+              >
+                Order Status
+              </Typography>
+            </div>
+
+            <div className='table-responsive'>
+              <table className='simple'>
+                <thead>
+                  <tr>
+                    <th>
+                      <Typography className='font-semibold'>Status</Typography>
+                    </th>
+                    <th>
+                      <Typography className='font-semibold'>
+                        Updated On
+                      </Typography>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr key={1}>
+                    <td>
+                      <OrdersStatus name='Awaiting check payment' />
+                    </td>
+                    <td>20/10/1991</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className='pb-48'>
+            <div className='pb-16 flex items-center'>
+              <Icon color='action'>attach_money</Icon>
+              <Typography
+                className='h2 mx-12 font-medium'
+                color='textSecondary'
+              >
+                Payment
+              </Typography>
+            </div>
+
+            <div className='table-responsive'>
+              <table className='simple'>
+                <thead>
+                  <tr>
+                    <th>
+                      <Typography className='font-semibold'>
+                        TransactionID
+                      </Typography>
+                    </th>
+                    <th>
+                      <Typography className='font-semibold'>
+                        Payment Method
+                      </Typography>
+                    </th>
+                    <th>
+                      <Typography className='font-semibold'>Amount</Typography>
+                    </th>
+                    <th>
+                      <Typography className='font-semibold'>Date</Typography>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span className='truncate'>
+                        12398127848712478128747812
+                      </span>
+                    </td>
+                    <td>
+                      <span className='truncate'>Debit card</span>
+                    </td>
+                    <td>
+                      <span className='truncate'>$1500.50</span>
+                    </td>
+                    <td>
+                      <span className='truncate'>20/10/2045 10:45pm</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className='pb-48'>
+            <div className='pb-16 flex items-center'>
+              <Icon color='action'>local_shipping</Icon>
+              <Typography
+                className='h2 mx-12 font-medium'
+                color='textSecondary'
+              >
+                Shipping
+              </Typography>
+            </div>
+
+            <div className='table-responsive'>
+              <table className='simple'>
+                <thead>
+                  <tr>
+                    <th>
+                      <Typography className='font-semibold'>
+                        Tracking Code
+                      </Typography>
+                    </th>
+                    <th>
+                      <Typography className='font-semibold'>Carrier</Typography>
+                    </th>
+                    <th>
+                      <Typography className='font-semibold'>Weight</Typography>
+                    </th>
+                    <th>
+                      <Typography className='font-semibold'>Fee</Typography>
+                    </th>
+                    <th>
+                      <Typography className='font-semibold'>Date</Typography>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr key={1}>
+                    <td>
+                      <span className='truncate'>Tracking</span>
+                    </td>
+                    <td>
+                      <span className='truncate'>Carrier</span>
+                    </td>
+                    <td>
+                      <span className='truncate'>Weight</span>
+                    </td>
+                    <td>
+                      <span className='truncate'>Fee</span>
+                    </td>
+                    <td>
+                      <span className='truncate'>Date/Date/Date</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       }
       innerScroll
-      ref={pageLayout}
     />
   );
 }
 
-export default withReducer('academyApp', reducer)(Course);
+export default memo(Party);

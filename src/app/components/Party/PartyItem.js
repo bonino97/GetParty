@@ -195,7 +195,7 @@ const PartyItem = (pin) => {
 
       <CardActions disableSpacing className='flex flex-row justify-center'>
         <Button
-          to={`/apps/academy/courses/1/angular`}
+          to={`/parties/${pin?._id}`}
           component={Link}
           className='justify-center w-full '
           color='primary'
