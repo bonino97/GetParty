@@ -627,7 +627,7 @@ const PartyForm = ({}) => {
                       name='zipCode'
                       variant='outlined'
                       fullWidth
-                      type='number'
+                      type='text'
                     />
                   )}
                 />
