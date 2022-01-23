@@ -1,6 +1,6 @@
 {
-    "name": "fuse-react-app",
-    "version": "6.2.0",
+    "name": "get-party",
+    "version": "1.0.0",
     "private": true,
     "dependencies": {
         "@date-io/core": "1.3.13",
