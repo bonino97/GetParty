@@ -5,6 +5,7 @@ import _ from '@lodash';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { formatDistance, intlFormat } from 'date-fns';
+import ReactMapGL, { Marker } from 'react-map-gl';
 
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -22,6 +23,8 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import FusePageCarded from '@fuse/core/FusePageCarded';
 
+import PlaceIcon from 'app/components/Icons/PlaceIcon';
+import { MAPBOX_TOKEN, MAP_STYLE } from 'app/constants/MapboxData';
 import Context from 'app/AppContext';
 
 const orderStatuses = [
@@ -97,19 +100,6 @@ const orderStatuses = [
   },
 ];
 
-const OrdersStatus = (props) => {
-  return (
-    <div
-      className={clsx(
-        'inline text-12 font-semibold py-4 px-12 rounded-full truncate',
-        _.find(orderStatuses, { name: props.name }).color
-      )}
-    >
-      {props.name}
-    </div>
-  );
-};
-
 //     title: String,
 //     content: String,
 //     phone: String,
@@ -180,27 +170,17 @@ const OrdersStatus = (props) => {
 //       },
 //     ],
 
-const Marker = (props) => {
-  return (
-    <Tooltip title={props.text} placement='top'>
-      <Icon className='text-red'>place</Icon>
-    </Tooltip>
-  );
-};
-
 const Party = () => {
   const { slug } = useParams();
   const [map, setMap] = useState('shipping');
-  const [pin, setPin] = useState('');
+  const [pin, setPin] = useState(null);
   const { state } = useContext(Context);
   const { pins } = state;
 
-  const getPartyBySlug = async () =>
-    pins?.filter((pin) => pin.slug === slug)[0];
+  const getPartyBySlug = () => pins?.filter((pin) => pin.slug === slug)[0];
 
-  useEffect(async () => {
-    setPin(await getPartyBySlug());
-    console.log(pin);
+  useEffect(() => {
+    setPin(getPartyBySlug());
   }, []);
 
   return (
@@ -208,7 +188,7 @@ const Party = () => {
       <FusePageCarded
         classes={{
           content: 'flex',
-          header: ' w-full flex flex-col min-h-96 h-96 sm:h-136 sm:min-h-136',
+          header: 'w-full flex flex-col min-h-96 h-96 sm:h-136 sm:min-h-136',
         }}
         header={
           <div
@@ -336,7 +316,44 @@ const Party = () => {
               </div>
             </motion.div>
 
-            <div className='pb-48'>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transition: { delay: 0 } }}
+              className='flex items-center flex-wrap mb-20'
+            >
+              <div className='w-full'>
+                <Typography
+                  color='primary'
+                  className='text-3xl font-bold tracking-tight mb-3 mt-10'
+                >
+                  {pin?.title}
+                </Typography>
+              </div>
+              <div className='w-full h-320 rounded-16 overflow-hidden mx-8 pr-10'>
+                <ReactMapGL
+                  mapboxApiAccessToken={MAPBOX_TOKEN}
+                  width='auto'
+                  height='100%'
+                  mapStyle={MAP_STYLE}
+                  viewport={{
+                    latitude: pin?.latitude,
+                    longitude: pin?.longitude,
+                    zoom: 20,
+                  }}
+                  title='Get Party Map'
+                >
+                  <Marker
+                    key={pin?._id}
+                    latitude={pin?.latitude}
+                    longitude={pin?.longitude}
+                  >
+                    <PlaceIcon size={35} color={'#FEBE3E'}></PlaceIcon>
+                  </Marker>
+                </ReactMapGL>
+              </div>
+            </motion.div>
+
+            {/* <div className='pb-48'>
               <div className='mb-24'>
                 <div className='table-responsive mb-48'>
                   <table className='simple'>
@@ -409,24 +426,6 @@ const Party = () => {
                     <Typography className='w-full md:max-w-256 mb-16 md:mb-0 mx-8 text-16'>
                       San Luis 724
                     </Typography>
-                    <div className='w-full h-320 rounded-16 overflow-hidden mx-8'>
-                      {/* <GoogleMap
-                          bootstrapURLKeys={{
-                            key: process.env.REACT_APP_MAP_KEY,
-                          }}
-                          defaultZoom={15}
-                          defaultCenter={[
-                            order.customer.shippingAddress.lat,
-                            order.customer.shippingAddress.lng,
-                          ]}
-                        >
-                          <Marker
-                            text={order.customer.shippingAddress.address}
-                            lat={order.customer.shippingAddress.lat}
-                            lng={order.customer.shippingAddress.lng}
-                          />
-                        </GoogleMap> */}
-                    </div>
                   </AccordionDetails>
                 </Accordion>
 
@@ -614,7 +613,7 @@ const Party = () => {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </div> */}
           </motion.div>
         }
         innerScroll

@@ -134,8 +134,8 @@ const Map = ({ classes }) => {
             {/* Draft Pin */}
             {state?.draft && (
               <Marker
-                latitude={state?.draft.latitude}
-                longitude={state?.draft.longitude}
+                latitude={state?.draft?.latitude}
+                longitude={state?.draft?.longitude}
                 offsetLeft={-19}
                 offsetTop={-38}
               >
@@ -145,9 +145,9 @@ const Map = ({ classes }) => {
 
             {state?.pins?.map((pin) => (
               <Marker
-                key={pin._id}
-                latitude={pin.latitude}
-                longitude={pin.longitude}
+                key={pin?._id}
+                latitude={pin?.latitude}
+                longitude={pin?.longitude}
                 offsetLeft={-19}
                 offsetTop={-38}
               >
