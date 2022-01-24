@@ -61,6 +61,9 @@ const Parties = (props) => {
 
   useEffect(() => {
     getUserPosition();
+    return () => {
+      setCity('');
+    };
   }, []);
 
   const getUserPosition = async () => {
