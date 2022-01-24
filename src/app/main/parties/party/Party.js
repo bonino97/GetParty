@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import _ from '@lodash';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
+import { formatDistance, intlFormat } from 'date-fns';
 
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -13,6 +14,10 @@ import Icon from '@material-ui/core/Icon';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Chip from '@material-ui/core/Chip';
+
+import Button from '@material-ui/core/Button';
+
 import { makeStyles } from '@material-ui/core/styles';
 
 import FusePageCarded from '@fuse/core/FusePageCarded';
@@ -226,29 +231,20 @@ const Party = (props) => {
         header={
           <div
             className={
-              'relative overflow-hidden flex flex-shrink-0 items-center justify-center h-100 sm:h-168'
+              'flex flex-col relative overflow-hidden items-center justify-center h-100 sm:h-168'
             }
           >
-            <div className='flex flex-col max-w-2xl mx-auto w-full p-24 sm:p-32'>
+            <div className='max-w-2xl mx-auto w-full p-24 sm:p-32'>
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: { delay: 0 } }}
               >
                 <Typography
                   color='inherit'
-                  className='text-24 sm:text-44 font-bold tracking-tight'
+                  className='text-24 sm:text-40 font-bold tracking-tight'
                 >
                   {pin?.title}
                 </Typography>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, transition: { delay: 0.3 } }}
-              >
-                <Typography
-                  color='inherit'
-                  className='text-12 sm:text-14 mt-8 sm:mt-16 opacity-75 leading-tight sm:leading-loose'
-                ></Typography>
               </motion.div>
             </div>
 
@@ -258,14 +254,61 @@ const Party = (props) => {
         content={
           <div className='p-16 sm:p-24 max-w-2xl w-full'>
             <div className='pb-48'>
-              <div className='pb-16 flex items-center'>
-                <div className='flex items-center'>
+              <div className='pb-16 flex flex-wrap items-center space-y-4'>
+                <div className='flex flex-row p-3'>
                   <Avatar src={pin?.author?.picture} />
-                  <Typography className='truncate mx-8'>
-                    {pin?.author?.name}
-                  </Typography>
+                  <div className='flex flex-col ml-8'>
+                    <Typography className='truncate mx-8'>
+                      {pin?.author?.name}
+                    </Typography>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      size='small'
+                      className='p-2'
+                    >
+                      Follow
+                    </Button>
+                  </div>
                 </div>
-                <div className='flex'></div>
+
+                <div className='flex flex-col p-3 items-center sm:ml-auto'>
+                  <Typography variant='caption mb-1'>
+                    <Chip
+                      icon={<Icon className='text-16'>access_time</Icon>}
+                      label={
+                        pin?.startDate &&
+                        intlFormat(
+                          new Date(pin?.startDate),
+                          {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                          },
+                          {
+                            locale: 'en-US',
+                          }
+                        )
+                      }
+                      classes={{
+                        root: 'h-24',
+                        label: 'text-11',
+                      }}
+                      variant='outlined'
+                    />
+                  </Typography>
+                  <Button
+                    variant='text'
+                    color='primary'
+                    size='small'
+                    className='w-full p-2'
+                  >
+                    Add to calendar
+                  </Button>
+                </div>
               </div>
 
               <div className='mb-24'>
