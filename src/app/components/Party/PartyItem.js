@@ -146,15 +146,19 @@ const PartyItem = (pin) => {
 
       <CardContent className='py-0'>
         {pin?.image && (
-          <div className='border-1 rounded-8'>
-            <img className='w-full border-b-1' src={pin?.image} alt='article' />
+          <div className='w-full'>
+            <img
+              className='rounded-lg w-auto h-auto'
+              src={pin?.image}
+              alt='get party images'
+            />
           </div>
         )}
         <div className='flex flex-col items-center p-16'>
           <Typography color='inherit' className='font-bold' variant='subtitle1'>
             {pin?.title}
           </Typography>
-          <Typography className='mt-16'>{pin?.content}</Typography>
+          <Typography className='mt-16 text-center'>{pin?.content}</Typography>
         </div>
         <div className='flex flex-col p-4'>
           <Typography variant='caption'>{getPriceOfTicket()}</Typography>

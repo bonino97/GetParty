@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, memo } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import _ from '@lodash';
 import clsx from 'clsx';
@@ -97,23 +97,6 @@ const orderStatuses = [
   },
 ];
 
-const useStyles = makeStyles((theme) => ({
-  header: {
-    background: `linear-gradient(to right, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
-    color: theme.palette.getContrastText(theme.palette.primary.main),
-  },
-  headerIcon: {
-    position: 'absolute',
-    top: -64,
-    left: 0,
-    opacity: 0.04,
-    fontSize: 512,
-    width: 512,
-    height: 512,
-    pointerEvents: 'none',
-  },
-}));
-
 const OrdersStatus = (props) => {
   return (
     <div
@@ -205,9 +188,8 @@ const Marker = (props) => {
   );
 };
 
-const Party = (props) => {
+const Party = () => {
   const { slug } = useParams();
-  const classes = useStyles(props);
   const [map, setMap] = useState('shipping');
   const [pin, setPin] = useState('');
   const { state } = useContext(Context);
@@ -226,33 +208,52 @@ const Party = (props) => {
       <FusePageCarded
         classes={{
           content: 'flex',
-          header: 'min-h-72 h-72 sm:h-136 sm:min-h-136',
+          header: ' w-full flex flex-col min-h-96 h-96 sm:h-136 sm:min-h-136',
         }}
         header={
           <div
             className={
-              'flex flex-col relative overflow-hidden items-center justify-center h-100 sm:h-168'
+              'relative overflow-hidden items-center justify-center h-100 sm:h-168'
             }
           >
             <div className='mx-auto w-full p-24 sm:p-32'>
               <motion.div
+                className='flex flex-row'
+                initial={{ x: 20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1, transition: { delay: 0.3 } }}
+              >
+                <Typography
+                  className='flex items-center sm:mb-12'
+                  component={Link}
+                  role='button'
+                  to='/parties'
+                  color='inherit'
+                >
+                  <Icon className='text-20'>arrow_back</Icon>
+                  <span className='mx-4 font-medium'>Back</span>
+                </Typography>
+              </motion.div>
+              <motion.div
+                className='flex flex-row justify-center'
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: { delay: 0 } }}
               >
                 <Typography
                   color='inherit'
-                  className='text-24 sm:text-40 font-bold tracking-tight'
+                  className='text-24 sm:text-32 font-bold tracking-tight'
                 >
                   {pin?.title}
                 </Typography>
               </motion.div>
             </div>
-
-            <Icon className={classes.headerIcon}> audiotrack </Icon>
           </div>
         }
         content={
-          <div className='p-16 sm:p-24 w-full'>
+          <motion.div
+            initial={{ x: 20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1, transition: { delay: 0.3 } }}
+            className='p-16 sm:p-24 w-full'
+          >
             <div className='pb-16 flex flex-wrap items-center justify-center sm:justify-start'>
               <div className='flex flex-row p-3 mb-16 sm:m-0 w-full sm:w-auto'>
                 <Avatar src={pin?.author?.picture} />
@@ -272,7 +273,7 @@ const Party = (props) => {
               </div>
 
               <div className='flex flex-col p-3 items-center sm:ml-auto'>
-                <Typography variant='caption mb-1'>
+                <Typography variant='caption' className='mb-1'>
                   <Chip
                     icon={<Icon className='text-16'>access_time</Icon>}
                     label={
@@ -309,6 +310,31 @@ const Party = (props) => {
                 </Button>
               </div>
             </div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transition: { delay: 0 } }}
+              className='flex items-center flex-wrap mb-20'
+            >
+              <div className='w-full md:w-1/2 pr-10'>
+                <img
+                  className='rounded-lg'
+                  src={pin?.image}
+                  alt='get party images'
+                />
+              </div>
+              <div className='w-full md:w-1/2'>
+                <Typography
+                  color='primary'
+                  className='text-3xl font-bold tracking-tight mb-3 text-center mt-10'
+                >
+                  {pin?.title}
+                </Typography>
+                <Typography className='text-center mb-8'>
+                  {pin?.content}
+                </Typography>
+              </div>
+            </motion.div>
 
             <div className='pb-48'>
               <div className='mb-24'>
@@ -589,7 +615,7 @@ const Party = (props) => {
                 </table>
               </div>
             </div>
-          </div>
+          </motion.div>
         }
         innerScroll
       />
