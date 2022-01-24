@@ -234,7 +234,7 @@ const Party = (props) => {
               'flex flex-col relative overflow-hidden items-center justify-center h-100 sm:h-168'
             }
           >
-            <div className='max-w-2xl mx-auto w-full p-24 sm:p-32'>
+            <div className='mx-auto w-full p-24 sm:p-32'>
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: { delay: 0 } }}
@@ -252,65 +252,65 @@ const Party = (props) => {
           </div>
         }
         content={
-          <div className='p-16 sm:p-24 max-w-2xl w-full'>
-            <div className='pb-48'>
-              <div className='pb-16 flex flex-wrap items-center space-y-4'>
-                <div className='flex flex-row p-3'>
-                  <Avatar src={pin?.author?.picture} />
-                  <div className='flex flex-col ml-8'>
-                    <Typography className='truncate mx-8'>
-                      {pin?.author?.name}
-                    </Typography>
-                    <Button
-                      variant='contained'
-                      color='primary'
-                      size='small'
-                      className='p-2'
-                    >
-                      Follow
-                    </Button>
-                  </div>
-                </div>
-
-                <div className='flex flex-col p-3 items-center sm:ml-auto'>
-                  <Typography variant='caption mb-1'>
-                    <Chip
-                      icon={<Icon className='text-16'>access_time</Icon>}
-                      label={
-                        pin?.startDate &&
-                        intlFormat(
-                          new Date(pin?.startDate),
-                          {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: 'numeric',
-                            minute: 'numeric',
-                          },
-                          {
-                            locale: 'en-US',
-                          }
-                        )
-                      }
-                      classes={{
-                        root: 'h-24',
-                        label: 'text-11',
-                      }}
-                      variant='outlined'
-                    />
+          <div className='p-16 sm:p-24 w-full'>
+            <div className='pb-16 flex flex-wrap items-center justify-center sm:justify-start'>
+              <div className='flex flex-row p-3 mb-16 sm:m-0 w-full sm:w-auto'>
+                <Avatar src={pin?.author?.picture} />
+                <div className='flex flex-col ml-auto sm:ml-8'>
+                  <Typography className='truncate mx-8'>
+                    {pin?.author?.name}
                   </Typography>
                   <Button
-                    variant='text'
+                    variant='contained'
                     color='primary'
                     size='small'
-                    className='w-full p-2'
+                    className='p-2'
                   >
-                    Add to calendar
+                    Follow
                   </Button>
                 </div>
               </div>
 
+              <div className='flex flex-col p-3 items-center sm:ml-auto'>
+                <Typography variant='caption mb-1'>
+                  <Chip
+                    icon={<Icon className='text-16'>access_time</Icon>}
+                    label={
+                      pin?.startDate &&
+                      intlFormat(
+                        new Date(pin?.startDate),
+                        {
+                          weekday: 'long',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: 'numeric',
+                          minute: 'numeric',
+                        },
+                        {
+                          locale: 'en-US',
+                        }
+                      )
+                    }
+                    classes={{
+                      root: 'h-24',
+                      label: 'text-11',
+                    }}
+                    variant='outlined'
+                  />
+                </Typography>
+                <Button
+                  variant='text'
+                  color='primary'
+                  size='small'
+                  className='w-full p-2'
+                >
+                  Add to calendar
+                </Button>
+              </div>
+            </div>
+
+            <div className='pb-48'>
               <div className='mb-24'>
                 <div className='table-responsive mb-48'>
                   <table className='simple'>
