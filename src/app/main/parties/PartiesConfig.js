@@ -7,7 +7,7 @@ export const PartiesConfig = {
   },
   routes: [
     {
-      path: '/parties/:pinId',
+      path: '/parties/:slug',
       component: lazy(() => import('./party/Party')),
     },
     {

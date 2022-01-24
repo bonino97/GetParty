@@ -1,4 +1,6 @@
-import React, { useEffect, useState, memo } from 'react';
+import React, { useEffect, useState, useContext, memo } from 'react';
+import { useParams } from 'react-router-dom';
+
 import _ from '@lodash';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
@@ -14,6 +16,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
 
 import FusePageCarded from '@fuse/core/FusePageCarded';
+
+import Context from 'app/AppContext';
 
 const orderStatuses = [
   {
@@ -127,16 +131,17 @@ const Marker = (props) => {
 };
 
 const Party = (props) => {
-  const [map, setMap] = useState('shipping');
-
+  const { slug } = useParams();
   const classes = useStyles(props);
+  const [map, setMap] = useState('shipping');
+  const [pin, setPin] = useState('');
+  const { state } = useContext(Context);
+  const { pins } = state;
+
+  const getPartyBySlug = () => pins?.filter((pin) => pin.slug === slug)[0];
 
   useEffect(() => {
-    setMap('shipping');
-
-    return () => {
-      false;
-    };
+    setPin(getPartyBySlug());
   }, []);
 
   return (
@@ -161,7 +166,7 @@ const Party = (props) => {
                 color='inherit'
                 className='text-24 sm:text-44 font-bold tracking-tight'
               >
-                Parties near Corral de Bustos!
+                {pin?.title}
               </Typography>
             </motion.div>
             <motion.div
