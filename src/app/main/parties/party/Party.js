@@ -278,6 +278,7 @@ const Party = () => {
           variant: 'warning', //success error info warning null
         })
       );
+      dispatch({ type: 'DELETE_PIN', payload: pin });
       history.push('/parties');
     }
   };
