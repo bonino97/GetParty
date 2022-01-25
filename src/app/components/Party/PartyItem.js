@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
@@ -225,7 +225,7 @@ const PartyItem = (pin) => {
         </IconButton>
         <IconButton
           aria-label='view comments of party'
-          onClick={() => handleComments(pin)}
+          onClick={() => handleComments()}
         >
           <MessageIcon />
         </IconButton>

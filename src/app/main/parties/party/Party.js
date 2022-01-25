@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext, memo } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import _ from '@lodash';
 import clsx from 'clsx';
@@ -16,6 +17,11 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Chip from '@material-ui/core/Chip';
+import { CardActions, IconButton } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/DeleteTwoTone';
+import NavigationIcon from '@material-ui/icons/Navigation';
+import ShareIcon from '@material-ui/icons/Share';
+import MessageIcon from '@material-ui/icons/Message';
 
 import Button from '@material-ui/core/Button';
 
@@ -25,7 +31,13 @@ import FusePageCarded from '@fuse/core/FusePageCarded';
 
 import PlaceIcon from 'app/components/Icons/PlaceIcon';
 import { MAPBOX_TOKEN, MAP_STYLE } from 'app/constants/MapboxData';
+
 import Context from 'app/AppContext';
+import { showMessage } from 'app/store/fuse/messageSlice';
+import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store/stateSlice';
+import { isAuthUser } from 'app/services/authService/isAuthUser';
+import { useAuthClient } from 'graphql/authClient';
+import { DELETE_PIN_MUTATION } from 'graphql/mutations';
 
 const orderStatuses = [
   {
@@ -170,18 +182,115 @@ const orderStatuses = [
 //       },
 //     ],
 
+const INITIAL_VIEWPORT = {
+  latitude: 37.7577,
+  longitude: -122.4376,
+  zoom: 15,
+};
+
 const Party = () => {
   const { slug } = useParams();
-  const [map, setMap] = useState('shipping');
+  const history = useHistory();
   const [pin, setPin] = useState(null);
-  const { state } = useContext(Context);
+  const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
+  const reduxDispatch = useDispatch();
+  const authClient = useAuthClient();
+  const { state, dispatch } = useContext(Context);
+
   const { pins } = state;
 
-  const getPartyBySlug = () => pins?.filter((pin) => pin.slug === slug)[0];
+  const getPartyBySlug = async () =>
+    pins?.filter((pin) => pin.slug === slug)[0];
 
-  useEffect(() => {
-    setPin(getPartyBySlug());
+  const getMapViewport = async () => {
+    setViewport({
+      latitude: pin?.latitude,
+      longitude: pin?.longitude,
+      zoom: 20,
+    });
+  };
+
+  useEffect(async () => {
+    const filteredPin = await getPartyBySlug();
+    setPin(filteredPin);
+
+    const loadingViewport = await getMapViewport();
+    setViewport(loadingViewport);
   }, []);
+
+  const getPriceOfTicket = () => {
+    if (pin?.priceOfTicket === 0) {
+      return (
+        <div className='flex flex-row '>
+          <Icon className='text-16 mt-1 mr-2' color='inherit'>
+            money_off
+          </Icon>
+          <div>Free</div>
+        </div>
+      );
+    }
+
+    if (pin?.priceOfTicket > 0) {
+      return (
+        <div className='flex flex-row '>
+          <div>Starts at </div>
+          <Icon className='text-14 mt-2' color='inherit'>
+            attach_money
+          </Icon>
+          <div>{pin?.priceOfTicket}</div>
+        </div>
+      );
+    }
+    return 'Free';
+  };
+
+  const getAddress = () => {
+    const address = `
+    ${pin?.location?.address ? pin?.location?.address + ', ' : ''}
+    ${pin?.location?.city ? pin?.location?.city + ', ' : ''}
+    ${pin?.location?.state ? pin?.location?.state + ', ' : ''}
+    ${pin?.location?.country ? pin?.location?.country : ''}`;
+
+    return (
+      <div className='flex flex-row '>
+        <Icon className='text-14 mt-2 mr-2 font-bold' color='inherit'>
+          near_me
+        </Icon>
+        <div>{address}</div>
+      </div>
+    );
+  };
+
+  const handleDeletePin = async () => {
+    const { deletePin } = await authClient.request(DELETE_PIN_MUTATION, {
+      pinId: pin?._id,
+    });
+
+    if (deletePin) {
+      reduxDispatch(
+        showMessage({
+          message: 'Party removed successfully.',
+          autoHideDuration: 3000,
+          anchorOrigin: {
+            vertical: 'bottom', //top bottom
+            horizontal: 'right', //left center right
+          },
+          variant: 'warning', //success error info warning null
+        })
+      );
+      history.push('/parties');
+    }
+  };
+
+  const handleOpenGoogleMap = () => {
+    const url = `https://www.google.com/maps/dir/${state?.currentLocation?.latitude},${state?.currentLocation?.longitude}/${pin?.latitude},${pin?.longitude}`;
+    window.open(url, '_blank');
+  };
+
+  const handleComments = () => {
+    dispatch({ type: 'SET_PIN', payload: pin });
+    reduxDispatch(toggleQuickPanel());
+  };
 
   return (
     pin && (
@@ -218,12 +327,31 @@ const Party = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: { delay: 0 } }}
               >
-                <Typography
-                  color='inherit'
-                  className='text-24 sm:text-32 font-bold tracking-tight'
-                >
-                  {pin?.title}
-                </Typography>
+                <CardActions disableSpacing className='pt-0'>
+                  {isAuthUser(pin, state?.currentUser) && (
+                    <IconButton
+                      onClick={() => handleDeletePin()}
+                      aria-label='delete pin'
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  )}
+                  <IconButton aria-label='share'>
+                    <ShareIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label='open map to see position'
+                    onClick={() => handleOpenGoogleMap()}
+                  >
+                    <NavigationIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label='view comments of party'
+                    onClick={() => handleComments(pin)}
+                  >
+                    <MessageIcon />
+                  </IconButton>
+                </CardActions>
               </motion.div>
             </div>
           </div>
@@ -238,7 +366,7 @@ const Party = () => {
               <div className='flex flex-row p-3 mb-16 sm:m-0 w-full sm:w-auto'>
                 <Avatar src={pin?.author?.picture} />
                 <div className='flex flex-col ml-auto sm:ml-8'>
-                  <Typography className='truncate mx-8'>
+                  <Typography className='truncate mx-8 mb-4'>
                     {pin?.author?.name}
                   </Typography>
                   <Button
@@ -253,7 +381,7 @@ const Party = () => {
               </div>
 
               <div className='flex flex-col p-3 items-center sm:ml-auto'>
-                <Typography variant='caption' className='mb-1'>
+                <Typography variant='caption' className='mb-2'>
                   <Chip
                     icon={<Icon className='text-16'>access_time</Icon>}
                     label={
@@ -296,13 +424,15 @@ const Party = () => {
               animate={{ opacity: 1, transition: { delay: 0 } }}
               className='flex items-center flex-wrap mb-20'
             >
-              <div className='w-full md:w-1/2 pr-10'>
-                <img
-                  className='rounded-lg'
-                  src={pin?.image}
-                  alt='get party images'
-                />
-              </div>
+              {pin?.image && (
+                <div className='w-full md:w-1/2 pr-10'>
+                  <img
+                    className='rounded-lg'
+                    src={pin?.image}
+                    alt='get party images'
+                  />
+                </div>
+              )}
               <div className='w-full md:w-1/2'>
                 <Typography
                   color='primary'
@@ -314,6 +444,16 @@ const Party = () => {
                   {pin?.content}
                 </Typography>
               </div>
+              <div className='w-full md:w-1/2'>
+                <div className='flex flex-col p-4'>
+                  <Typography variant='caption'>
+                    {getPriceOfTicket()}
+                  </Typography>
+                </div>
+                <div className='flex flex-col p-4'>
+                  <Typography variant='caption'>{getAddress()}</Typography>
+                </div>
+              </div>
             </motion.div>
 
             <motion.div
@@ -321,25 +461,13 @@ const Party = () => {
               animate={{ opacity: 1, transition: { delay: 0 } }}
               className='flex items-center flex-wrap mb-20'
             >
-              <div className='w-full'>
-                <Typography
-                  color='primary'
-                  className='text-3xl font-bold tracking-tight mb-3 mt-10'
-                >
-                  {pin?.title}
-                </Typography>
-              </div>
-              <div className='w-full h-320 rounded-16 overflow-hidden mx-8 pr-10'>
+              {/* <div className='w-full min-h-200 max-h-320 h-200 md:h-280 sm:h-320 rounded-16 overflow-hidden mx-8 pr-10'>
                 <ReactMapGL
                   mapboxApiAccessToken={MAPBOX_TOKEN}
                   width='auto'
                   height='100%'
                   mapStyle={MAP_STYLE}
-                  viewport={{
-                    latitude: pin?.latitude,
-                    longitude: pin?.longitude,
-                    zoom: 20,
-                  }}
+                  viewport={viewport}
                   title='Get Party Map'
                 >
                   <Marker
@@ -350,7 +478,7 @@ const Party = () => {
                     <PlaceIcon size={35} color={'#FEBE3E'}></PlaceIcon>
                   </Marker>
                 </ReactMapGL>
-              </div>
+              </div> */}
             </motion.div>
 
             {/* <div className='pb-48'>
