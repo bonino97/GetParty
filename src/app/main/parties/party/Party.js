@@ -36,8 +36,10 @@ import Context from 'app/AppContext';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store/stateSlice';
 import { isAuthUser } from 'app/services/authService/isAuthUser';
+import { openGoogleMaps } from 'app/services/googleService/openGoogleMaps';
 import { useAuthClient } from 'graphql/authClient';
 import { DELETE_PIN_MUTATION } from 'graphql/mutations';
+import { openGoogleCalendar } from 'app/services/googleService/openGoogleCalendar';
 
 const orderStatuses = [
   {
@@ -284,13 +286,17 @@ const Party = () => {
   };
 
   const handleOpenGoogleMap = () => {
-    const url = `https://www.google.com/maps/dir/${state?.currentLocation?.latitude},${state?.currentLocation?.longitude}/${pin?.latitude},${pin?.longitude}`;
-    window.open(url, '_blank');
+    openGoogleMaps(pin, state?.currentLocation);
   };
 
   const handleComments = () => {
     dispatch({ type: 'SET_PIN', payload: pin });
     reduxDispatch(toggleQuickPanel());
+  };
+
+  const handleOpenGoogleCalendar = () => {
+    console.log(pin, getAddress());
+    openGoogleCalendar(pin, getAddress());
   };
 
   return (
@@ -414,6 +420,7 @@ const Party = () => {
                   color='primary'
                   size='small'
                   className='w-full p-2'
+                  onClick={() => handleOpenGoogleCalendar()}
                 >
                   Add to calendar
                 </Button>

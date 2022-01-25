@@ -27,6 +27,7 @@ import Context from 'app/AppContext';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store/stateSlice';
 import { isAuthUser } from 'app/services/authService/isAuthUser';
+import { openGoogleMaps } from 'app/services/googleService/openGoogleMaps';
 
 const PartyItem = (pin) => {
   const authClient = useAuthClient();
@@ -97,8 +98,7 @@ const PartyItem = (pin) => {
   };
 
   const handleOpenGoogleMap = () => {
-    const url = `https://www.google.com/maps/dir/${state?.currentLocation?.latitude},${state?.currentLocation?.longitude}/${pin?.latitude},${pin?.longitude}`;
-    window.open(url, '_blank');
+    openGoogleMaps(pin, state?.currentLocation);
   };
 
   const handleComments = () => {
