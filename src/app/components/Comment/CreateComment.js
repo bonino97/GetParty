@@ -22,9 +22,8 @@ const CreateComment = ({}) => {
   const handleSubmitComment = async (e) => {
     e.preventDefault();
 
-    if (comment === '') {
-      return;
-    }
+    if (comment === '') return;
+    if (!currentUser) return;
 
     const createCommentProps = { pinId: currentPin?._id, text: comment };
     await client.request(CREATE_COMMENT_MUTATION, createCommentProps);

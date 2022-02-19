@@ -5,6 +5,7 @@ import Context from '../../app/AppContext';
 const Signout = () => {
   const { dispatch } = useContext(Context);
   const onSignout = () => {
+    localStorage.removeItem('token');
     dispatch({ type: 'SIGNOUT_USER' });
   };
 

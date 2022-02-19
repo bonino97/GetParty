@@ -186,7 +186,8 @@ const Map = ({ classes }) => {
             }}
           />
 
-          {state?.draft && <PartyForm />}
+          {state?.draft && state?.currentUser && <PartyForm />}
+          {/* {state?.draft && state?.currentUser && <RegisterForm />} */} 
         </>
       )}
     </div>

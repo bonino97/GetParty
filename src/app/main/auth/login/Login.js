@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 
 import { GraphQLClient } from 'graphql-request';
@@ -62,6 +62,8 @@ const defaultValues = {
 };
 
 const Login = () => {
+  const history = useHistory();
+
   const classes = useStyles();
   const { state, dispatch } = useContext(Context);
 
@@ -88,8 +90,7 @@ const Login = () => {
       const { me } = await client.request(ME_QUERY);
       dispatch({ type: 'LOGIN_USER', payload: me });
       dispatch({ type: 'IS_LOGGED_IN', payload: googleUser.isSignedIn() });
-      if (me) return <Redirect to='/map' />;
-      
+      return history.push('/map');
     } catch (error) {
       onFailure(error);
     }

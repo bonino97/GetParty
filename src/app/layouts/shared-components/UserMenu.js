@@ -37,19 +37,19 @@ function UserMenu(props) {
         className='min-h-40 min-w-40 px-0 md:px-16 py-0 md:py-6'
         onClick={userMenuClick}
       >
-        {currentUser ? (
+        {currentUser && (
           <>
             <Avatar
               className=''
               alt='user photo'
               src={
-                currentUser.picture
-                  ? currentUser.picture
+                currentUser?.picture
+                  ? currentUser?.picture
                   : 'assets/images/avatars/profile.jpg'
               }
             />
           </>
-        ) : null}
+        )}
 
         <Icon className='text-16 ml-12 hidden sm:flex' variant='action'>
           keyboard_arrow_down
