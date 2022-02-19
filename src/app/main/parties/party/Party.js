@@ -454,13 +454,60 @@ const Party = () => {
               </div>
               <div className='w-full md:w-1/2'>
                 <div className='flex flex-col p-4'>
-                  <Typography variant='caption'>
+                  <Typography variant='caption'>{getAddress()}</Typography>
+                </div>
+                <div className='flex flex-col p-4'>
+                  <Typography className='text-24' variant='caption'>
                     {getPriceOfTicket()}
                   </Typography>
                 </div>
                 <div className='flex flex-col p-4'>
+                  <Typography variant='caption'>
+                    <div className='flex flex-row '>
+                      <Icon
+                        className='text-14 mt-2 mr-4 font-bold'
+                        color='inherit'
+                      >
+                        sticky_note_2
+                      </Icon>
+                      <div>
+                        Available Tickets:
+                        <span className='font-bold ml-2 text-yellow-700'>
+                          {pin?.availableTickets}
+                        </span>
+                      </div>
+                    </div>
+                  </Typography>
+                </div>
+                <div className='flex flex-col p-4'>
+                  <Typography variant='caption'>
+                    <div className='flex flex-row '>
+                      {pin?.tags?.map((pin) => (
+                        <span className='p-1'>
+                          <Chip
+                            label={'#' + pin}
+                            component='a'
+                            href='#basic-chip'
+                            variant='outlined'
+                            clickable
+                          />
+                        </span>
+                      ))}
+                    </div>
+                  </Typography>
+                </div>
+                {/* <div className='flex flex-col p-4'>
                   <Typography variant='caption'>{getAddress()}</Typography>
                 </div>
+                <div className='flex flex-col p-4'>
+                  <Typography variant='caption'>{getAddress()}</Typography>
+                </div>
+                <div className='flex flex-col p-4'>
+                  <Typography variant='caption'>{getAddress()}</Typography>
+                </div>
+                <div className='flex flex-col p-4'>
+                  <Typography variant='caption'>{getAddress()}</Typography>
+                </div> */}
               </div>
             </motion.div>
 

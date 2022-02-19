@@ -7,6 +7,7 @@ const Context = createContext({
   pins: [],
   currentPin: null,
   currentLocation: null,
+  routes: [],
 });
 
 export default Context;

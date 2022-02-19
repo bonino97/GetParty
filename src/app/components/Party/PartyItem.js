@@ -158,7 +158,9 @@ const PartyItem = (pin) => {
           <Typography color='inherit' className='font-bold' variant='subtitle1'>
             {pin?.title}
           </Typography>
-          <Typography className='mt-16 text-center'>{pin?.content}</Typography>
+          <Typography className='mt-16 text-center'>
+            {pin?.content?.slice(0, 120)}...
+          </Typography>
         </div>
         <div className='flex flex-col p-4'>
           <Typography variant='caption'>{getPriceOfTicket()}</Typography>

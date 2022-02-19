@@ -9,6 +9,7 @@ class FuseAuthorization extends Component {
   constructor(props, context) {
     super(props);
     const { routes } = context;
+
     this.state = {
       accessGranted: true,
       routes,
@@ -35,10 +36,12 @@ class FuseAuthorization extends Component {
     const { location, userRole } = props;
     const { pathname } = location;
 
-    const matched = matchRoutes(state.routes, pathname)[0];
+    const matched = matchRoutes(state?.routes, pathname)[0];
 
     return {
-      accessGranted: matched ? FuseUtils.hasPermission(matched.route.auth, userRole) : true,
+      accessGranted: matched
+        ? FuseUtils.hasPermission(matched?.route?.auth, userRole)
+        : true,
     };
   }
 

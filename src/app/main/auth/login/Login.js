@@ -88,6 +88,9 @@ const Login = () => {
       const { me } = await client.request(ME_QUERY);
       dispatch({ type: 'LOGIN_USER', payload: me });
       dispatch({ type: 'IS_LOGGED_IN', payload: googleUser.isSignedIn() });
+      console.log(me);
+      if (me) return <Redirect to='/map' />;
+      
     } catch (error) {
       onFailure(error);
     }
@@ -258,7 +261,7 @@ const Login = () => {
 
           <div className='flex flex-col items-center justify-center pb-32'>
             <span className='font-normal'>Don't have an account?</span>
-            <Link className='font-normal' to='/pages/auth/register-3'>
+            <Link className='font-normal' to='/register'>
               Create an account
             </Link>
           </div>

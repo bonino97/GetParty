@@ -41,20 +41,19 @@ const wsLink = new WebSocketLink({
 const client = new ApolloClient({ link: wsLink, cache: new InMemoryCache() });
 
 const Root = () => {
-  const initialState = useContext(Context);
-  const [state, dispatch] = useReducer(Reducer, initialState);
+  // const initialState = useContext(Context);
+  // const [state, dispatch] = useReducer(Reducer, initialState);
 
   return (
-    <Router history={history}>
-      <ApolloProvider client={client}>
-        <Context.Provider value={{ state, dispatch, routes }}>
+    <ApolloProvider client={client}>
+      {/* <Context.Provider value={{ state, dispatch, routes }}>
           <Switch>
             <Route path='/login' component={Splash} />
             <ProtectedRoute path='/' component={App} />
           </Switch>
-        </Context.Provider>
-      </ApolloProvider>
-    </Router>
+        </Context.Provider> */}
+      <App />
+    </ApolloProvider>
   );
 };
 

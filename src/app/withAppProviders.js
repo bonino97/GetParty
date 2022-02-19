@@ -9,8 +9,7 @@ import jssExtend from 'jss-plugin-extend';
 import rtl from 'jss-rtl';
 import Provider from 'react-redux/es/components/Provider';
 import DateFnsUtils from '@date-io/date-fns';
-import AppContext from './AppContext';
-import routes from './configs/routesConfig';
+import Context from './AppContext';
 import store from './store';
 
 const jss = create({
