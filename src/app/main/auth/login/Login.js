@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 
 import { GraphQLClient } from 'graphql-request';
