@@ -16,6 +16,7 @@ const CreateComment = ({}) => {
 
   const { state } = useContext(Context);
   const { currentUser, currentPin } = state;
+
   const [comment, setComment] = useState('');
 
   const handleSubmitComment = async (e) => {

@@ -295,7 +295,6 @@ const Party = () => {
   };
 
   const handleOpenGoogleCalendar = () => {
-    console.log(pin, getAddress());
     openGoogleCalendar(pin, getAddress());
   };
 

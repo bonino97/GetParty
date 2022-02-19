@@ -44,7 +44,7 @@ import routes from 'app/configs/routesConfig';
 const App = () => {
   const initialState = useContext(Context);
   const [state, dispatch] = useReducer(Reducer, initialState);
-
+  console.log(state); // Iniciar el usuario.
   return (
     <Context.Provider value={{ state, dispatch, routes }}>
       <Auth>
