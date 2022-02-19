@@ -456,7 +456,7 @@ const Party = () => {
                   <Typography variant='caption'>{getAddress()}</Typography>
                 </div>
                 <div className='flex flex-col p-4'>
-                  <Typography className='text-24' variant='caption'>
+                  <Typography variant='caption'>
                     {getPriceOfTicket()}
                   </Typography>
                 </div>
