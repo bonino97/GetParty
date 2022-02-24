@@ -50,7 +50,7 @@ const defaultValues = {
   acceptTermsConditions: false,
 };
 
-function Register() {
+const Register = () => {
   const classes = useStyles();
 
   const { control, formState, handleSubmit, reset } = useForm({
@@ -61,9 +61,10 @@ function Register() {
 
   const { isValid, dirtyFields, errors } = formState;
 
-  function onSubmit() {
-    reset(defaultValues);
-  }
+  const onSubmit = (formValues) => {
+    console.log(formValues);
+    // reset(defaultValues);
+  };
 
   return (
     <div
@@ -77,11 +78,28 @@ function Register() {
           initial={{ opacity: 0, scale: 0.6 }}
           animate={{ opacity: 1, scale: 1, transition: { delay: 0.1 } }}
         >
-          <img
-            className='w-128 mb-32'
-            src='assets/images/logos/fuse.svg'
-            alt='logo'
-          />
+          <div className='flex items-center mb-24'>
+            <img
+              className='logo-icon mr-4 mb-2 w-48'
+              src='assets/icons/custom/get-party-yellow.png'
+              alt='logo'
+            />
+            <div className='border-l-1 mr-4 w-1 h-40' />
+            <div>
+              <Typography
+                className='text-24 font-semibold logo-text'
+                color='inherit'
+              >
+                GET
+              </Typography>
+              <Typography
+                className='text-16 tracking-widest -mt-8 font-700'
+                color='textSecondary'
+              >
+                PARTY
+              </Typography>
+            </div>
+          </div>
         </motion.div>
 
         <motion.div
@@ -90,7 +108,7 @@ function Register() {
         >
           <Typography className='text-32 sm:text-44 font-semibold leading-tight'>
             Welcome <br />
-            to the <br /> FUSE React!
+            to <br /> <span color='primary'>Get Party!</span>
           </Typography>
         </motion.div>
 
@@ -99,8 +117,7 @@ function Register() {
           animate={{ opacity: 1, transition: { delay: 0.3 } }}
         >
           <Typography variant='subtitle1' className='mt-32 font-medium'>
-            Powerful and professional admin template for Web Applications, CRM,
-            CMS, Admin Panels and more.
+            Start looking your party.
           </Typography>
         </motion.div>
       </div>
@@ -190,7 +207,7 @@ function Register() {
                 <TextField
                   {...field}
                   className='mb-16'
-                  label='Password (Confirm)'
+                  label='Repeat password'
                   type='password'
                   error={!!errors.passwordConfirm}
                   helperText={errors?.passwordConfirm?.message}
@@ -242,6 +259,6 @@ function Register() {
       </Card>
     </div>
   );
-}
+};
 
 export default Register;
