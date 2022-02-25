@@ -166,8 +166,18 @@ export const CREATE_COMMENT_MUTATION = `
 `;
 
 export const REGISTER_MUTATION = `
-  mutation Register ($registerInput: RegisterInput!) {
-    register(input: $registerInput) {
+  mutation Register (
+    $email: String
+    $password: String
+    $name: String
+    $termsAndConditions: Boolean
+    ) {
+    register(input: {
+      email: $email
+      password: $password
+      name: $name
+      termsAndConditions: $termsAndConditions
+    }) {
       _id
     }
   }

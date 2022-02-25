@@ -23,6 +23,8 @@ import Typography from '@material-ui/core/Typography';
 import { useClient } from 'graphql/client';
 import { REGISTER_MUTATION } from 'graphql/mutations';
 
+import { showMessage } from 'app/store/fuse/messageSlice';
+
 const useStyles = makeStyles((theme) => ({
   root: {},
 }));
@@ -62,9 +64,9 @@ const Register = () => {
     console.log(formValues);
     // reset(defaultValues);
 
-    const registerInput = formValues;
-    console.log(registerInput);
-    const { register } = await client?.request(REGISTER_MUTATION, registerInput);
+    const input = formValues;
+    console.log(input);
+    const { register } = await client?.request(REGISTER_MUTATION, input);
     console.log(register);
     if (register) {
       // reset(defaultValues);
