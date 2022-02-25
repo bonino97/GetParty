@@ -164,3 +164,11 @@ export const CREATE_COMMENT_MUTATION = `
     }
   }
 `;
+
+export const REGISTER_MUTATION = `
+  mutation Register ($registerInput: RegisterInput!) {
+    register(input: $registerInput) {
+      _id
+    }
+  }
+`;

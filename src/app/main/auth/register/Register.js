@@ -1,7 +1,14 @@
-import { motion } from 'framer-motion';
+import { useCallback, useEffect, useContext, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 
+import { motion } from 'framer-motion';
 import { yupResolver } from '@hookform/resolvers/yup';
+import clsx from 'clsx';
+import * as yup from 'yup';
+import _ from '@lodash';
+
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -12,10 +19,9 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import clsx from 'clsx';
-import { Link } from 'react-router-dom';
-import * as yup from 'yup';
-import _ from '@lodash';
+
+import { useClient } from 'graphql/client';
+import { REGISTER_MUTATION } from 'graphql/mutations';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -26,20 +32,10 @@ const useStyles = makeStyles((theme) => ({
  */
 const schema = yup.object().shape({
   name: yup.string().required('You must enter your name'),
-  email: yup
-    .string()
-    .email('You must enter a valid email')
-    .required('You must enter a email'),
-  password: yup
-    .string()
-    .required('Please enter your password.')
-    .min(8, 'Password is too short - should be 8 chars minimum.'),
-  passwordConfirm: yup
-    .string()
-    .oneOf([yup.ref('password'), null], 'Passwords must match'),
-  acceptTermsConditions: yup
-    .boolean()
-    .oneOf([true], 'The terms and conditions must be accepted.'),
+  email: yup.string().email('You must enter a valid email').required('You must enter a email'),
+  password: yup.string().required('Please enter your password.').min(8, 'Password is too short - should be 8 chars minimum.'),
+  passwordConfirm: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
+  termsAndConditions: yup.boolean().oneOf([true], 'The terms and conditions must be accepted.'),
 });
 
 const defaultValues = {
@@ -47,12 +43,13 @@ const defaultValues = {
   email: '',
   password: '',
   passwordConfirm: '',
-  acceptTermsConditions: false,
+  termsAndConditions: false,
 };
 
 const Register = () => {
   const classes = useStyles();
-
+  const client = useClient();
+  const reduxDispatch = useDispatch();
   const { control, formState, handleSubmit, reset } = useForm({
     mode: 'onChange',
     defaultValues,
@@ -61,61 +58,56 @@ const Register = () => {
 
   const { isValid, dirtyFields, errors } = formState;
 
-  const onSubmit = (formValues) => {
+  const onSubmit = async (formValues) => {
     console.log(formValues);
     // reset(defaultValues);
+
+    const registerInput = formValues;
+    console.log(registerInput);
+    const { register } = await client?.request(REGISTER_MUTATION, registerInput);
+    console.log(register);
+    if (register) {
+      // reset(defaultValues);
+      reduxDispatch(
+        showMessage({
+          message: 'User created successfully.',
+          autoHideDuration: 3000,
+          anchorOrigin: {
+            vertical: 'bottom', //top bottom
+            horizontal: 'right', //left center right
+          },
+          variant: 'success', //success error info warning null
+        })
+      );
+    }
   };
 
   return (
-    <div
-      className={clsx(
-        classes.root,
-        'flex flex-col flex-auto p-16 sm:p-24 md:flex-row md:p-0 overflow-hidden'
-      )}
-    >
+    <div className={clsx(classes.root, 'flex flex-col flex-auto p-16 sm:p-24 md:flex-row md:p-0 overflow-hidden')}>
       <div className='flex flex-col flex-grow-0 items-center  p-16 text-center md:p-128 md:items-start md:flex-shrink-0 md:flex-1 md:text-left'>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.6 }}
-          animate={{ opacity: 1, scale: 1, transition: { delay: 0.1 } }}
-        >
+        <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1, transition: { delay: 0.1 } }}>
           <div className='flex items-center mb-24'>
-            <img
-              className='logo-icon mr-4 mb-2 w-48'
-              src='assets/icons/custom/get-party-yellow.png'
-              alt='logo'
-            />
+            <img className='logo-icon mr-4 mb-2 w-48' src='assets/icons/custom/get-party-yellow.png' alt='logo' />
             <div className='border-l-1 mr-4 w-1 h-40' />
             <div>
-              <Typography
-                className='text-24 font-semibold logo-text'
-                color='inherit'
-              >
+              <Typography className='text-24 font-semibold logo-text' color='inherit'>
                 GET
               </Typography>
-              <Typography
-                className='text-16 tracking-widest -mt-8 font-700'
-                color='textSecondary'
-              >
+              <Typography className='text-16 tracking-widest -mt-8 font-700' color='textSecondary'>
                 PARTY
               </Typography>
             </div>
           </div>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}
-        >
+        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}>
           <Typography className='text-32 sm:text-44 font-semibold leading-tight'>
             Welcome <br />
             to <br /> <span color='primary'>Get Party!</span>
           </Typography>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, transition: { delay: 0.3 } }}
-        >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.3 } }}>
           <Typography variant='subtitle1' className='mt-32 font-medium'>
             Start looking your party.
           </Typography>
@@ -132,19 +124,11 @@ const Register = () => {
         layout
       >
         <CardContent className='flex flex-col items-center justify-center p-16 sm:p-32 md:p-48 md:pt-128 '>
-          <Typography
-            variant='h6'
-            className='mb-24 font-semibold text-18 sm:text-24'
-          >
+          <Typography variant='h6' className='mb-24 font-semibold text-18 sm:text-24'>
             Create an account
           </Typography>
 
-          <form
-            name='registerForm'
-            noValidate
-            className='flex flex-col justify-center w-full'
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <form name='registerForm' noValidate className='flex flex-col justify-center w-full' onSubmit={handleSubmit(onSubmit)}>
             <Controller
               name='name'
               control={control}
@@ -219,20 +203,12 @@ const Register = () => {
             />
 
             <Controller
-              name='acceptTermsConditions'
+              name='termsAndConditions'
               control={control}
               render={({ field }) => (
-                <FormControl
-                  className='items-center'
-                  error={!!errors.acceptTermsConditions}
-                >
-                  <FormControlLabel
-                    label='I read and accept terms and conditions'
-                    control={<Checkbox {...field} />}
-                  />
-                  <FormHelperText>
-                    {errors?.acceptTermsConditions?.message}
-                  </FormHelperText>
+                <FormControl className='items-center' error={!!errors.termsAndConditions}>
+                  <FormControlLabel label='I read and accept terms and conditions' control={<Checkbox {...field} />} />
+                  <FormHelperText>{errors?.termsAndConditions?.message}</FormHelperText>
                 </FormControl>
               )}
             />
