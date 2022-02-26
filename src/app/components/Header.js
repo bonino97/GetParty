@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import Context from '../app/AppContext';
+import Context from 'app/AppContext';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import AudiotrackOutlinedIcon from '@material-ui/icons/AudiotrackOutlined';
@@ -10,32 +10,21 @@ import Signout from 'app/components/Auth/Signout';
 const Header = ({ classes }) => {
   const { state } = useContext(Context);
   const { currentUser } = state;
+  
   return (
     <div className={classes.root}>
       <AppBar position='static'>
         <Toolbar className={classes.whiteBg}>
           <div className={classes.grow}>
-            <AudiotrackOutlinedIcon
-              className={classes.icon}
-            ></AudiotrackOutlinedIcon>
-            <Typography
-              component='h1'
-              variant='h6'
-              color='inherit'
-              noWrap
-              className={classes.headerText}
-            >
+            <AudiotrackOutlinedIcon className={classes.icon}></AudiotrackOutlinedIcon>
+            <Typography component='h1' variant='h6' color='inherit' noWrap className={classes.headerText}>
               GetParty
             </Typography>
           </div>
           {/* Current User Info */}
           {currentUser && (
             <div className={classes.grow}>
-              <img
-                className={classes.picture}
-                src={currentUser.picture}
-                alt={`Get Party: ${currentUser.name}`}
-              />
+              <img className={classes.picture} src={currentUser.picture} alt={`Get Party: ${currentUser.name}`} />
               {/* <Typography
                 variant='h6'
                 color='inherit'

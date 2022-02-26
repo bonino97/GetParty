@@ -5,6 +5,7 @@ export const ME_QUERY = `
       name
       email
       picture
+      authBy
     }
   }
 `;
