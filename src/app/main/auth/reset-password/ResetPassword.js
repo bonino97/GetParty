@@ -21,17 +21,9 @@ const useStyles = makeStyles((theme) => ({
  * Form Validation Schema
  */
 const schema = yup.object().shape({
-  email: yup
-    .string()
-    .email('You must enter a valid email')
-    .required('You must enter a email'),
-  password: yup
-    .string()
-    .required('Please enter your password.')
-    .min(8, 'Password is too short - should be 8 chars minimum.'),
-  passwordConfirm: yup
-    .string()
-    .oneOf([yup.ref('password'), null], 'Passwords must match'),
+  email: yup.string().email('You must enter a valid email').required('You must enter a email'),
+  password: yup.string().required('Please enter your password.').min(8, 'Password is too short - should be 8 chars minimum.'),
+  passwordConfirm: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
 
 const defaultValues = {
@@ -56,38 +48,31 @@ function ResetPassword() {
   }
 
   return (
-    <div
-      className={clsx(
-        classes.root,
-        'flex flex-col flex-auto items-center justify-center p-16 sm:p-32'
-      )}
-    >
+    <div className={clsx(classes.root, 'flex flex-col flex-auto items-center justify-center p-16 sm:p-32')}>
       <div className='flex flex-col items-center justify-center w-full'>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.6 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
+        <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }}>
           <Card className='w-full max-w-384'>
             <CardContent className='flex flex-col items-center justify-center p-16 sm:p-24 md:p-32'>
-              <img
-                className='w-128 m-32'
-                src='assets/images/logos/fuse.svg'
-                alt='logo'
-              />
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.2 } }}>
+                <div className='flex items-center mb-48'>
+                  <img className='logo-icon mr-4 mb-2 w-48' src='assets/icons/custom/get-party-yellow.png' alt='logo' />
+                  <div className='border-l-1 mr-4 w-1 h-40' />
+                  <div>
+                    <Typography className='text-24 font-semibold logo-text' color='inherit'>
+                      GET
+                    </Typography>
+                    <Typography className='text-16 tracking-widest -mt-8 font-700' color='textSecondary'>
+                      PARTY
+                    </Typography>
+                  </div>
+                </div>
+              </motion.div>
 
-              <Typography
-                variant='h6'
-                className='mt-16 mb-24 font-semibold text-18 sm:text-24'
-              >
+              <Typography variant='h6' className='mt-16 mb-24 font-semibold text-18 sm:text-24'>
                 Reset your password
               </Typography>
 
-              <form
-                name='resetForm'
-                noValidate
-                className='flex flex-col justify-center w-full'
-                onSubmit={handleSubmit(onSubmit)}
-              >
+              <form name='resetForm' noValidate className='flex flex-col justify-center w-full' onSubmit={handleSubmit(onSubmit)}>
                 <Controller
                   name='email'
                   control={control}
