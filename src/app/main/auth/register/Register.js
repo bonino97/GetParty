@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useContext, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { motion } from 'framer-motion';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -53,6 +52,7 @@ const defaultValues = {
 const Register = () => {
   const classes = useStyles();
   const client = useClient();
+  const history = useHistory();
   const reduxDispatch = useDispatch();
   const { control, formState, handleSubmit, reset } = useForm({
     mode: 'onChange',
@@ -67,7 +67,6 @@ const Register = () => {
       const input = formValues;
       const { register } = await client?.request(REGISTER_MUTATION, input);
       if (register) {
-        reset(defaultValues);
         reduxDispatch(
           showMessage({
             message: 'User created successfully.',
@@ -79,6 +78,8 @@ const Register = () => {
             variant: 'success', //success error info warning null
           })
         );
+        history.push(`/confirm-email/${input?.email}`);
+        reset(defaultValues);
       }
     } catch (error) {
       if (handleErrors(error)) {
@@ -129,15 +130,16 @@ const Register = () => {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}>
-          <Typography className='text-32 sm:text-44 font-semibold leading-tight'>
-            Welcome <br />
-            to <br /> <span color='primary'>Get Party!</span>
+          <Typography color='primary' className='text-32 sm:text-44 font-semibold leading-tight'>
+            Welcome to
+            <br />
+            Get Party!
           </Typography>
         </motion.div>
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.3 } }}>
           <Typography variant='subtitle1' className='mt-32 font-medium'>
-            Start looking your party.
+            Create account to increase your parties.
           </Typography>
         </motion.div>
       </div>

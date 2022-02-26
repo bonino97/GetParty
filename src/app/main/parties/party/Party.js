@@ -114,76 +114,6 @@ const orderStatuses = [
   },
 ];
 
-//     title: String,
-//     content: String,
-//     phone: String,
-//     image: String,
-//     category: String, // Buscar diferentes tipos de musica ?
-//     startDate: Date,
-//     endDate: Date,
-
-//     location: {
-//       address: String,
-//       city: String,
-//       state: String,
-//       zipCode: String,
-//       country: String,
-//     },
-
-//     availableTickets: Number,
-//     priceOfTicket: Number,
-//     takeFees: Boolean,
-
-//     isPeriodic: Boolean,
-//     isPrivate: Boolean,
-//     entryRequirements: String,
-//     tags: [String],
-//     instagram: String,
-//     twitter: String,
-//     facebook: String,
-
-//     slug: String,
-//     latitude: Number,
-//     longitude: Number,
-
-//     author: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       required: true,
-//       ref: 'User',
-//     },
-//     staff: [
-//       {
-//         type: mongoose.Schema.Types.ObjectId,
-//         required: true,
-//         ref: 'User',
-//       },
-//     ],
-//     attendees: [
-//       {
-//         type: mongoose.Schema.Types.ObjectId,
-//         required: true,
-//         ref: 'User',
-//       },
-//     ],
-//     followers: [
-//       {
-//         type: mongoose.Schema.Types.ObjectId,
-//         required: true,
-//         ref: 'User',
-//       },
-//     ],
-//     comments: [
-//       {
-//         text: String,
-//         createdAt: { type: Date, default: Date.now },
-//         author: {
-//           type: mongoose.Schema.Types.ObjectId,
-//           required: true,
-//           ref: 'User',
-//         },
-//       },
-//     ],
-
 const INITIAL_VIEWPORT = {
   latitude: 37.7577,
   longitude: -122.4376,
@@ -201,8 +131,7 @@ const Party = () => {
 
   const { pins } = state;
 
-  const getPartyBySlug = async () =>
-    pins?.filter((pin) => pin.slug === slug)[0];
+  const getPartyBySlug = async () => pins?.filter((pin) => pin.slug === slug)[0];
 
   const getMapViewport = async () => {
     setViewport({
@@ -306,24 +235,14 @@ const Party = () => {
           header: 'w-full flex flex-col min-h-96 h-96 sm:h-136 sm:min-h-136',
         }}
         header={
-          <div
-            className={
-              'relative overflow-hidden items-center justify-center h-100 sm:h-168'
-            }
-          >
+          <div className={'relative overflow-hidden items-center justify-center h-100 sm:h-168'}>
             <div className='mx-auto w-full p-24 sm:p-32'>
               <motion.div
                 className='flex flex-row'
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1, transition: { delay: 0.3 } }}
               >
-                <Typography
-                  className='flex items-center sm:mb-12'
-                  component={Link}
-                  role='button'
-                  to='/parties'
-                  color='inherit'
-                >
+                <Typography className='flex items-center sm:mb-12' component={Link} role='button' to='/parties' color='inherit'>
                   <Icon className='text-20'>arrow_back</Icon>
                   <span className='mx-4 font-medium'>Back</span>
                 </Typography>
@@ -335,26 +254,17 @@ const Party = () => {
               >
                 <CardActions disableSpacing className='pt-0'>
                   {isAuthUser(pin, state?.currentUser) && (
-                    <IconButton
-                      onClick={() => handleDeletePin()}
-                      aria-label='delete pin'
-                    >
+                    <IconButton onClick={() => handleDeletePin()} aria-label='delete pin'>
                       <DeleteIcon />
                     </IconButton>
                   )}
                   <IconButton aria-label='share'>
                     <ShareIcon />
                   </IconButton>
-                  <IconButton
-                    aria-label='open map to see position'
-                    onClick={() => handleOpenGoogleMap()}
-                  >
+                  <IconButton aria-label='open map to see position' onClick={() => handleOpenGoogleMap()}>
                     <NavigationIcon />
                   </IconButton>
-                  <IconButton
-                    aria-label='view comments of party'
-                    onClick={() => handleComments(pin)}
-                  >
+                  <IconButton aria-label='view comments of party' onClick={() => handleComments(pin)}>
                     <MessageIcon />
                   </IconButton>
                 </CardActions>
@@ -372,15 +282,8 @@ const Party = () => {
               <div className='flex flex-row p-3 mb-16 sm:m-0 w-full sm:w-auto'>
                 <Avatar src={pin?.author?.picture} />
                 <div className='flex flex-col ml-auto sm:ml-8'>
-                  <Typography className='truncate mx-8 mb-4'>
-                    {pin?.author?.name}
-                  </Typography>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    size='small'
-                    className='p-2'
-                  >
+                  <Typography className='truncate mx-8 mb-4'>{pin?.author?.name}</Typography>
+                  <Button variant='contained' color='primary' size='small' className='p-2'>
                     Follow
                   </Button>
                 </div>
@@ -414,13 +317,7 @@ const Party = () => {
                     variant='outlined'
                   />
                 </Typography>
-                <Button
-                  variant='text'
-                  color='primary'
-                  size='small'
-                  className='w-full p-2'
-                  onClick={() => handleOpenGoogleCalendar()}
-                >
+                <Button variant='text' color='primary' size='small' className='w-full p-2' onClick={() => handleOpenGoogleCalendar()}>
                   Add to calendar
                 </Button>
               </div>
@@ -433,47 +330,31 @@ const Party = () => {
             >
               {pin?.image && (
                 <div className='w-full md:w-1/2 pr-10'>
-                  <img
-                    className='rounded-lg'
-                    src={pin?.image}
-                    alt='get party images'
-                  />
+                  <img className='rounded-lg' src={pin?.image} alt='get party images' />
                 </div>
               )}
               <div className='w-full md:w-1/2'>
-                <Typography
-                  color='primary'
-                  className='text-3xl font-bold tracking-tight mb-3 text-center mt-10'
-                >
+                <Typography color='primary' className='text-3xl font-bold tracking-tight mb-3 text-center mt-10'>
                   {pin?.title}
                 </Typography>
-                <Typography className='text-center mb-8'>
-                  {pin?.content}
-                </Typography>
+                <Typography className='text-center mb-8'>{pin?.content}</Typography>
               </div>
               <div className='w-full md:w-1/2'>
                 <div className='flex flex-col p-4'>
                   <Typography variant='caption'>{getAddress()}</Typography>
                 </div>
                 <div className='flex flex-col p-4'>
-                  <Typography variant='caption'>
-                    {getPriceOfTicket()}
-                  </Typography>
+                  <Typography variant='caption'>{getPriceOfTicket()}</Typography>
                 </div>
                 <div className='flex flex-col p-4'>
                   <Typography variant='caption'>
                     <div className='flex flex-row '>
-                      <Icon
-                        className='text-14 mt-2 mr-4 font-bold'
-                        color='inherit'
-                      >
+                      <Icon className='text-14 mt-2 mr-4 font-bold' color='inherit'>
                         sticky_note_2
                       </Icon>
                       <div>
                         Available Tickets:
-                        <span className='font-bold ml-2 text-yellow-700'>
-                          {pin?.availableTickets}
-                        </span>
+                        <span className='font-bold ml-2 text-yellow-700'>{pin?.availableTickets}</span>
                       </div>
                     </div>
                   </Typography>
@@ -483,13 +364,7 @@ const Party = () => {
                     <div className='flex flex-row '>
                       {pin?.tags?.map((pin) => (
                         <span className='p-1'>
-                          <Chip
-                            label={'#' + pin}
-                            component='a'
-                            href='#basic-chip'
-                            variant='outlined'
-                            clickable
-                          />
+                          <Chip label={'#' + pin} component='a' href='#basic-chip' variant='outlined' clickable />
                         </span>
                       ))}
                     </div>
