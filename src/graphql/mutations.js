@@ -194,3 +194,21 @@ mutation ConfirmAccount (
   }
 }
 `;
+
+export const LOGIN_MUTATION = `
+  mutation Login (
+    $email: String
+    $password: String
+    ) {
+    login(input: {
+      email: $email
+      password: $password
+    }) {
+      name
+      email
+      picture
+      role
+      token
+    }
+  }
+`;

@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Link, Redirect, useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { GoogleLogin } from 'react-google-login';
 
 import { GraphQLClient } from 'graphql-request';
@@ -27,6 +28,12 @@ import Context from 'app/AppContext';
 import { ME_QUERY } from 'graphql/queries';
 import { API_URL } from 'app/constants/ApiData';
 import { CLIENT_ID } from 'app/constants/GoogleData';
+import { LOGIN_MUTATION } from 'graphql/mutations';
+import { useClient } from 'graphql/client';
+
+import { showMessage } from 'app/store/fuse/messageSlice';
+
+import { handleErrors } from 'app/services/errorService/handleErrors';
 
 import './Login.css';
 
@@ -58,6 +65,10 @@ const Login = () => {
 
   const classes = useStyles();
   const { state, dispatch } = useContext(Context);
+  const [loading, setLoading] = useState(false);
+  const client = useClient();
+
+  const reduxDispatch = useDispatch();
 
   const { control, formState, handleSubmit, reset } = useForm({
     mode: 'onChange',
@@ -67,10 +78,59 @@ const Login = () => {
 
   const { isValid, dirtyFields, errors } = formState;
 
-  const onSubmit = () => {
-    reset(defaultValues);
-  };
+  const onSubmit = async (formValues) => {
+    try {
+      setLoading(true);
+      const input = formValues;
+      const { login } = await client?.request(LOGIN_MUTATION, input);
+      console.log(login);
+      if (login) {
+        reduxDispatch(
+          showMessage({
+            message: 'User created successfully.',
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom', //top bottom
+              horizontal: 'right', //left center right
+            },
+            variant: 'success', //success error info warning null
+          })
+        );
 
+        history.push(`/confirm-email/${input?.email}`);
+        setLoading(false);
+        reset(defaultValues);
+      }
+    } catch (error) {
+      setLoading(false);
+      if (handleErrors(error)) {
+        const { message } = handleErrors(error);
+        return reduxDispatch(
+          showMessage({
+            message,
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom', //top bottom
+              horizontal: 'right', //left center right
+            },
+            variant: 'error', //success error info warning null
+          })
+        );
+      }
+
+      return reduxDispatch(
+        showMessage({
+          message: 'An error ocurred.',
+          autoHideDuration: 3000,
+          anchorOrigin: {
+            vertical: 'bottom', //top bottom
+            horizontal: 'right', //left center right
+          },
+          variant: 'error', //success error info warning null
+        })
+      );
+    }
+  };
   const onSuccess = async (googleUser) => {
     try {
       const idToken = googleUser.getAuthResponse().id_token;
