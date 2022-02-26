@@ -208,7 +208,7 @@ export const LOGIN_MUTATION = `
       email
       picture
       role
-      token
+      jwt
     }
   }
 `;

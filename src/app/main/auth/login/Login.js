@@ -84,6 +84,7 @@ const Login = () => {
       setLoading(true);
       const input = formValues;
       const { login } = await client?.request(LOGIN_MUTATION, input);
+      
       if (login) {
         reduxDispatch(
           showMessage({
@@ -96,15 +97,14 @@ const Login = () => {
             variant: 'success', //success error info warning null
           })
         );
-        localStorage.setItem('token', login.token);
+        localStorage.setItem('token', login.jwt);
         const authClient = new GraphQLClient(API_URL, {
           headers: {
-            authorization: login.token,
+            authorization: login.jwt,
           },
         });
 
         const { me } = await authClient.request(ME_QUERY);
-        console.log(me);
         if (me) {
           dispatch({ type: 'LOGIN_USER', payload: me });
           dispatch({ type: 'IS_LOGGED_IN', payload: true });
