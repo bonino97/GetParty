@@ -182,3 +182,15 @@ export const REGISTER_MUTATION = `
     }
   }
 `;
+
+export const CONFIRM_ACCOUNT_MUTATION = `
+mutation ConfirmAccount (
+  $token: String
+  ) {
+  confirmAccount(input: {
+    token: $token
+  }) {
+    _id
+  }
+}
+`;
