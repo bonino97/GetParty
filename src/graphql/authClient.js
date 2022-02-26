@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { GraphQLClient } from 'graphql-request';
 import { API_URL } from 'app/constants/ApiData';
 
-export const useAuthClient = async () => {
+export const useAuthClient = (token) => {
   try {
     const [idToken, setIdToken] = useState('');
 

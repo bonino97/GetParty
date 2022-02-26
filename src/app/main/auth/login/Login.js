@@ -31,7 +31,6 @@ import { API_URL } from 'app/constants/ApiData';
 import { CLIENT_ID } from 'app/constants/GoogleData';
 import { LOGIN_MUTATION } from 'graphql/mutations';
 import { useClient } from 'graphql/client';
-import { useAuthClient } from 'graphql/authClient';
 
 import { showMessage } from 'app/store/fuse/messageSlice';
 
@@ -69,7 +68,6 @@ const Login = () => {
   const { state, dispatch } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const client = useClient();
-  const authClient = useAuthClient();
 
   const reduxDispatch = useDispatch();
 
@@ -87,7 +85,6 @@ const Login = () => {
       const input = formValues;
       const { login } = await client?.request(LOGIN_MUTATION, input);
       if (login) {
-        localStorage.setItem('token', login.token);
         reduxDispatch(
           showMessage({
             message: 'User logged in successfully.',
@@ -99,6 +96,12 @@ const Login = () => {
             variant: 'success', //success error info warning null
           })
         );
+        localStorage.setItem('token', login.token);
+        const authClient = new GraphQLClient(API_URL, {
+          headers: {
+            authorization: login.token,
+          },
+        });
 
         const { me } = await authClient.request(ME_QUERY);
         if (me) {
@@ -111,6 +114,7 @@ const Login = () => {
         reset(defaultValues);
       }
     } catch (error) {
+      console.error(error);
       setLoading(false);
       if (handleErrors(error)) {
         const { message } = handleErrors(error);
