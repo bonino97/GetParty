@@ -147,6 +147,11 @@ const Party = () => {
 
     const loadingViewport = await getMapViewport();
     setViewport(loadingViewport);
+
+    return () => {
+      setPin(null);
+      setViewport(INITIAL_VIEWPORT);
+    };
   }, []);
 
   const getPriceOfTicket = () => {

@@ -17,11 +17,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import {
-  PIN_ADDED_SUBSCRIPTION,
-  PIN_UPDATED_SUBSCRIPTION,
-  PIN_DELETED_SUBSCRIPTION,
-} from 'graphql/subscriptions';
+import { PIN_ADDED_SUBSCRIPTION, PIN_UPDATED_SUBSCRIPTION, PIN_DELETED_SUBSCRIPTION } from 'graphql/subscriptions';
 
 import Context from 'app/AppContext';
 
@@ -67,10 +63,7 @@ const Parties = (props) => {
   }, []);
 
   const getUserPosition = async () => {
-    const address = await getReverseGeocodingData(
-      currentLocation?.latitude,
-      currentLocation?.longitude
-    );
+    const address = await getReverseGeocodingData(currentLocation?.latitude, currentLocation?.longitude);
 
     setCity(address?.city);
   };
@@ -87,28 +80,14 @@ const Parties = (props) => {
     <>
       <div className='flex flex-col flex-auto flex-shrink-0 w-full'>
         {/* Header */}
-        <div
-          className={clsx(
-            classes.header,
-            'relative overflow-hidden flex flex-shrink-0 items-center justify-center h-100 sm:h-168'
-          )}
-        >
+        <div className={clsx(classes.header, 'relative overflow-hidden flex flex-shrink-0 items-center justify-center h-100 sm:h-168')}>
           <div className='flex flex-col max-w-2xl mx-auto w-full p-24 sm:p-32'>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { delay: 0 } }}
-            >
-              <Typography
-                color='inherit'
-                className='text-24 sm:text-44 font-bold tracking-tight'
-              >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0 } }}>
+              <Typography color='inherit' className='text-24 sm:text-44 font-bold tracking-tight'>
                 Parties near {city}!
               </Typography>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { delay: 0.3 } }}
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.3 } }}>
               <Typography
                 color='inherit'
                 className='text-12 sm:text-14 mt-8 sm:mt-16 opacity-75 leading-tight sm:leading-loose'
@@ -135,23 +114,12 @@ const Parties = (props) => {
                 shrink: true,
               }}
             />
-            <FormControl
-              className='flex w-full sm:w-320 mx-16'
-              variant='outlined'
-            >
-              <InputLabel htmlFor='category-label-placeholder'>
-                Category
-              </InputLabel>
+            <FormControl className='flex w-full sm:w-320 mx-16' variant='outlined'>
+              <InputLabel htmlFor='category-label-placeholder'>Category</InputLabel>
               <Select
                 value={selectedCategory}
                 onChange={handleSelectedCategory}
-                input={
-                  <OutlinedInput
-                    labelWidth={9}
-                    name='category'
-                    id='category-label-placeholder'
-                  />
-                }
+                input={<OutlinedInput labelWidth={9} name='category' id='category-label-placeholder' />}
               >
                 <MenuItem key={'None'} disabled value='None'>
                   <em>None</em>
@@ -211,14 +179,8 @@ const Parties = (props) => {
                         // !isPast(new Date(pin?.endDate)) && (
 
                         // )
-                        <motion.div
-                          className='mb-32 ml-10 '
-                          key={pin?._id}
-                          variants={variants}
-                          initial={initial}
-                          animate={animate}
-                        >
-                          <PartyItem {...pin} />
+                        <motion.div className='mb-32 ml-10 ' key={pin?._id} variants={variants} initial={initial} animate={animate}>
+                          <PartyItem key={pin?._id} {...pin} />
                         </motion.div>
                       );
                     })}

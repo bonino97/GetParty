@@ -130,7 +130,7 @@ const Map = ({ classes }) => {
             ))}
 
             {/* {state?.currentPin && <PartyContent pin={state?.currentPin} />} */}
-            {selectedPin && <PartyContent pin={selectedPin} handleClosePin={handleClosePin}/>}
+            {selectedPin && <PartyContent key={selectedPin?._id} pin={selectedPin} handleClosePin={handleClosePin} />}
           </ReactMapGL>
 
           {/* Subscriptions for Adding / Updating / Deleting pins */}

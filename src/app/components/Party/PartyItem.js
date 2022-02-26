@@ -144,23 +144,17 @@ const PartyItem = (pin) => {
         }
       />
 
-      <CardContent className='py-0'>
+      <CardContent key={pin._id} className='py-0'>
         {pin?.image && (
           <div className='w-full'>
-            <img
-              className='rounded-lg w-auto h-auto'
-              src={pin?.image}
-              alt='get party images'
-            />
+            <img className='rounded-lg w-auto h-auto' src={pin?.image} alt='get party images' />
           </div>
         )}
         <div className='flex flex-col items-center p-16'>
           <Typography color='inherit' className='font-bold' variant='subtitle1'>
             {pin?.title}
           </Typography>
-          <Typography className='mt-16 text-center'>
-            {pin?.content?.slice(0, 120)}...
-          </Typography>
+          <Typography className='mt-16 text-center'>{pin?.content?.slice(0, 120)}...</Typography>
         </div>
         <div className='flex flex-col p-4'>
           <Typography variant='caption'>{getPriceOfTicket()}</Typography>
@@ -206,6 +200,7 @@ const PartyItem = (pin) => {
           className='justify-center w-full '
           color='primary'
           variant='outlined'
+          key={pin?._id}
         >
           View all
         </Button>
@@ -219,16 +214,10 @@ const PartyItem = (pin) => {
         <IconButton aria-label='share'>
           <ShareIcon />
         </IconButton>
-        <IconButton
-          aria-label='open map to see position'
-          onClick={() => handleOpenGoogleMap()}
-        >
+        <IconButton aria-label='open map to see position' onClick={() => handleOpenGoogleMap()}>
           <NavigationIcon />
         </IconButton>
-        <IconButton
-          aria-label='view comments of party'
-          onClick={() => handleComments()}
-        >
+        <IconButton aria-label='view comments of party' onClick={() => handleComments()}>
           <MessageIcon />
         </IconButton>
       </CardActions>

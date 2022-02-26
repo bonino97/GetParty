@@ -22,7 +22,7 @@ const PartyContent = ({ pin, handleClosePin }) => {
       >
         <Icon>close</Icon>
       </IconButton> */}
-      <PartyItem {...pin} />
+      <PartyItem key={pin._id} {...pin} />
     </Dialog>
   );
 };
