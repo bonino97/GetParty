@@ -11,7 +11,6 @@ export default function Reducer(state, { type, payload }) {
         isAuth: payload,
       };
     case 'SIGNOUT_USER': {
-      console.log('si o no?');
       localStorage.removeItem('token');
       return {
         ...state,
@@ -69,11 +68,12 @@ export default function Reducer(state, { type, payload }) {
     case 'CREATE_COMMENT':
       const updatedCurrentPin = payload;
       // Find and replace
-      console.log(updatedCurrentPin);
+
       const updatedPins = state.pins.map((pin) => (pin?._id === updatedCurrentPin?._id ? updatedCurrentPin : pin));
       return {
         ...state,
         pins: updatedPins,
+        // currentPin: updatedCurrentPin,
       };
     case 'CURRENT_LOCATION':
       const currentLocation = payload;
