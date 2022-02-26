@@ -25,6 +25,8 @@ import { REGISTER_MUTATION } from 'graphql/mutations';
 
 import { showMessage } from 'app/store/fuse/messageSlice';
 
+import { handleErrors } from 'app/services/errorService/handleErrors';
+
 const useStyles = makeStyles((theme) => ({
   root: {},
 }));
@@ -61,24 +63,48 @@ const Register = () => {
   const { isValid, dirtyFields, errors } = formState;
 
   const onSubmit = async (formValues) => {
-    console.log(formValues);
-    // reset(defaultValues);
+    try {
+      const input = formValues;
+      const { register } = await client?.request(REGISTER_MUTATION, input);
+      if (register) {
+        reset(defaultValues);
+        reduxDispatch(
+          showMessage({
+            message: 'User created successfully.',
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom', //top bottom
+              horizontal: 'right', //left center right
+            },
+            variant: 'success', //success error info warning null
+          })
+        );
+      }
+    } catch (error) {
+      if (handleErrors(error)) {
+        const { message } = handleErrors(error);
+        return reduxDispatch(
+          showMessage({
+            message,
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom', //top bottom
+              horizontal: 'right', //left center right
+            },
+            variant: 'error', //success error info warning null
+          })
+        );
+      }
 
-    const input = formValues;
-    console.log(input);
-    const { register } = await client?.request(REGISTER_MUTATION, input);
-    console.log(register);
-    if (register) {
-      // reset(defaultValues);
-      reduxDispatch(
+      return reduxDispatch(
         showMessage({
-          message: 'User created successfully.',
+          message: 'An error ocurred.',
           autoHideDuration: 3000,
           anchorOrigin: {
             vertical: 'bottom', //top bottom
             horizontal: 'right', //left center right
           },
-          variant: 'success', //success error info warning null
+          variant: 'error', //success error info warning null
         })
       );
     }

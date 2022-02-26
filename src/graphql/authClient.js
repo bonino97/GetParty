@@ -7,16 +7,8 @@ export const useAuthClient = () => {
 
   useEffect(() => {
     try {
-      if (
-        window?.gapi?.auth2
-          ?.getAuthInstance()
-          ?.currentUser?.get()
-          ?.getAuthResponse()?.id_token
-      ) {
-        const token = window.gapi.auth2
-          .getAuthInstance()
-          .currentUser.get()
-          .getAuthResponse().id_token;
+      if (window?.gapi?.auth2?.getAuthInstance()?.currentUser?.get()?.getAuthResponse()?.id_token) {
+        const token = window.gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token;
         return setIdToken(token);
       }
     } catch (error) {
