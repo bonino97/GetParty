@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useContext, memo } from 'react';
 
-import ReactMapGL, {
-  NavigationControl,
-  Marker,
-  GeolocateControl,
-  AttributionControl,
-} from 'react-map-gl';
+import ReactMapGL, { NavigationControl, Marker, GeolocateControl, AttributionControl } from 'react-map-gl';
 
 import FuseLoading from '@fuse/core/FuseLoading';
 
@@ -14,11 +9,7 @@ import { Subscription } from 'react-apollo';
 import { useClient } from 'graphql/client';
 
 import { GET_PINS_QUERY } from 'graphql/queries';
-import {
-  PIN_ADDED_SUBSCRIPTION,
-  PIN_UPDATED_SUBSCRIPTION,
-  PIN_DELETED_SUBSCRIPTION,
-} from 'graphql/subscriptions';
+import { PIN_ADDED_SUBSCRIPTION, PIN_UPDATED_SUBSCRIPTION, PIN_DELETED_SUBSCRIPTION } from 'graphql/subscriptions';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -44,6 +35,8 @@ const Map = ({ classes }) => {
   const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
   const [loading, setLoading] = useState(false);
 
+  const [selectedPin, setSelectedPin] = useState(null);
+
   useEffect(() => {
     getPins();
     getUserPosition();
@@ -53,6 +46,10 @@ const Map = ({ classes }) => {
   const getPins = async () => {
     const { getPins } = await client.request(GET_PINS_QUERY);
     dispatch({ type: 'GET_PINS', payload: getPins });
+  };
+
+  const handleClosePin = () => {
+    setSelectedPin(null);
   };
 
   const getUserPosition = () => {
@@ -85,6 +82,7 @@ const Map = ({ classes }) => {
   };
 
   const handleSelectedPin = (pin) => {
+    setSelectedPin(pin);
     dispatch({ type: 'SET_PIN', payload: pin });
   };
 
@@ -97,14 +95,10 @@ const Map = ({ classes }) => {
           <ReactMapGL
             mapboxApiAccessToken={MAPBOX_TOKEN}
             width='100vw'
-            height={`calc(100vh -  ${
-              window.innerWidth <= 768 ? '48px' : '64px'
-            })`}
+            height={`calc(100vh -  ${window.innerWidth <= 768 ? '48px' : '64px'})`}
             style={{
               minWidth: '100vw',
-              minHeight: `calc(100vh -  ${
-                window.innerWidth <= 768 ? '48px' : '64px'
-              })`,
+              minHeight: `calc(100vh -  ${window.innerWidth <= 768 ? '48px' : '64px'})`,
             }}
             mapStyle={MAP_STYLE}
             onViewportChange={(newViewport) => setViewport(newViewport)}
@@ -112,54 +106,31 @@ const Map = ({ classes }) => {
             attributionControl={false}
             {...viewport}
           >
-            <AttributionControl
-              compact={true}
-              style={{ right: 0, bottom: 0 }}
-            />
+            <AttributionControl compact={true} style={{ right: 0, bottom: 0 }} />
 
             <div className={classes.geolocateControl}>
-              <GeolocateControl
-                positionOptions={{ enableHighAccuracy: true }}
-                trackUserLocation={true}
-                auto
-              />
+              <GeolocateControl positionOptions={{ enableHighAccuracy: true }} trackUserLocation={true} auto />
             </div>
             {/* Navigation Control */}
             <div className={classes.navigationControl}>
-              <NavigationControl
-                onViewportChange={(newViewport) => setViewport(newViewport)}
-              />
+              <NavigationControl onViewportChange={(newViewport) => setViewport(newViewport)} />
             </div>
 
             {/* Draft Pin */}
             {state?.draft && (
-              <Marker
-                latitude={state?.draft?.latitude}
-                longitude={state?.draft?.longitude}
-                offsetLeft={-19}
-                offsetTop={-38}
-              >
+              <Marker latitude={state?.draft?.latitude} longitude={state?.draft?.longitude} offsetLeft={-19} offsetTop={-38}>
                 <PinIcon size={35} color='black'></PinIcon>
               </Marker>
             )}
 
             {state?.pins?.map((pin) => (
-              <Marker
-                key={pin?._id}
-                latitude={pin?.latitude}
-                longitude={pin?.longitude}
-                offsetLeft={-19}
-                offsetTop={-38}
-              >
-                <PlaceIcon
-                  size={35}
-                  color={getPinStatus(pin)}
-                  onClick={() => handleSelectedPin(pin)}
-                ></PlaceIcon>
+              <Marker key={pin?._id} latitude={pin?.latitude} longitude={pin?.longitude} offsetLeft={-19} offsetTop={-38}>
+                <PlaceIcon size={35} color={getPinStatus(pin)} onClick={() => handleSelectedPin(pin)}></PlaceIcon>
               </Marker>
             ))}
 
-            {state?.currentPin && <PartyContent pin={state?.currentPin} />}
+            {/* {state?.currentPin && <PartyContent pin={state?.currentPin} />} */}
+            {selectedPin && <PartyContent pin={selectedPin} handleClosePin={handleClosePin}/>}
           </ReactMapGL>
 
           {/* Subscriptions for Adding / Updating / Deleting pins */}
@@ -187,7 +158,7 @@ const Map = ({ classes }) => {
           />
 
           {state?.draft && state?.currentUser && <PartyForm />}
-          {/* {state?.draft && state?.currentUser && <RegisterForm />} */} 
+          {/* {state?.draft && state?.currentUser && <RegisterForm />} */}
         </>
       )}
     </div>
