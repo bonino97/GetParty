@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
@@ -22,6 +22,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Context from 'app/AppContext';
 
@@ -38,9 +39,13 @@ import { handleErrors } from 'app/services/errorService/handleErrors';
 import './Register.css';
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    display: 'flex',
+    '& > * + *': {
+      marginLeft: theme.spacing(2),
+    },
+  },
 }));
-
 /**
  * Form Validation Schema
  */
@@ -65,6 +70,7 @@ const Register = () => {
   const client = useClient();
   const history = useHistory();
   const reduxDispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const { state, dispatch } = useContext(Context);
 
   const { control, formState, handleSubmit, reset } = useForm({
@@ -77,6 +83,7 @@ const Register = () => {
 
   const onSubmit = async (formValues) => {
     try {
+      setLoading(true);
       const input = formValues;
       const { register } = await client?.request(REGISTER_MUTATION, input);
       if (register) {
@@ -91,10 +98,13 @@ const Register = () => {
             variant: 'success', //success error info warning null
           })
         );
+
         history.push(`/confirm-email/${input?.email}`);
+        setLoading(false);
         reset(defaultValues);
       }
     } catch (error) {
+      setLoading(false);
       if (handleErrors(error)) {
         const { message } = handleErrors(error);
         return reduxDispatch(
@@ -283,10 +293,15 @@ const Register = () => {
               color='primary'
               className='w-full mx-auto mt-16'
               aria-label='Register'
-              disabled={_.isEmpty(dirtyFields) || !isValid}
+              disabled={_.isEmpty(dirtyFields) || !isValid || loading}
               type='submit'
             >
-              Create an account
+              {loading && (
+                <div className={classes.root}>
+                  <CircularProgress />
+                </div>
+              )}
+              {!loading && 'Create account'}
             </Button>
           </form>
 
