@@ -1,6 +1,9 @@
+import React, { useContext } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
+import { GoogleLogin } from 'react-google-login';
+import { GraphQLClient } from 'graphql-request';
 
 import { motion } from 'framer-motion';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -18,13 +21,21 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+
+import Context from 'app/AppContext';
 
 import { useClient } from 'graphql/client';
 import { REGISTER_MUTATION } from 'graphql/mutations';
+import { ME_QUERY } from 'graphql/queries';
+import { API_URL } from 'app/constants/ApiData';
+import { CLIENT_ID } from 'app/constants/GoogleData';
 
 import { showMessage } from 'app/store/fuse/messageSlice';
 
 import { handleErrors } from 'app/services/errorService/handleErrors';
+
+import './Register.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -54,6 +65,8 @@ const Register = () => {
   const client = useClient();
   const history = useHistory();
   const reduxDispatch = useDispatch();
+  const { state, dispatch } = useContext(Context);
+
   const { control, formState, handleSubmit, reset } = useForm({
     mode: 'onChange',
     defaultValues,
@@ -109,6 +122,28 @@ const Register = () => {
         })
       );
     }
+  };
+
+  const onSuccess = async (googleUser) => {
+    try {
+      const idToken = googleUser.getAuthResponse().id_token;
+      const client = new GraphQLClient(API_URL, {
+        headers: {
+          authorization: idToken,
+        },
+      });
+      const { me } = await client.request(ME_QUERY);
+      console.log(me);
+      dispatch({ type: 'LOGIN_USER', payload: me });
+      dispatch({ type: 'IS_LOGGED_IN', payload: googleUser.isSignedIn() });
+      return history.push('/map');
+    } catch (error) {
+      onFailure(error);
+    }
+  };
+
+  const onFailure = async (err) => {
+    dispatch({ type: 'IS_LOGGED_IN', payload: false });
   };
 
   return (
@@ -254,6 +289,21 @@ const Register = () => {
               Create an account
             </Button>
           </form>
+
+          <div className='my-24 flex items-center justify-center'>
+            <Divider className='w-32' />
+            <span className='mx-8 font-semibold'>OR</span>
+            <Divider className='w-32' />
+          </div>
+
+          <GoogleLogin
+            clientId={CLIENT_ID}
+            onSuccess={onSuccess}
+            onFailure={onFailure}
+            isSignedIn={true}
+            className='w-192 p-0 mb-8 border border-black register-button'
+            buttonText='Signup with Google'
+          />
 
           <div className='flex flex-col items-center justify-center pt-32 pb-24'>
             <span className='font-normal'>Already have an account?</span>
