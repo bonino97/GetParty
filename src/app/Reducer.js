@@ -10,12 +10,16 @@ export default function Reducer(state, { type, payload }) {
         ...state,
         isAuth: payload,
       };
-    case 'SIGNOUT_USER':
+    case 'SIGNOUT_USER': {
+      console.log('si o no?');
+      localStorage.removeItem('token');
       return {
         ...state,
         currentUser: null,
         isAuth: false,
       };
+    }
+
     case 'CREATE_DRAFT':
       return {
         ...state,
@@ -55,9 +59,7 @@ export default function Reducer(state, { type, payload }) {
       };
     case 'DELETE_PIN':
       const deletedPin = payload;
-      const filteredPins = state.pins.filter(
-        (pin) => pin?._id !== deletedPin?._id
-      );
+      const filteredPins = state.pins.filter((pin) => pin?._id !== deletedPin?._id);
 
       return {
         ...state,
@@ -67,13 +69,11 @@ export default function Reducer(state, { type, payload }) {
     case 'CREATE_COMMENT':
       const updatedCurrentPin = payload;
       // Find and replace
-      const updatedPins = state.pins.map((pin) =>
-        pin?._id === updatedCurrentPin?._id ? updatedCurrentPin : pin
-      );
+      console.log(updatedCurrentPin);
+      const updatedPins = state.pins.map((pin) => (pin?._id === updatedCurrentPin?._id ? updatedCurrentPin : pin));
       return {
         ...state,
         pins: updatedPins,
-        currentPin: updatedCurrentPin,
       };
     case 'CURRENT_LOCATION':
       const currentLocation = payload;

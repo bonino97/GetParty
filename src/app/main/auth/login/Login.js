@@ -105,6 +105,8 @@ const Login = () => {
         });
 
         const { me } = await authClient.request(ME_QUERY);
+        console.log(me);
+
         if (me) {
           dispatch({ type: 'LOGIN_USER', payload: me });
           dispatch({ type: 'IS_LOGGED_IN', payload: true });
