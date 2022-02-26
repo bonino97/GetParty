@@ -1,10 +1,15 @@
 import React, { useContext, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { GoogleLogin } from 'react-google-login';
 
 import { GraphQLClient } from 'graphql-request';
+
+import { motion } from 'framer-motion';
+import clsx from 'clsx';
+import * as yup from 'yup';
+import _ from '@lodash';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button from '@material-ui/core/Button';
@@ -18,11 +23,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { darken } from '@material-ui/core/styles/colorManipulator';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import _ from '@lodash';
-
-import { motion } from 'framer-motion';
-import clsx from 'clsx';
-import * as yup from 'yup';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Context from 'app/AppContext';
 import { ME_QUERY } from 'graphql/queries';
@@ -30,6 +31,7 @@ import { API_URL } from 'app/constants/ApiData';
 import { CLIENT_ID } from 'app/constants/GoogleData';
 import { LOGIN_MUTATION } from 'graphql/mutations';
 import { useClient } from 'graphql/client';
+import { useAuthClient } from 'graphql/authClient';
 
 import { showMessage } from 'app/store/fuse/messageSlice';
 
@@ -67,6 +69,7 @@ const Login = () => {
   const { state, dispatch } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const client = useClient();
+  const authClient = useAuthClient();
 
   const reduxDispatch = useDispatch();
 
@@ -83,11 +86,11 @@ const Login = () => {
       setLoading(true);
       const input = formValues;
       const { login } = await client?.request(LOGIN_MUTATION, input);
-      console.log(login);
       if (login) {
+        localStorage.setItem('token', login.token);
         reduxDispatch(
           showMessage({
-            message: 'User created successfully.',
+            message: 'User logged in successfully.',
             autoHideDuration: 3000,
             anchorOrigin: {
               vertical: 'bottom', //top bottom
@@ -97,7 +100,13 @@ const Login = () => {
           })
         );
 
-        history.push(`/confirm-email/${input?.email}`);
+        const { me } = await authClient.request(ME_QUERY);
+        if (me) {
+          dispatch({ type: 'LOGIN_USER', payload: me });
+          dispatch({ type: 'IS_LOGGED_IN', payload: true });
+        }
+
+        history.push(`/map`);
         setLoading(false);
         reset(defaultValues);
       }
@@ -140,6 +149,7 @@ const Login = () => {
         },
       });
       const { me } = await client.request(ME_QUERY);
+
       dispatch({ type: 'LOGIN_USER', payload: me });
       dispatch({ type: 'IS_LOGGED_IN', payload: googleUser.isSignedIn() });
       return history.push('/map');

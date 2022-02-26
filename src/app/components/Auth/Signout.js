@@ -9,13 +9,7 @@ const Signout = () => {
     dispatch({ type: 'SIGNOUT_USER' });
   };
 
-  return (
-    <GoogleLogout
-      onLogoutSuccess={onSignout}
-      buttonText='Signout'
-      render={({ onClick }) => <span onClick={onClick}></span>}
-    />
-  );
+  return <GoogleLogout onLogoutSuccess={onSignout} buttonText='Signout' render={({ onClick }) => <span onClick={onClick}></span>} />;
 };
 
 export default Signout;
