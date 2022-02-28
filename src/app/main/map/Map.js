@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useContext, memo } from 'react';
-
 import ReactMapGL, { NavigationControl, Marker, GeolocateControl, AttributionControl } from 'react-map-gl';
+import { Subscription } from 'react-apollo';
 
 import FuseLoading from '@fuse/core/FuseLoading';
 
-import { Subscription } from 'react-apollo';
+import { withStyles } from '@material-ui/core/styles';
 
 import { useClient } from 'graphql/client';
-
 import { GET_PINS_QUERY } from 'graphql/queries';
 import { PIN_ADDED_SUBSCRIPTION, PIN_UPDATED_SUBSCRIPTION, PIN_DELETED_SUBSCRIPTION } from 'graphql/subscriptions';
-
-import { withStyles } from '@material-ui/core/styles';
 
 import PinIcon from 'app/components/Icons/PinIcon';
 import PlaceIcon from 'app/components/Icons/PlaceIcon';

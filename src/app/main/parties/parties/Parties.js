@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import { isPast } from 'date-fns';
 import { Subscription } from 'react-apollo';
 
+import FuseLoading from '@fuse/core/FuseLoading';
+
 import FormControl from '@material-ui/core/FormControl';
 import Icon from '@material-ui/core/Icon';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -14,10 +16,11 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-
 import { makeStyles } from '@material-ui/core/styles';
 
+import { GET_PINS_QUERY } from 'graphql/queries';
 import { PIN_ADDED_SUBSCRIPTION, PIN_UPDATED_SUBSCRIPTION, PIN_DELETED_SUBSCRIPTION } from 'graphql/subscriptions';
+import { useClient } from 'graphql/client';
 
 import Context from 'app/AppContext';
 
@@ -46,26 +49,45 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Parties = (props) => {
-  const { state, dispatch } = useContext(Context);
-  const { pins, currentLocation } = state;
-
   const classes = useStyles(props);
+  const client = useClient();
+
+  const { state, dispatch } = useContext(Context);
+  const { pins } = state;
 
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('None');
   const [city, setCity] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    getUserPosition();
+  useEffect(async () => {
+    setLoading(true);
+    await getUserPosition();
+    await getPins();
     return () => {
       setCity('');
+      setLoading(false);
     };
   }, []);
 
-  const getUserPosition = async () => {
-    const address = await getReverseGeocodingData(currentLocation?.latitude, currentLocation?.longitude);
+  const getPins = async () => {
+    const { getPins } = await client.request(GET_PINS_QUERY);
+    dispatch({ type: 'GET_PINS', payload: getPins });
+    return getPins;
+  };
 
-    setCity(address?.city);
+  const getUserPosition = async () => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+        const address = await getReverseGeocodingData(latitude, longitude);
+        setCity(address?.city);
+        dispatch({
+          type: 'CURRENT_LOCATION',
+          payload: { longitude, latitude },
+        });
+      });
+    }
   };
 
   const handleSelectedCategory = (event) => {
@@ -84,7 +106,7 @@ const Parties = (props) => {
           <div className='flex flex-col max-w-2xl mx-auto w-full p-24 sm:p-32'>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0 } }}>
               <Typography color='inherit' className='text-24 sm:text-44 font-bold tracking-tight'>
-                Parties near {city}!
+                Parties near {city ? city : 'your position'}!
               </Typography>
             </motion.div>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.3 } }}>
@@ -188,7 +210,7 @@ const Parties = (props) => {
                 </div>
               </>
             ) : (
-              <NoParties />
+              <FuseLoading />
             );
           })}
         </div>

@@ -109,11 +109,7 @@ const QontoStepIcon = (props) => {
         [classes.active]: active,
       })}
     >
-      {completed ? (
-        <Check className={classes.completed} />
-      ) : (
-        <div className={classes.circle} />
-      )}
+      {completed ? <Check className={classes.completed} /> : <div className={classes.circle} />}
     </div>
   );
 };
@@ -150,7 +146,7 @@ const defaultValues = {
   isPrivate: false,
   entryRequirements: '',
 
-  tags: '',
+  tags: null,
   instagram: '',
   twitter: '',
   facebook: '',
@@ -191,15 +187,7 @@ const PartyForm = ({}) => {
   const [submitting, setSubmitting] = useState(false);
   const [open, setOpen] = useState(true);
 
-  const {
-    control,
-    watch,
-    handleSubmit,
-    formState,
-    getValues,
-    reset,
-    setValue,
-  } = useForm({
+  const { control, watch, handleSubmit, formState, getValues, reset, setValue } = useForm({
     mode: 'onChange',
     defaultValues,
     resolver: yupResolver(schema),
@@ -209,10 +197,7 @@ const PartyForm = ({}) => {
 
   useEffect(async () => {
     if (draft?.longitude === 0) return false;
-    const location = await getReverseGeocodingData(
-      draft?.latitude,
-      draft?.longitude
-    );
+    const location = await getReverseGeocodingData(draft?.latitude, draft?.longitude);
 
     if (!location) return false;
 
@@ -240,10 +225,7 @@ const PartyForm = ({}) => {
       data.append('file', image);
       data.append('upload_preset', uploadPreset);
       data.append('cloud_name', cloudName);
-      const res = await axios.post(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        data
-      );
+      const res = await axios.post(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, data);
 
       return res.data.url;
     } catch (error) {
@@ -276,6 +258,8 @@ const PartyForm = ({}) => {
         formValues.image = await handleImageUpload();
       }
 
+      console.log(formValues);
+
       const createPinInput = {
         latitude,
         longitude,
@@ -285,9 +269,7 @@ const PartyForm = ({}) => {
         phone: formValues?.phone,
         category: formValues?.category,
         startDate: formValues?.startDate,
-        endDate: formValues?.endDate
-          ? formValues.endDate
-          : addHours(formValues?.startDate, 6),
+        endDate: formValues?.endDate ? formValues.endDate : addHours(formValues?.startDate, 6),
         image: formValues?.image,
 
         location: {
@@ -312,10 +294,7 @@ const PartyForm = ({}) => {
         facebook: formValues?.facebook,
       };
 
-      const { createPin } = await client?.request(
-        CREATE_PIN_MUTATION,
-        createPinInput
-      );
+      const { createPin } = await client?.request(CREATE_PIN_MUTATION, createPinInput);
 
       if (createPin) {
         setActiveStep(0);
@@ -358,11 +337,7 @@ const PartyForm = ({}) => {
         </Toolbar>
       </AppBar>
 
-      <Stepper
-        alternativeLabel
-        activeStep={activeStep}
-        connector={<QontoConnector />}
-      >
+      <Stepper alternativeLabel activeStep={activeStep} connector={<QontoConnector />}>
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel StepIconComponent={QontoStepIcon}></StepLabel>
@@ -370,11 +345,7 @@ const PartyForm = ({}) => {
         ))}
       </Stepper>
 
-      <form
-        autoComplete='none'
-        noValidate
-        className='flex flex-col md:overflow-hidden'
-      >
+      <form autoComplete='none' noValidate className='flex flex-col md:overflow-hidden'>
         <DialogContent classes={{}}>
           {activeStep === 0 && (
             <div>
@@ -428,9 +399,7 @@ const PartyForm = ({}) => {
                   name='category'
                   render={({ field }) => (
                     <FormControl className='flex w-full ' variant='outlined'>
-                      <InputLabel htmlFor='category-label-placeholder'>
-                        Category
-                      </InputLabel>
+                      <InputLabel htmlFor='category-label-placeholder'>Category</InputLabel>
                       <Select
                         input={
                           <OutlinedInput
@@ -457,6 +426,38 @@ const PartyForm = ({}) => {
                           })}
                       </Select>
                     </FormControl>
+                  )}
+                />
+              </div>
+
+              <div className='flex'>
+                <Controller
+                  name='tags'
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <Autocomplete
+                      className='mb-16'
+                      multiple
+                      freeSolo
+                      options={[]}
+                      value={value}
+                      fullWidth
+                      onChange={(event, newValue) => {
+                        onChange(newValue);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          autoComplete='none'
+                          {...params}
+                          placeholder='Select multiple tags'
+                          label='Tags'
+                          variant='outlined'
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
+                      )}
+                    />
                   )}
                 />
               </div>
@@ -496,33 +497,6 @@ const PartyForm = ({}) => {
                     />
                   )}
                 />
-              </div>
-
-              <div className='flex items-center justify-center'>
-                <div>
-                  <input
-                    accept='image/*'
-                    id='image'
-                    type='file'
-                    className='image-input'
-                    onChange={(e) => setImage(e.target.files[0])}
-                  />
-                  <label
-                    htmlFor='image'
-                    className={clsx(
-                      classes.productImageUpload,
-                      'flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5'
-                    )}
-                  >
-                    <Icon
-                      fontSize='large'
-                      color='action'
-                      style={{ color: image && '#FEBE3E' }}
-                    >
-                      cloud_upload
-                    </Icon>
-                  </label>
-                </div>
               </div>
             </div>
           )}
@@ -682,6 +656,27 @@ const PartyForm = ({}) => {
               </div>
               <div className='flex'>
                 <Controller
+                  name='takeFees'
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <FormControlLabel
+                      className='mt-8 mb-16'
+                      label='Sell tickets?'
+                      control={
+                        <Switch
+                          onChange={(ev) => {
+                            onChange(ev.target.checked);
+                          }}
+                          checked={value}
+                          name='takeFees'
+                        />
+                      }
+                    />
+                  )}
+                />
+              </div>
+              <div className='flex'>
+                <Controller
                   name='priceOfTicket'
                   control={control}
                   render={({ field }) => (
@@ -693,9 +688,7 @@ const PartyForm = ({}) => {
                       placeholder='Whats the party ticket price?'
                       id='priceOfTicket'
                       InputProps={{
-                        startAdornment: (
-                          <InputAdornment position='start'>$</InputAdornment>
-                        ),
+                        startAdornment: <InputAdornment position='start'>$</InputAdornment>,
                         inputProps: { min: 0 },
                       }}
                       type='number'
@@ -802,38 +795,6 @@ const PartyForm = ({}) => {
             <div>
               <div className='flex'>
                 <Controller
-                  name='tags'
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <Autocomplete
-                      className='mt-8 mb-16'
-                      multiple
-                      freeSolo
-                      options={[]}
-                      value={value}
-                      fullWidth
-                      onChange={(event, newValue) => {
-                        onChange(newValue);
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          autoComplete='none'
-                          {...params}
-                          placeholder='Select multiple tags'
-                          label='Tags'
-                          variant='outlined'
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                        />
-                      )}
-                    />
-                  )}
-                />
-              </div>
-
-              <div className='flex'>
-                <Controller
                   control={control}
                   name='instagram'
                   render={({ field }) => (
@@ -891,6 +852,22 @@ const PartyForm = ({}) => {
                   )}
                 />
               </div>
+              <div className='flex items-center justify-center'>
+                <div>
+                  <input accept='image/*' id='image' type='file' className='image-input' onChange={(e) => setImage(e.target.files[0])} />
+                  <label
+                    htmlFor='image'
+                    className={clsx(
+                      classes.productImageUpload,
+                      'flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5'
+                    )}
+                  >
+                    <Icon fontSize='large' color='action' style={{ color: image && '#FEBE3E' }}>
+                      cloud_upload
+                    </Icon>
+                  </label>
+                </div>
+              </div>
             </div>
           )}
         </DialogContent>
@@ -901,11 +878,7 @@ const PartyForm = ({}) => {
               Cancel
             </Button>
           ) : (
-            <Button
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              className={classes.button}
-            >
+            <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
               Back
             </Button>
           )}
@@ -921,13 +894,7 @@ const PartyForm = ({}) => {
               Finish
             </Button>
           ) : (
-            <Button
-              variant='contained'
-              color='primary'
-              onClick={handleNext}
-              className={classes.button}
-              type='button'
-            >
+            <Button variant='contained' color='primary' onClick={handleNext} className={classes.button} type='button'>
               Next
             </Button>
           )}

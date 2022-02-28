@@ -31,15 +31,19 @@ import FusePageCarded from '@fuse/core/FusePageCarded';
 
 import PlaceIcon from 'app/components/Icons/PlaceIcon';
 import { MAPBOX_TOKEN, MAP_STYLE } from 'app/constants/MapboxData';
+import FuseLoading from '@fuse/core/FuseLoading';
 
 import Context from 'app/AppContext';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { toggleQuickPanel } from 'app/layouts/shared-components/quickPanel/store/stateSlice';
 import { isAuthUser } from 'app/services/authService/isAuthUser';
 import { openGoogleMaps } from 'app/services/googleService/openGoogleMaps';
-import { useAuthClient } from 'graphql/authClient';
-import { DELETE_PIN_MUTATION } from 'graphql/mutations';
 import { openGoogleCalendar } from 'app/services/googleService/openGoogleCalendar';
+
+import { useAuthClient } from 'graphql/authClient';
+import { useClient } from 'graphql/client';
+import { DELETE_PIN_MUTATION } from 'graphql/mutations';
+import { GET_PIN_BY_SLUG_QUERY } from 'graphql/queries';
 
 const orderStatuses = [
   {
@@ -127,11 +131,13 @@ const Party = () => {
   const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
   const reduxDispatch = useDispatch();
   const authClient = useAuthClient();
+  const client = useClient();
   const { state, dispatch } = useContext(Context);
 
-  const { pins } = state;
-
-  const getPartyBySlug = async () => pins?.filter((pin) => pin.slug === slug)[0];
+  const getPartyBySlug = async () => {
+    const { getPinBySlug } = await client.request(GET_PIN_BY_SLUG_QUERY, { slug });
+    return getPinBySlug;
+  };
 
   const getMapViewport = async () => {
     setViewport({
@@ -232,150 +238,150 @@ const Party = () => {
     openGoogleCalendar(pin, getAddress());
   };
 
-  return (
-    pin && (
-      <FusePageCarded
-        classes={{
-          content: 'flex',
-          header: 'w-full flex flex-col min-h-96 h-96 sm:h-136 sm:min-h-136',
-        }}
-        header={
-          <div className={'relative overflow-hidden items-center justify-center h-100 sm:h-168'}>
-            <div className='mx-auto w-full p-24 sm:p-32'>
-              <motion.div
-                className='flex flex-row'
-                initial={{ x: 20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1, transition: { delay: 0.3 } }}
-              >
-                <Typography className='flex items-center sm:mb-12' component={Link} role='button' to='/parties' color='inherit'>
-                  <Icon className='text-20'>arrow_back</Icon>
-                  <span className='mx-4 font-medium'>Back</span>
-                </Typography>
-              </motion.div>
-              <motion.div
-                className='flex flex-row justify-center'
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, transition: { delay: 0 } }}
-              >
-                <CardActions disableSpacing className='pt-0'>
-                  {isAuthUser(pin, state?.currentUser) && (
-                    <IconButton onClick={() => handleDeletePin()} aria-label='delete pin'>
-                      <DeleteIcon />
-                    </IconButton>
-                  )}
-                  <IconButton aria-label='share'>
-                    <ShareIcon />
+  return pin ? (
+    <FusePageCarded
+      classes={{
+        content: 'flex',
+        header: 'w-full flex flex-col min-h-96 h-96 sm:h-136 sm:min-h-136',
+      }}
+      header={
+        <div className={'relative overflow-hidden items-center justify-center h-100 sm:h-168'}>
+          <div className='mx-auto w-full p-24 sm:p-32'>
+            <motion.div
+              className='flex flex-row'
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1, transition: { delay: 0.3 } }}
+            >
+              <Typography className='flex items-center sm:mb-12' component={Link} role='button' to='/parties' color='inherit'>
+                <Icon className='text-20'>arrow_back</Icon>
+                <span className='mx-4 font-medium'>Back</span>
+              </Typography>
+            </motion.div>
+            <motion.div
+              className='flex flex-row justify-center'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transition: { delay: 0 } }}
+            >
+              <CardActions disableSpacing className='pt-0'>
+                {isAuthUser(pin, state?.currentUser) && (
+                  <IconButton onClick={() => handleDeletePin()} aria-label='delete pin'>
+                    <DeleteIcon />
                   </IconButton>
-                  <IconButton aria-label='open map to see position' onClick={() => handleOpenGoogleMap()}>
-                    <NavigationIcon />
-                  </IconButton>
-                  <IconButton aria-label='view comments of party' onClick={() => handleComments(pin)}>
-                    <MessageIcon />
-                  </IconButton>
-                </CardActions>
-              </motion.div>
-            </div>
+                )}
+                <IconButton aria-label='share'>
+                  <ShareIcon />
+                </IconButton>
+                <IconButton aria-label='open map to see position' onClick={() => handleOpenGoogleMap()}>
+                  <NavigationIcon />
+                </IconButton>
+                <IconButton aria-label='view comments of party' onClick={() => handleComments(pin)}>
+                  <MessageIcon />
+                </IconButton>
+              </CardActions>
+            </motion.div>
           </div>
-        }
-        content={
-          <motion.div
-            initial={{ x: 20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1, transition: { delay: 0.3 } }}
-            className='p-16 sm:p-24 w-full'
-          >
-            <div className='pb-16 flex flex-wrap items-center justify-center sm:justify-start'>
-              <div className='flex flex-row p-3 mb-16 sm:m-0 w-full sm:w-auto'>
-                <Avatar src={pin?.author?.picture} />
-                <div className='flex flex-col ml-auto sm:ml-8'>
-                  <Typography className='truncate mx-8 mb-4'>{pin?.author?.name}</Typography>
-                  <Button variant='contained' color='primary' size='small' className='p-2'>
-                    Follow
-                  </Button>
-                </div>
-              </div>
-
-              <div className='flex flex-col p-3 items-center sm:ml-auto'>
-                <Typography variant='caption' className='mb-2'>
-                  <Chip
-                    icon={<Icon className='text-16'>access_time</Icon>}
-                    label={
-                      pin?.startDate &&
-                      intlFormat(
-                        new Date(pin?.startDate),
-                        {
-                          weekday: 'long',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: 'numeric',
-                          minute: 'numeric',
-                        },
-                        {
-                          locale: 'en-US',
-                        }
-                      )
-                    }
-                    classes={{
-                      root: 'h-24',
-                      label: 'text-11',
-                    }}
-                    variant='outlined'
-                  />
-                </Typography>
-                <Button variant='text' color='primary' size='small' className='w-full p-2' onClick={() => handleOpenGoogleCalendar()}>
-                  Add to calendar
+        </div>
+      }
+      content={
+        <motion.div
+          initial={{ x: 20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1, transition: { delay: 0.3 } }}
+          className='p-16 sm:p-24 w-full'
+        >
+          <div className='pb-16 flex flex-wrap items-center justify-center sm:justify-start'>
+            <div className='flex flex-row p-3 mb-16 sm:m-0 w-full sm:w-auto'>
+              <Avatar src={pin?.author?.picture} />
+              <div className='flex flex-col ml-auto sm:ml-8'>
+                <Typography className='truncate mx-8 mb-4'>{pin?.author?.name}</Typography>
+                <Button variant='contained' color='primary' size='small' className='p-2'>
+                  Follow
                 </Button>
               </div>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { delay: 0 } }}
-              className='flex items-center flex-wrap mb-20'
-            >
-              {pin?.image && (
-                <div className='w-full md:w-1/2 pr-10'>
-                  <img className='rounded-lg' src={pin?.image} alt='get party images' />
-                </div>
-              )}
-              <div className='w-full md:w-1/2'>
-                <Typography color='primary' className='text-3xl font-bold tracking-tight mb-3 text-center mt-10'>
-                  {pin?.title}
-                </Typography>
-                <Typography className='text-center mb-8'>{pin?.content}</Typography>
+            <div className='flex flex-col p-3 items-center sm:ml-auto'>
+              <Typography variant='caption' className='mb-2'>
+                <Chip
+                  icon={<Icon className='text-16'>access_time</Icon>}
+                  label={
+                    pin?.startDate &&
+                    intlFormat(
+                      new Date(pin?.startDate),
+                      {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                      },
+                      {
+                        locale: 'en-US',
+                      }
+                    )
+                  }
+                  classes={{
+                    root: 'h-24',
+                    label: 'text-11',
+                  }}
+                  variant='outlined'
+                />
+              </Typography>
+              <Button variant='text' color='primary' size='small' className='w-full p-2' onClick={() => handleOpenGoogleCalendar()}>
+                Add to calendar
+              </Button>
+            </div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0 } }}
+            className='flex items-center flex-wrap mb-20'
+          >
+            {pin?.image && (
+              <div className='w-full md:w-1/2 pr-10'>
+                <img className='rounded-lg' src={pin?.image} alt='get party images' />
               </div>
-              <div className='w-full md:w-1/2'>
-                <div className='flex flex-col p-4'>
-                  <Typography variant='caption'>{getAddress()}</Typography>
-                </div>
-                <div className='flex flex-col p-4'>
-                  <Typography variant='caption'>{getPriceOfTicket()}</Typography>
-                </div>
-                <div className='flex flex-col p-4'>
-                  <Typography variant='caption'>
-                    <div className='flex flex-row '>
-                      <Icon className='text-14 mt-2 mr-4 font-bold' color='inherit'>
-                        sticky_note_2
-                      </Icon>
-                      <div>
-                        Available Tickets:
-                        <span className='font-bold ml-2 text-yellow-700'>{pin?.availableTickets}</span>
-                      </div>
+            )}
+            <div className='w-full md:w-1/2'>
+              <Typography color='primary' className='text-3xl font-bold tracking-tight mb-3 text-center mt-10'>
+                {pin?.title}
+              </Typography>
+              <Typography className='text-center mb-8'>{pin?.content}</Typography>
+            </div>
+            <div className='w-full md:w-1/2'>
+              <div className='flex flex-col p-4'>
+                <Typography variant='caption'>{getAddress()}</Typography>
+              </div>
+              <div className='flex flex-col p-4'>
+                <Typography variant='caption'>{getPriceOfTicket()}</Typography>
+              </div>
+              <div className='flex flex-col p-4'>
+                <Typography variant='caption'>
+                  <div className='flex flex-row '>
+                    <Icon className='text-14 mt-2 mr-4 font-bold' color='inherit'>
+                      sticky_note_2
+                    </Icon>
+                    <div>
+                      Available Tickets:
+                      <span className='font-bold ml-2 text-yellow-700'>{pin?.availableTickets}</span>
                     </div>
-                  </Typography>
-                </div>
-                <div className='flex flex-col p-4'>
-                  <Typography variant='caption'>
-                    <div className='flex flex-row '>
-                      {pin?.tags?.map((pin) => (
+                  </div>
+                </Typography>
+              </div>
+              <div className='flex flex-col p-4'>
+                <Typography variant='caption'>
+                  <div className='flex flex-row '>
+                    {pin?.tags?.length &&
+                      pin?.tags?.map((pin) => (
                         <span className='p-1'>
                           <Chip label={'#' + pin} component='a' href='#basic-chip' variant='outlined' clickable />
                         </span>
                       ))}
-                    </div>
-                  </Typography>
-                </div>
-                {/* <div className='flex flex-col p-4'>
+                  </div>
+                </Typography>
+              </div>
+              {/* <div className='flex flex-col p-4'>
                   <Typography variant='caption'>{getAddress()}</Typography>
                 </div>
                 <div className='flex flex-col p-4'>
@@ -387,15 +393,15 @@ const Party = () => {
                 <div className='flex flex-col p-4'>
                   <Typography variant='caption'>{getAddress()}</Typography>
                 </div> */}
-              </div>
-            </motion.div>
+            </div>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { delay: 0 } }}
-              className='flex items-center flex-wrap mb-20'
-            >
-              {/* <div className='w-full min-h-200 max-h-320 h-200 md:h-280 sm:h-320 rounded-16 overflow-hidden mx-8 pr-10'>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0 } }}
+            className='flex items-center flex-wrap mb-20'
+          >
+            {/* <div className='w-full min-h-200 max-h-320 h-200 md:h-280 sm:h-320 rounded-16 overflow-hidden mx-8 pr-10'>
                 <ReactMapGL
                   mapboxApiAccessToken={MAPBOX_TOKEN}
                   width='auto'
@@ -413,9 +419,9 @@ const Party = () => {
                   </Marker>
                 </ReactMapGL>
               </div> */}
-            </motion.div>
+          </motion.div>
 
-            {/* <div className='pb-48'>
+          {/* <div className='pb-48'>
               <div className='mb-24'>
                 <div className='table-responsive mb-48'>
                   <table className='simple'>
@@ -676,11 +682,12 @@ const Party = () => {
                 </table>
               </div>
             </div> */}
-          </motion.div>
-        }
-        innerScroll
-      />
-    )
+        </motion.div>
+      }
+      innerScroll
+    />
+  ) : (
+    <FuseLoading />
   );
 };
 
