@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Controller, useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
@@ -50,6 +50,7 @@ function ResetPassword() {
   const classes = useStyles();
   const reduxDispatch = useDispatch();
   const { token } = useParams();
+  const history = useHistory();
 
   const { control, formState, handleSubmit, reset } = useForm({
     mode: 'onChange',
@@ -67,7 +68,6 @@ function ResetPassword() {
         token,
       };
       const { resetPassword } = await client?.request(RESET_PASSWORD_MUTATION, input);
-      console.log(resetPassword);
       if (resetPassword) {
         reduxDispatch(
           showMessage({
@@ -83,6 +83,7 @@ function ResetPassword() {
 
         setLoading(false);
         reset(defaultValues);
+        return history.push('/login');
       }
     } catch (error) {
       console.error(error);
