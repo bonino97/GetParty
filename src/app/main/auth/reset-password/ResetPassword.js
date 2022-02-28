@@ -1,17 +1,30 @@
-import { motion } from 'framer-motion';
+import React, { useContext, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Controller, useForm } from 'react-hook-form';
+import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 
+import { motion } from 'framer-motion';
+import clsx from 'clsx';
+import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import _ from '@lodash';
+
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import clsx from 'clsx';
-import { Link } from 'react-router-dom';
-import * as yup from 'yup';
-import _ from '@lodash';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+import { RESET_PASSWORD_MUTATION } from 'graphql/mutations';
+import { useClient } from 'graphql/client';
+import Context from 'app/AppContext';
+
+import { showMessage } from 'app/store/fuse/messageSlice';
+
+import { handleErrors } from 'app/services/errorService/handleErrors';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -21,19 +34,22 @@ const useStyles = makeStyles((theme) => ({
  * Form Validation Schema
  */
 const schema = yup.object().shape({
-  email: yup.string().email('You must enter a valid email').required('You must enter a email'),
   password: yup.string().required('Please enter your password.').min(8, 'Password is too short - should be 8 chars minimum.'),
   passwordConfirm: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
 
 const defaultValues = {
-  email: '',
   password: '',
   passwordConfirm: '',
 };
 
 function ResetPassword() {
+  const { state, dispatch } = useContext(Context);
+  const [loading, setLoading] = useState(false);
+  const client = useClient();
   const classes = useStyles();
+  const reduxDispatch = useDispatch();
+  const { token } = useParams();
 
   const { control, formState, handleSubmit, reset } = useForm({
     mode: 'onChange',
@@ -43,9 +59,62 @@ function ResetPassword() {
 
   const { isValid, dirtyFields, errors } = formState;
 
-  function onSubmit() {
-    reset(defaultValues);
-  }
+  const onSubmit = async (formValues) => {
+    try {
+      setLoading(true);
+      const input = {
+        password: formValues.password,
+        token,
+      };
+      const { resetPassword } = await client?.request(RESET_PASSWORD_MUTATION, input);
+      console.log(resetPassword);
+      if (resetPassword) {
+        reduxDispatch(
+          showMessage({
+            message: 'Password modified successfully.',
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom', //top bottom
+              horizontal: 'right', //left center right
+            },
+            variant: 'success', //success error info warning null
+          })
+        );
+
+        setLoading(false);
+        reset(defaultValues);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      if (handleErrors(error)) {
+        const { message } = handleErrors(error);
+        return reduxDispatch(
+          showMessage({
+            message,
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom', //top bottom
+              horizontal: 'right', //left center right
+            },
+            variant: 'error', //success error info warning null
+          })
+        );
+      }
+
+      return reduxDispatch(
+        showMessage({
+          message: 'An error ocurred.',
+          autoHideDuration: 3000,
+          anchorOrigin: {
+            vertical: 'bottom', //top bottom
+            horizontal: 'right', //left center right
+          },
+          variant: 'error', //success error info warning null
+        })
+      );
+    }
+  };
 
   return (
     <div className={clsx(classes.root, 'flex flex-col flex-auto items-center justify-center p-16 sm:p-32')}>
@@ -74,24 +143,6 @@ function ResetPassword() {
 
               <form name='resetForm' noValidate className='flex flex-col justify-center w-full' onSubmit={handleSubmit(onSubmit)}>
                 <Controller
-                  name='email'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      className='mb-16'
-                      label='Email'
-                      autoFocus
-                      type='email'
-                      error={!!errors.email}
-                      helperText={errors?.email?.message}
-                      variant='outlined'
-                      required
-                      fullWidth
-                    />
-                  )}
-                />
-                <Controller
                   name='password'
                   control={control}
                   render={({ field }) => (
@@ -117,7 +168,7 @@ function ResetPassword() {
                     <TextField
                       {...field}
                       className='mb-16'
-                      label='Password (Confirm)'
+                      label='Repeat Password'
                       type='password'
                       error={!!errors.passwordConfirm}
                       helperText={errors?.passwordConfirm?.message}
@@ -133,10 +184,15 @@ function ResetPassword() {
                   color='primary'
                   className='w-224 mx-auto mt-16'
                   aria-label='Reset'
-                  disabled={_.isEmpty(dirtyFields) || !isValid}
+                  disabled={_.isEmpty(dirtyFields) || !isValid || loading}
                   type='submit'
                 >
-                  Reset my password
+                  {loading && (
+                    <div className={classes.root}>
+                      <CircularProgress />
+                    </div>
+                  )}
+                  {!loading && 'Reset password'}
                 </Button>
               </form>
 

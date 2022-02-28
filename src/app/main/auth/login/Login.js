@@ -9,9 +9,9 @@ import { GraphQLClient } from 'graphql-request';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
 import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import _ from '@lodash';
 
-import { yupResolver } from '@hookform/resolvers/yup';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -251,10 +251,15 @@ const Login = () => {
                 color='primary'
                 className='w-full mx-auto mt-16'
                 aria-label='LOG IN'
-                disabled={_.isEmpty(dirtyFields) || !isValid}
+                disabled={_.isEmpty(dirtyFields) || !isValid || loading}
                 type='submit'
               >
-                Login
+                {loading && (
+                  <div className={classes.root}>
+                    <CircularProgress />
+                  </div>
+                )}
+                {!loading && 'Login'}
               </Button>
             </form>
 

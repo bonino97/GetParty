@@ -212,3 +212,31 @@ export const LOGIN_MUTATION = `
     }
   }
 `;
+
+export const FORGOT_PASSWORD_MUTATION = `
+  mutation ForgotPassword (
+    $email: String
+    ) {
+    forgotPassword(input: {
+      email: $email
+    }) {
+      name
+      email
+    }
+  }
+`;
+
+export const RESET_PASSWORD_MUTATION = `
+  mutation ResetPassword (
+    $password: String
+    $token: String
+    ) {
+    resetPassword(input: {
+      password: $password
+      token: $token
+    }) {
+      name
+      email
+    }
+  }
+`;
