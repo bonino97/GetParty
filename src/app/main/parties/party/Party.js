@@ -339,11 +339,11 @@ const Party = () => {
             className='flex items-center flex-wrap mb-20'
           >
             {pin?.image && (
-              <div className='w-full md:w-1/2 pr-10'>
+              <div className='w-full flex flex-col items-center pb-16'>
                 <img className='rounded-lg' src={pin?.image} alt='get party images' />
               </div>
             )}
-            <div className='w-full md:w-1/2'>
+            <div className='w-full'>
               <Typography color='primary' className='text-3xl font-bold tracking-tight mb-3 text-center mt-10'>
                 {pin?.title}
               </Typography>
@@ -372,7 +372,7 @@ const Party = () => {
               <div className='flex flex-col p-4'>
                 <Typography variant='caption'>
                   <div className='flex flex-row '>
-                    {pin?.tags?.length &&
+                    {pin?.tags &&
                       pin?.tags?.map((pin) => (
                         <span className='p-1'>
                           <Chip label={'#' + pin} component='a' href='#basic-chip' variant='outlined' clickable />

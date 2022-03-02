@@ -50,8 +50,7 @@ registerRoute(
 // precache, in this case same-origin .png requests like those from in public/
 registerRoute(
   // Add in any other file extensions or routing criteria as needed.
-  ({ url }) =>
-    url.origin === self.location.origin && url.pathname.endsWith('.png'), // Customize this strategy as needed, e.g., by changing to CacheFirst.
+  ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.png'), // Customize this strategy as needed, e.g., by changing to CacheFirst.
   new StaleWhileRevalidate({
     cacheName: 'images',
     plugins: [
@@ -73,16 +72,12 @@ self.addEventListener('message', (event) => {
 // Any other custom service worker logic can go here.
 
 self.addEventListener('install', async (event) => {
-  console.log('instalando!');
+  // console.log('instalando!');
 
   const cache = await caches.open('cache-1');
-  await cache.addAll([
-    'assets/fonts/material-design-icons/MaterialIconsOutlined.css',
-    'assets/fonts/meteocons/style.css',
-    'favicon.ico',
-  ]);
+  await cache.addAll(['assets/fonts/material-design-icons/MaterialIconsOutlined.css', 'assets/fonts/meteocons/style.css', 'favicon.ico']);
 });
 
-self.addEventListener('fetch', async (event) => {
-  console.log('fetching: ', event.request.url);
-});
+// self.addEventListener('fetch', async (event) => {
+//   console.log('fetching: ', event.request.url);
+// });

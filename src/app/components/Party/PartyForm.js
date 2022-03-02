@@ -146,7 +146,7 @@ const defaultValues = {
   isPrivate: false,
   entryRequirements: '',
 
-  tags: null,
+  tags: [],
   instagram: '',
   twitter: '',
   facebook: '',
@@ -187,7 +187,7 @@ const PartyForm = ({}) => {
   const [submitting, setSubmitting] = useState(false);
   const [open, setOpen] = useState(true);
 
-  const { control, watch, handleSubmit, formState, getValues, reset, setValue } = useForm({
+  const { control, watch, handleSubmit, formState, reset, setValue } = useForm({
     mode: 'onChange',
     defaultValues,
     resolver: yupResolver(schema),
@@ -241,7 +241,7 @@ const PartyForm = ({}) => {
   };
 
   const { isValid, dirtyFields, errors } = formState;
-  
+
   const startDate = watch('startDate');
   const endDate = watch('endDate');
 
@@ -257,8 +257,6 @@ const PartyForm = ({}) => {
       if (image) {
         formValues.image = await handleImageUpload();
       }
-
-      console.log(formValues);
 
       const createPinInput = {
         latitude,
@@ -365,7 +363,6 @@ const PartyForm = ({}) => {
                       helperText={errors?.title?.message}
                       variant='outlined'
                       required
-                      autoFocus
                       fullWidth
                     />
                   )}
@@ -516,7 +513,6 @@ const PartyForm = ({}) => {
                       placeholder='Phone number of the party.'
                       id='phone'
                       variant='outlined'
-                      autoFocus
                       fullWidth
                       type='number'
                       InputProps={{
@@ -645,7 +641,6 @@ const PartyForm = ({}) => {
                       placeholder='Number of available tickets.'
                       variant='outlined'
                       type='number'
-                      autoFocus
                       fullWidth
                       InputProps={{
                         inputProps: { min: 0 },
@@ -887,7 +882,7 @@ const PartyForm = ({}) => {
               variant='contained'
               color='primary'
               className={classes.button}
-              disabled={_.isEmpty(dirtyFields) || !isValid || submitting}
+              disabled={_?.isEmpty(dirtyFields) || !isValid || submitting}
               type='button'
               onClick={handleSubmit(onSubmit)}
             >
