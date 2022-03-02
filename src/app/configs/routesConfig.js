@@ -9,6 +9,7 @@ import { ForgotPasswordConfig } from 'app/main/auth/forgot-password/ForgotPasswo
 import { ResetPasswordConfig } from 'app/main/auth/reset-password/ResetPasswordConfig';
 import { ConfirmAccountConfig } from 'app/main/auth/confirm-account/ConfirmAccountConfig';
 import { ConfirmEmailConfig } from 'app/main/auth/confirm-email/ConfirmEmailConfig';
+import { ProfilePageConfig } from 'app/main/profile/ProfilePageConfig';
 
 const routeConfigs = [
   ExampleConfig,
@@ -20,6 +21,7 @@ const routeConfigs = [
   ConfirmAccountConfig,
   ConfirmEmailConfig,
   PartiesConfig,
+  ProfilePageConfig,
 ];
 
 const routes = [
