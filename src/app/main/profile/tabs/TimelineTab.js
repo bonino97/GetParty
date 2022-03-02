@@ -263,11 +263,11 @@ function TimelineTab() {
                   </Typography>
                 )}
 
-                {post.media && <img src={post.media.preview} alt='post' className='rounded-8' />}
+                {/* {post.media && <img src={post.media.preview} alt='post' className='rounded-8' />} */}
 
                 {post.article && (
                   <div className='border-1 rounded-8 overflow-hidden'>
-                    <img className='w-full border-b-1' src={post.article.media.preview} alt='article' />
+                    {/* <img className='w-full border-b-1' src={post.article.media.preview} alt='article' /> */}
                     <div className='p-16'>
                       <Typography variant='subtitle1'>{post.article.title}</Typography>
                       <Typography variant='caption'>{post.article.subtitle}</Typography>
