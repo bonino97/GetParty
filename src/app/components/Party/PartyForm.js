@@ -141,6 +141,7 @@ const defaultValues = {
   availableTickets: 0,
   priceOfTicket: 0,
   takeFees: false,
+  sellTickets: false,
 
   isPeriodic: false,
   isPrivate: false,
@@ -150,6 +151,8 @@ const defaultValues = {
   instagram: '',
   twitter: '',
   facebook: '',
+
+  tickets: [],
 };
 
 const schema = yup.object().shape({
@@ -186,6 +189,7 @@ const PartyForm = ({}) => {
   const [image, setImage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [open, setOpen] = useState(true);
+  const [sellTickets, setSellTickets] = useState(false);
 
   const { control, watch, handleSubmit, formState, reset, setValue } = useForm({
     mode: 'onChange',
@@ -629,29 +633,7 @@ const PartyForm = ({}) => {
             <div>
               <div className='flex'>
                 <Controller
-                  name='availableTickets'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      autoComplete='none'
-                      className='mt-8 mb-16'
-                      label='Available Tickets'
-                      id='availableTickets'
-                      placeholder='Number of available tickets.'
-                      variant='outlined'
-                      type='number'
-                      fullWidth
-                      InputProps={{
-                        inputProps: { min: 0 },
-                      }}
-                    />
-                  )}
-                />
-              </div>
-              <div className='flex'>
-                <Controller
-                  name='takeFees'
+                  name='sellTickets'
                   control={control}
                   render={({ field: { onChange, value } }) => (
                     <FormControlLabel
@@ -661,59 +643,86 @@ const PartyForm = ({}) => {
                         <Switch
                           onChange={(ev) => {
                             onChange(ev.target.checked);
+                            setSellTickets(ev.target.checked);
                           }}
                           checked={value}
-                          name='takeFees'
+                          name='sellTickets'
                         />
                       }
                     />
                   )}
                 />
               </div>
-              <div className='flex'>
-                <Controller
-                  name='priceOfTicket'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      autoComplete='none'
-                      className='mt-8 mb-16'
-                      label='Price of Ticket'
-                      placeholder='Whats the party ticket price?'
-                      id='priceOfTicket'
-                      InputProps={{
-                        startAdornment: <InputAdornment position='start'>$</InputAdornment>,
-                        inputProps: { min: 0 },
-                      }}
-                      type='number'
-                      variant='outlined'
-                      fullWidth
-                    />
-                  )}
-                />
-              </div>
-              <div className='flex'>
-                <Controller
-                  name='takeFees'
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <FormControlLabel
-                      className='mt-8 mb-16'
-                      label='Tax included in price?'
-                      control={
-                        <Switch
-                          onChange={(ev) => {
-                            onChange(ev.target.checked);
+              {sellTickets && (
+                <>
+                  <div className='flex'>
+                    <Controller
+                      name='availableTickets'
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          autoComplete='none'
+                          className='mt-8 mb-16'
+                          label='Available Tickets'
+                          id='availableTickets'
+                          placeholder='Number of available tickets.'
+                          variant='outlined'
+                          type='number'
+                          fullWidth
+                          InputProps={{
+                            inputProps: { min: 0 },
                           }}
-                          checked={value}
-                          name='takeFees'
                         />
-                      }
+                      )}
                     />
-                  )}
-                />
-              </div>
+                  </div>
+                  <div className='flex'>
+                    <Controller
+                      name='priceOfTicket'
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          autoComplete='none'
+                          className='mt-8 mb-16'
+                          label='Price of Ticket'
+                          placeholder='Whats the party ticket price?'
+                          id='priceOfTicket'
+                          InputProps={{
+                            startAdornment: <InputAdornment position='start'>$</InputAdornment>,
+                            inputProps: { min: 0 },
+                          }}
+                          type='number'
+                          variant='outlined'
+                          fullWidth
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className='flex'>
+                    <Controller
+                      name='takeFees'
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <FormControlLabel
+                          className='mt-8 mb-16'
+                          label='Tax included in price?'
+                          control={
+                            <Switch
+                              onChange={(ev) => {
+                                onChange(ev.target.checked);
+                              }}
+                              checked={value}
+                              name='takeFees'
+                            />
+                          }
+                        />
+                      )}
+                    />
+                  </div>
+                </>
+              )}
             </div>
           )}
 

@@ -163,7 +163,6 @@ const Login = () => {
       onFailure(error);
     }
   };
-
   const onFailure = async (err) => {
     dispatch({ type: 'IS_LOGGED_IN', payload: false });
   };
