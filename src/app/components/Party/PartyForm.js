@@ -9,12 +9,14 @@ import clsx from 'clsx';
 import _ from '@lodash';
 import axios from 'axios';
 import { addHours, isValid as isValidDate, addYears } from 'date-fns';
+import { motion } from 'framer-motion';
 
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -30,12 +32,22 @@ import Switch from '@material-ui/core/Switch';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
 import FormControl from '@material-ui/core/FormControl';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { DateTimePicker } from '@material-ui/pickers';
 import { Autocomplete } from '@material-ui/lab';
+
+import FuseScrollbars from '@fuse/core/FuseScrollbars';
 
 import { showMessage } from 'app/store/fuse/messageSlice';
 
@@ -162,6 +174,7 @@ const schema = yup.object().shape({
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
+    flexGrow: 1,
   },
   button: {
     marginRight: theme.spacing(1),
@@ -169,6 +182,11 @@ const useStyles = makeStyles((theme) => ({
   instructions: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
   },
 }));
 
@@ -185,11 +203,24 @@ const PartyForm = ({}) => {
   const classes = useStyles();
   const reduxDispatch = useDispatch();
   const { state, dispatch } = useContext(Context);
+
   const { draft } = state;
+
   const [image, setImage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [open, setOpen] = useState(true);
   const [sellTickets, setSellTickets] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
+
+  const [ticketId, setTicketId] = useState(0);
+  const [quantity, setQuantity] = useState(0);
+  const [price, setPrice] = useState(0);
+  const [ticketTitle, setTicketTitle] = useState('');
+  const [ticketDescription, setTicketDescription] = useState('');
+
+  const [editTicket, setEditTicket] = useState(null);
+
+  const [tickets, setTickets] = useState([]);
 
   const { control, watch, handleSubmit, formState, reset, setValue } = useForm({
     mode: 'onChange',
@@ -197,7 +228,9 @@ const PartyForm = ({}) => {
     resolver: yupResolver(schema),
   });
 
-  const [activeStep, setActiveStep] = useState(0);
+  const startDate = watch('startDate');
+  const endDate = watch('endDate');
+  const { isValid, dirtyFields, errors } = formState;
 
   useEffect(async () => {
     if (draft?.longitude === 0) return false;
@@ -244,10 +277,43 @@ const PartyForm = ({}) => {
     dispatch({ type: 'DELETE_DRAFT' });
   };
 
-  const { isValid, dirtyFields, errors } = formState;
+  const handleAddTicket = () => {
+    const id = ticketId + 1;
+    setTicketId(id);
 
-  const startDate = watch('startDate');
-  const endDate = watch('endDate');
+    setTickets([...tickets, { ticketId: id, quantity, price, title: ticketTitle, description: ticketDescription }]);
+    resetTicketValues();
+  };
+
+  const handleEditTicket = () => {
+    const updatedTickets = [...tickets];
+    const index = updatedTickets.findIndex((ticket) => ticket.ticketId === editTicket?.ticketId);
+    updatedTickets[index] = { ticketId: editTicket?.ticketId, quantity, price, title: ticketTitle, description: ticketDescription };
+    setTickets(updatedTickets);
+    resetTicketValues();
+  };
+
+  const resetTicketValues = () => {
+    setQuantity(0);
+    setPrice(0);
+    setTicketTitle('');
+    setTicketDescription('');
+    setEditTicket(null);
+  };
+
+  const handleTicketDelete = (ticket) => {
+    const newTickets = tickets.filter((t) => ticket?.ticketId !== t?.ticketId);
+    setTickets(newTickets);
+    resetTicketValues();
+  };
+
+  const handleTicketEdit = (ticket) => {
+    setEditTicket(ticket);
+    setQuantity(ticket?.quantity);
+    setPrice(ticket?.price);
+    setTicketTitle(ticket?.title);
+    setTicketDescription(ticket?.description);
+  };
 
   /**
    * Form Submit
@@ -282,8 +348,6 @@ const PartyForm = ({}) => {
           country: formValues?.country,
         },
 
-        availableTickets: Number(formValues?.availableTickets),
-        priceOfTicket: Number(formValues?.priceOfTicket),
         takeFees: formValues?.takeFees,
 
         isPeriodic: formValues?.isPeriodic,
@@ -294,6 +358,8 @@ const PartyForm = ({}) => {
         instagram: formValues?.instagram,
         twitter: formValues?.twitter,
         facebook: formValues?.facebook,
+
+        tickets,
       };
 
       const { createPin } = await client?.request(CREATE_PIN_MUTATION, createPinInput);
@@ -630,14 +696,14 @@ const PartyForm = ({}) => {
           )}
 
           {activeStep === 2 && (
-            <div>
+            <>
               <div className='flex'>
                 <Controller
                   name='sellTickets'
                   control={control}
                   render={({ field: { onChange, value } }) => (
                     <FormControlLabel
-                      className='mt-8 mb-16'
+                      className='mb-12'
                       label='Sell tickets?'
                       control={
                         <Switch
@@ -655,75 +721,192 @@ const PartyForm = ({}) => {
               </div>
               {sellTickets && (
                 <>
-                  <div className='flex'>
-                    <Controller
-                      name='availableTickets'
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          autoComplete='none'
-                          className='mt-8 mb-16'
-                          label='Available Tickets'
-                          id='availableTickets'
-                          placeholder='Number of available tickets.'
-                          variant='outlined'
-                          type='number'
-                          fullWidth
-                          InputProps={{
-                            inputProps: { min: 0 },
-                          }}
-                        />
+                  {tickets?.length > 0 && (
+                    <div className='pb-24'>
+                      <FuseScrollbars className='flex-grow overflow-x-auto pb-12'>
+                        <Table className='min-w-sm max-w-xl'>
+                          <TableHead className='p-0'>
+                            <TableRow>
+                              <TableCell className='pr-0'>Quantity</TableCell>
+                              <TableCell>Price</TableCell>
+                              <TableCell>Title</TableCell>
+                              <TableCell>Description</TableCell>
+                              <TableCell padding='none' className='text-center'>
+                                Actions
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {tickets?.map((ticket) => {
+                              return (
+                                <TableRow
+                                  key={ticket?.ticketId}
+                                  // onClick={(event) => dispatch(setSelectedItem(item.id))}
+                                  // selected={item.id === selectedItemId}
+                                  className='cursor-pointer'
+                                >
+                                  <TableCell className='pr-0'>{ticket.quantity}</TableCell>
+                                  <TableCell>$ {ticket.price}</TableCell>
+                                  <TableCell>{ticket.title}</TableCell>
+                                  <TableCell>
+                                    {ticket?.description.length > 15 ? ticket?.description.slice(0, 15) + ' ...' : ticket?.description}
+                                  </TableCell>
+                                  <TableCell padding='none' className='text-center'>
+                                    <IconButton onClick={() => handleTicketDelete(ticket)}>
+                                      <Icon>delete</Icon>
+                                    </IconButton>
+                                    <IconButton onClick={() => handleTicketEdit(ticket)}>
+                                      <Icon>edit</Icon>
+                                    </IconButton>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </FuseScrollbars>
+                    </div>
+                  )}
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <Controller
+                        name='availableTickets'
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            autoComplete='none'
+                            label='Available Tickets *'
+                            id='availableTickets'
+                            placeholder='Number of available tickets.'
+                            variant='outlined'
+                            type='number'
+                            fullWidth
+                            value={quantity}
+                            InputProps={{
+                              inputProps: { min: 0, max: 99999 },
+                            }}
+                            onChange={(e) => setQuantity(e.target.value)}
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Controller
+                        name='priceOfTicket'
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            autoComplete='none'
+                            label='Price of Ticket *'
+                            placeholder='Whats the party ticket price?'
+                            id='priceOfTicket'
+                            value={price}
+                            InputProps={{
+                              startAdornment: <InputAdornment position='start'>$</InputAdornment>,
+                              inputProps: { min: 0, max: 99999 },
+                            }}
+                            onChange={(e) => setPrice(e.target.value)}
+                            type='number'
+                            variant='outlined'
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Controller
+                        name='ticketTitle'
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            autoComplete='none'
+                            label='Ticket Title'
+                            id='ticketTitle'
+                            placeholder="What's the party ticket title?"
+                            variant='outlined'
+                            type='text'
+                            fullWidth
+                            value={ticketTitle}
+                            onChange={(e) => setTicketTitle(e.target.value)}
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Controller
+                        control={control}
+                        name='content'
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            autoComplete='none'
+                            name='content'
+                            label='Description'
+                            placeholder='Description of ticket.'
+                            variant='outlined'
+                            value={ticketDescription}
+                            multiline
+                            rows={2}
+                            fullWidth
+                            onChange={(e) => setTicketDescription(e.target.value)}
+                          />
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
+                  <div className='flex justify-between pt-16 pb-16'>
+                    <div className='flex'>
+                      <Controller
+                        name='takeFees'
+                        control={control}
+                        render={({ field: { onChange, value } }) => (
+                          <FormControlLabel
+                            label='Tax included in price?'
+                            control={
+                              <Switch
+                                onChange={(ev) => {
+                                  onChange(ev.target.checked);
+                                }}
+                                checked={value}
+                                name='takeFees'
+                              />
+                            }
+                          />
+                        )}
+                      />
+                    </div>
+                    <div className='flex'>
+                      {!editTicket && (
+                        <Button
+                          variant='contained'
+                          color='secondary'
+                          type='button'
+                          disabled={quantity === 0 || _?.isEmpty(quantity) || _?.isEmpty(price)}
+                          onClick={handleAddTicket}
+                        >
+                          Add Ticket
+                        </Button>
                       )}
-                    />
-                  </div>
-                  <div className='flex'>
-                    <Controller
-                      name='priceOfTicket'
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          autoComplete='none'
-                          className='mt-8 mb-16'
-                          label='Price of Ticket'
-                          placeholder='Whats the party ticket price?'
-                          id='priceOfTicket'
-                          InputProps={{
-                            startAdornment: <InputAdornment position='start'>$</InputAdornment>,
-                            inputProps: { min: 0 },
-                          }}
-                          type='number'
-                          variant='outlined'
-                          fullWidth
-                        />
+
+                      {editTicket && (
+                        <Button
+                          variant='contained'
+                          color='secondary'
+                          type='button'
+                          disabled={quantity === 0 || _?.isEmpty(quantity) || _?.isEmpty(price)}
+                          onClick={handleEditTicket}
+                        >
+                          Edit Ticket
+                        </Button>
                       )}
-                    />
-                  </div>
-                  <div className='flex'>
-                    <Controller
-                      name='takeFees'
-                      control={control}
-                      render={({ field: { onChange, value } }) => (
-                        <FormControlLabel
-                          className='mt-8 mb-16'
-                          label='Tax included in price?'
-                          control={
-                            <Switch
-                              onChange={(ev) => {
-                                onChange(ev.target.checked);
-                              }}
-                              checked={value}
-                              name='takeFees'
-                            />
-                          }
-                        />
-                      )}
-                    />
+                    </div>
                   </div>
                 </>
               )}
-            </div>
+            </>
           )}
 
           {activeStep === 3 && (
