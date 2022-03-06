@@ -281,7 +281,10 @@ const PartyForm = ({}) => {
     const id = ticketId + 1;
     setTicketId(id);
 
-    setTickets([...tickets, { ticketId: id, quantity, price, title: ticketTitle, description: ticketDescription }]);
+    setTickets([
+      ...tickets,
+      { ticketId: Number(id), quantity: Number(quantity), price: Number(price), title: ticketTitle, description: ticketDescription },
+    ]);
     resetTicketValues();
   };
 

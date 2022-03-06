@@ -25,6 +25,8 @@ export const CREATE_PIN_MUTATION = `
 
     $latitude: Float,
     $longitude: Float,
+
+    $tickets: [TicketsInput]
     ) {
     createPin(input: {
       title: $title,
@@ -51,7 +53,9 @@ export const CREATE_PIN_MUTATION = `
       facebook: $facebook,
 
       latitude: $latitude,
-      longitude: $longitude
+      longitude: $longitude,
+
+      tickets: $tickets
       
     }) {
       _id
@@ -94,6 +98,15 @@ export const CREATE_PIN_MUTATION = `
         name
         email
         picture
+      }
+
+      tickets {
+        ticketId
+        quantity
+        price
+        title
+        description
+        createdAt
       }
     }
   }
