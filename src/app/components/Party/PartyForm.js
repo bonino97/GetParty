@@ -277,21 +277,27 @@ const PartyForm = ({}) => {
     dispatch({ type: 'DELETE_DRAFT' });
   };
 
-  const handleAddTicket = () => {
+  const onAddTicket = () => {
     const id = ticketId + 1;
     setTicketId(id);
 
     setTickets([
       ...tickets,
-      { ticketId: Number(id), quantity: Number(quantity), price: Number(price), title: ticketTitle, description: ticketDescription },
+      { ticketId: parseInt(id), quantity: parseInt(quantity), price: parseInt(price), title: ticketTitle, description: ticketDescription },
     ]);
     resetTicketValues();
   };
 
-  const handleEditTicket = () => {
+  const onEditTicket = () => {
     const updatedTickets = [...tickets];
     const index = updatedTickets.findIndex((ticket) => ticket.ticketId === editTicket?.ticketId);
-    updatedTickets[index] = { ticketId: editTicket?.ticketId, quantity, price, title: ticketTitle, description: ticketDescription };
+    updatedTickets[index] = {
+      ticketId: parseInt(editTicket?.ticketId),
+      quantity: parseInt(quantity),
+      price: parseInt(price),
+      title: ticketTitle,
+      description: ticketDescription,
+    };
     setTickets(updatedTickets);
     resetTicketValues();
   };
@@ -887,8 +893,8 @@ const PartyForm = ({}) => {
                           variant='contained'
                           color='secondary'
                           type='button'
-                          disabled={quantity === 0 || _?.isEmpty(quantity) || _?.isEmpty(price)}
-                          onClick={handleAddTicket}
+                          disabled={_.isNaN(parseInt(quantity)) || _.isNaN(parseInt(price)) || parseInt(quantity) === 0}
+                          onClick={onAddTicket}
                         >
                           Add Ticket
                         </Button>
@@ -899,8 +905,8 @@ const PartyForm = ({}) => {
                           variant='contained'
                           color='secondary'
                           type='button'
-                          disabled={quantity === 0 || _?.isEmpty(quantity) || _?.isEmpty(price)}
-                          onClick={handleEditTicket}
+                          disabled={_.isNaN(parseInt(quantity)) || _.isNaN(parseInt(price)) || parseInt(quantity) === 0}
+                          onClick={onEditTicket}
                         >
                           Edit Ticket
                         </Button>
