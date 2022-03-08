@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 import Context from 'app/AppContext';
 import { useGoogleLogout } from 'react-google-login';
 
-function UserMenu(props) {
+function UserMenu() {
   const { state, dispatch } = useContext(Context);
   const { currentUser } = state;
   const { signOut } = useGoogleLogout({});
@@ -36,6 +36,14 @@ function UserMenu(props) {
       <Button className='min-h-40 min-w-40 px-0 md:px-16 py-0 md:py-6' onClick={userMenuClick}>
         {currentUser && (
           <>
+            <div className='hidden md:flex flex-col mx-4 items-end'>
+              <Typography component='span' className='font-semibold flex'>
+                {currentUser?.name}
+              </Typography>
+              <Typography className='text-11 font-medium capitalize' color='textSecondary'>
+                {currentUser?.role?.toString()}
+              </Typography>
+            </div>
             <Avatar className='' alt='user photo' src={currentUser?.picture} />
           </>
         )}

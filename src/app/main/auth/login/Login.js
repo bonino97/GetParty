@@ -84,8 +84,10 @@ const Login = () => {
       setLoading(true);
       const input = formValues;
       const { login } = await client?.request(LOGIN_MUTATION, input);
-
+      console.log(login);
       if (login) {
+        localStorage.setItem('token', login?.jwt);
+        console.log(login);
         reduxDispatch(
           showMessage({
             message: 'User logged in successfully.',
@@ -97,20 +99,9 @@ const Login = () => {
             variant: 'success', //success error info warning null
           })
         );
-        localStorage.setItem('token', login.jwt);
-        const authClient = new GraphQLClient(API_URL, {
-          headers: {
-            authorization: login.jwt,
-          },
-        });
 
-        const { me } = await authClient.request(ME_QUERY);
-
-        if (me) {
-          dispatch({ type: 'LOGIN_USER', payload: me });
-          dispatch({ type: 'IS_LOGGED_IN', payload: true });
-        }
-
+        const user = await getCurrentUser(login);
+        console.log(user);
         history.push(`/map`);
         setLoading(false);
         reset(defaultValues);
@@ -165,6 +156,23 @@ const Login = () => {
   };
   const onFailure = async (err) => {
     dispatch({ type: 'IS_LOGGED_IN', payload: false });
+  };
+
+  const getCurrentUser = async (login) => {
+    const authClient = new GraphQLClient(API_URL, {
+      headers: {
+        authorization: login?.jwt,
+      },
+    });
+
+    const { me } = await authClient.request(ME_QUERY);
+
+    if (me) {
+      dispatch({ type: 'LOGIN_USER', payload: me });
+      dispatch({ type: 'IS_LOGGED_IN', payload: true });
+    }
+
+    return me;
   };
 
   return (

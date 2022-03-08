@@ -6,6 +6,7 @@ export const ME_QUERY = `
       email
       picture
       authBy
+      role
     }
   }
 `;
